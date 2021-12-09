@@ -1,0 +1,8 @@
+{
+  "bot_token": "",
+  "bot_owner_id": 123456789,
+  "bot_prefix": "bm-",
+  "bot_description": "The coolest Python bot on the planet!",
+  "bot_stream": true,
+  "bot_stream_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+}

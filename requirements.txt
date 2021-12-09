@@ -1,0 +1,4 @@
+py-cord
+psutil~=5.8.0
+aiohttp~=3.7.4.post0
+requests~=2.26.0
