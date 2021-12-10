@@ -21,6 +21,8 @@ class DbManager:
     def setup_table(self):
         try:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS prefixes (id INTEGER PRIMARY KEY, prefix VARCHAR(10))""")
+            self.cursor.execute(
+                """CREATE TABLE IF NOT EXISTS madlibs_channels (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -49,3 +51,24 @@ class DbManager:
                 self.bot.logger.log_error(e, "get_guild_prefix")
                 print(type(e).__name__, e)
                 return self.bot.default_prefix
+
+    def set_madlib_channel(self, guild_id: int, channel_id: int):
+        try:
+            self.remove_madlib_channel(guild_id)
+            self.cursor.execute(f"""INSERT INTO madlibs_channels VALUES({guild_id}, {channel_id})""")
+        except Exception as e:
+            self.bot.logger.log_error(e, "add_madlib_channel")
+
+    def remove_madlib_channel(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""DELETE FROM madlibs_channels WHERE guild_id = {guild_id}""")
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_madlib_channel")
+
+    def get_madlib_channel(self, guild_id: int):
+        self.cursor.execute(f"""SELECT channel_id FROM madlibs_channels WHERE guild_id = {guild_id}""")
+        try:
+            result = self.cursor.fetchone()[0]
+            return result if result else None
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_madlib_channel")
