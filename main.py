@@ -131,8 +131,10 @@ bot = commands.Bot(command_prefix=get_prefix,
                    help_command=MyHelp(command_attrs=help_attributes),  # custom help command
                    activity=activity,
                    description=bot_description,
-                   owner_id=owner_id,  # owner's ID as in the config file
+                   owner_id=owner_id,
                    max_messages=100000)
+
+"""defining all bot variables"""
 bot.cwd = cwd
 bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
 bot.default_prefix = prefix
@@ -151,6 +153,25 @@ async def on_ready():
     else:
         print("Owner not found in cache!")
     print("Default prefix: " + prefix)
+
+    if os.path.exists("reboot.txt"):
+        # get channel where reboot command was given
+        with open("reboot.txt", "r") as f:
+            channel_id = f.read()
+        try:
+            channel = bot.get_channel(int(channel_id))
+        except ValueError:
+            return
+        # send message to channel
+        embed = discord.Embed(title="Rebooted Successfully", color=discord.Color.blurple())
+        if failed_modules:
+            embed.description = "**These cogs failed to load**"
+            for module in failed_modules:
+                embed.description += f"\n{module}"
+        await channel.send(embed=embed)
+
+        # delete reboot.txt
+        os.remove("reboot.txt")
 
 if __name__ == '__main__':
     failed_modules = []

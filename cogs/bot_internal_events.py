@@ -25,7 +25,7 @@ class Errors(commands.Cog):
                                        f'My help command can be accessed using `{pre}help`.\n'
                                        f'Have a good day/night!')
 
-    @commands.Cog.listener()  # error handling Cog, thanks @YuiiiPTChan
+    @commands.Cog.listener()
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
