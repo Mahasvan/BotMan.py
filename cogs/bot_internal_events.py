@@ -30,7 +30,7 @@ class Errors(commands.Cog):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
 
-        self.bot.logger.log_error(error, __file__)
+        self.bot.logger.log_error(error, "command error listener")
 
         if isinstance(error, commands.CommandNotFound):
             pass
