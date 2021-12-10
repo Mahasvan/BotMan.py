@@ -29,7 +29,9 @@ else:
 
 
 def get_prefix(bot, message):
-    prefix = bot.dbmanager.get_guild_prefix(message.guild.id)
+    global prefix  # we have a default prefix in case the message is in a DM
+    if message.guild:
+        prefix = bot.dbmanager.get_guild_prefix(message.guild.id)
     return commands.when_mentioned_or(prefix)(bot, message)
 
 
@@ -139,10 +141,16 @@ bot.logger = logger.Logger("botman.log")
 
 @bot.event
 async def on_ready():
-    bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", __file__)
+    bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", "Main")
     print(bot.user, "is online!")
     print(f"{len(bot.guilds)} Servers, {len(bot.users)} Users recorded")
-
+    print(f"{len(bot.commands)} Commands loaded in {len(bot.cogs)} Cogs")
+    owner = bot.get_user(owner_id)
+    if owner is not None:
+        print(f"Owner: {owner} (ID: {owner_id})")
+    else:
+        print("Owner not found in cache!")
+    print("Default prefix: " + prefix)
 
 if __name__ == '__main__':
     failed_modules = []
