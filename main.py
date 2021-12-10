@@ -5,7 +5,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands, menus
 
-from assets import list_funcs, db_manager
+from assets import list_funcs, db_manager, logger
 
 with open('config.json', 'r') as detailsFile:
     try:
@@ -134,11 +134,14 @@ bot = commands.Bot(command_prefix=get_prefix,
 bot.cwd = cwd
 bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
 bot.default_prefix = prefix
+bot.logger = logger.Logger("botman.log")
 
 
 @bot.event
 async def on_ready():
+    bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", __file__)
     print(bot.user, "is online!")
+    print(f"{len(bot.guilds)} Servers, {len(bot.users)} Users recorded")
 
 
 if __name__ == '__main__':
@@ -163,10 +166,5 @@ if __name__ == '__main__':
     try:
         bot.run(token)  # actually running the bot
     except Exception as e:
-        if isinstance(e, discord.errors.LoginFailure) or isinstance(e, RuntimeError):
-            print(type(e).__name__, "-", e)
-            print("Unable to log in! Was an improper token passed?")
-            exit()
-        else:
-            print(type(e).__name__, "-", e)
-            exit()
+        print(type(e).__name__, "-", e)
+        exit()

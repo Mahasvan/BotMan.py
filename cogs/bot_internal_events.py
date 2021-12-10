@@ -29,6 +29,9 @@ class Errors(commands.Cog):
     async def on_command_error(self, ctx, error):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
+
+        self.bot.logger.log_error(error, __file__)
+
         if isinstance(error, commands.CommandNotFound):
             pass
         elif isinstance(error, discord.errors.Forbidden):

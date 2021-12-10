@@ -75,7 +75,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed.add_field(
             name="Uptime", value=f"{d}d, {h}h, {m}m, {s}s", inline=True)
         embed.add_field(name='Talk to my maker!',
-                        value="__[Mahasvan](https://discord.com/users/775176626773950474)__", inline=True)
+                        value="__[MTank.exe](https://discord.com/users/775176626773950474)__", inline=True)
         embed.add_field(name="Source", value=source, inline=True)
         embed.add_field(name="Sibling Bot", value=guren_link, inline=True)
         embed.add_field(name="Found an issue?",
@@ -90,8 +90,9 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @commands.command(name="uptime", description="Returns how long I have been awake.")
+    @commands.command(name="uptime")
     async def get_uptime(self, ctx):
+        """How long have I been awake?"""
         now = time.monotonic()
         uptime_seconds = int(now - self.startTime)
         m, s = divmod(uptime_seconds, 60)
@@ -110,16 +111,17 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed = discord.Embed(title="Speed Test", color=get_color(ctx.guild.me))
         if "last" not in [x.lower() for x in args]:  # show last test results if "last" argument is specified
             embed.description = "Testing download..."
-            # edit the embed with progress
             message = await ctx.send(embed=embed)
+
             self.speedtest.download()  # this is gonna take a while
             embed.description = "Testing Upload..."
             await message.edit(embed=embed)
+
             self.speedtest.upload()  # this is also going to take a while
             result_dict = self.speedtest.results.dict()
             self.last_speedtest_dict = result_dict
             # setting the result dict to be used again if the "last" argument is used
-            await message.delete()  # delete the progress message
+            await message.delete()
         else:
             result_dict = self.last_speedtest_dict
             if result_dict == {}:  # if no speed tests were conducted.
@@ -143,9 +145,9 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
     async def hostinfo(self, ctx):
         system = platform.uname()
         cpu_usage = psutil.cpu_percent()
-        memstats = psutil.virtual_memory()
-        memUsedGB = "{0:.1f}".format(((memstats.used / 1024) / 1024) / 1024)  # Thanks CorpNewt
-        memTotalGB = "{0:.1f}".format(((memstats.total / 1024) / 1024) / 1024)
+        mem_stats = psutil.virtual_memory()
+        memUsedGB = "{0:.1f}".format(((mem_stats.used / 1024) / 1024) / 1024)  # Credit to @CorpNewt for this section
+        memTotalGB = "{0:.1f}".format(((mem_stats.total / 1024) / 1024) / 1024)
         processor = str(system.processor) if str(system.processor) != "" else "N/A"
         embed = discord.Embed(title=f"Host Name: {system.node}",
                               description=f"Platform: {system.system} | Version: {system.version}",
@@ -156,7 +158,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed.add_field(name="CPU", value=processor, inline=False)
         embed.add_field(name="CPU Frequency", value=f"{int(list(psutil.cpu_freq())[0])} MHz", inline=True)
         embed.add_field(name="CPU Usage", value=f"{cpu_usage}%", inline=True)
-        embed.add_field(name="RAM Usage", value=f"{memUsedGB} GB of {memTotalGB} GB ({memstats.percent}%)", inline=True)
+        embed.add_field(name="RAM Usage", value=f"{memUsedGB} GB of {memTotalGB} GB ({mem_stats.percent}%)", inline=True)
 
         await ctx.send(embed=embed)
 
