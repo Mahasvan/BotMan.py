@@ -20,9 +20,12 @@ class DbManager:
 
     def setup_table(self):
         try:
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS prefixes (id INTEGER PRIMARY KEY, prefix VARCHAR(10))""")
-            self.cursor.execute(
-                """CREATE TABLE IF NOT EXISTS madlibs_channels (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS prefixes 
+            (id INTEGER PRIMARY KEY, prefix VARCHAR(10))""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS madlibs_channels 
+            (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS cookies 
+            (user_id INTEGER PRIMARY KEY, cookies_count INTEGER)""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -72,3 +75,22 @@ class DbManager:
             return result if result else None
         except Exception as e:
             self.bot.logger.log_error(e, "get_madlib_channel")
+
+    def add_cookie(self, user_id: int):
+        try:
+            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = {user_id}""")
+            result = self.cursor.fetchone()
+            if result:
+                self.cursor.execute(f"""UPDATE cookies SET cookies_count = {result[0] + 1} WHERE user_id = {user_id}""")
+            else:
+                self.cursor.execute(f"""INSERT INTO cookies_count VALUES({user_id}, 1)""")
+        except Exception as e:
+            self.bot.logger.log_error(e, "add_cookie")
+
+    def get_cookies_count(self, user_id: int):
+        try:
+            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = {user_id}""")
+            result = self.cursor.fetchone()
+            return result[0] if result else 0
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_cookies_count")
