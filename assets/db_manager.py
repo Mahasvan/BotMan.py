@@ -83,7 +83,7 @@ class DbManager:
             if result:
                 self.cursor.execute(f"""UPDATE cookies SET cookies_count = {result[0] + 1} WHERE user_id = {user_id}""")
             else:
-                self.cursor.execute(f"""INSERT INTO cookies_count VALUES({user_id}, 1)""")
+                self.cursor.execute(f"""INSERT INTO cookies VALUES({user_id}, 1)""")
         except Exception as e:
             self.bot.logger.log_error(e, "add_cookie")
 
