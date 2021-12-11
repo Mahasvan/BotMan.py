@@ -7,6 +7,7 @@ class Logger:
         self.logfile_path = logfile
         self.logfile = open(logfile, 'a')
         self.log_info("Logger initialized")
+        self.logfile.write("\n")
 
     def log_error(self, error: Exception, file_or_command: str = "N/A"):
         dt_string = datetime.now().strftime("%d/%m/%Y %H:%M:%S")
