@@ -7,6 +7,8 @@ import sys
 import discord
 from discord.ext import commands
 
+from assets.discord_funcs import get_color
+
 
 class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
                                           'You probably can\'t see the list of commands.\n'
@@ -114,6 +116,36 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             os.remove("./storage/update.txt")
         except Exception as e:
             self.bot.logger.log_error(e, "update")
+
+    @commands.command(name="clearlog")
+    @commands.is_owner()
+    async def clear_logfile(self, ctx):
+        try:
+            self.bot.logger.clear_logfile()
+        except Exception as e:
+            self.bot.logger.log_error(e, "clearlog")
+            return await ctx.send("Error: `{}`".format(e if len(str(e)) < 1000 else e[:1000]))
+        await ctx.send("Cleared Logfile successfully!")
+
+    @commands.command(name="sendlog", aliases=["sendlogs", "logs"])
+    @commands.is_owner()
+    async def send_log(self, ctx, messages: int = None):
+        if messages is None or messages == 0:
+            messages = 5
+        if messages > 25:
+            messages = 25
+
+        logs = self.bot.logger.retrieve_log(messages)
+        embed = discord.Embed(title=f"Logs: last {len(logs)} messages", color=get_color(ctx.author))
+        if not logs:
+            embed.add_field(name="Logs", value="No logs found!")
+        if len(logs) > 25:
+            logs = logs[:25]
+        for log in logs:
+            timestamp = log.split(" | ")[0]
+            log_message = " | ".join(log.split(" | ")[1:])
+            embed.add_field(name=timestamp, value=log_message, inline=False)
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
