@@ -172,7 +172,7 @@ async def on_ready():
 
         # delete reboot.txt
         os.remove("reboot.txt")
-
+    print("Ready to rock and roll!\n====================")
 if __name__ == '__main__':
     failed_modules = []
     for file in os.listdir(cwd + "/cogs"):
@@ -196,4 +196,5 @@ if __name__ == '__main__':
         bot.run(token)  # actually running the bot
     except Exception as e:
         print(type(e).__name__, "-", e)
+        bot.logger.log_error(e, "Main")
         exit()
