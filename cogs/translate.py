@@ -23,6 +23,10 @@ class Translate(commands.Cog, description='A set of commands that uses the googl
         Usage: `bm-translate Hola es en` --> translates from Spanish to English\n
         `bm-translate Hola en` --> translates to English by detecting the source language\n
         `bm-translate Hola` --> translates by detecting source language and setting the destination language to English"""
+
+        if len(text) > 1000:
+            return await ctx.send("Text too long. Please keep it under 1000 characters.")
+
         split_text = text.split()
         try:
             src_lang = split_text[-2].lower()  # this is the text to translate en es
