@@ -46,6 +46,9 @@ class Translate(commands.Cog, description='A set of commands that uses the googl
         else:
             dest_lang = split_text[-1].lower()
             split_text.pop(-1)  # remove destination lang from text if exists
+
+        """Now the destination language has been discovered and removed from the list"""
+
         try:
             if src_lang:
                 result = self.translator.translate(" ".join(split_text), src=src_lang, dest=dest_lang)
@@ -102,8 +105,8 @@ class Translate(commands.Cog, description='A set of commands that uses the googl
         confidence = (round(lang_confidence * 100))
         lang_name = self.lang_dict.get(lang_name).title()
 
-        embed = discord.Embed(title=f'Detected language! - {lang_name}', description=f"Text entered: **{sentence}**",
-                              color=discord.Color.random())
+        embed = discord.Embed(title=f'Detected language! - {lang_name}', description=f"Text entered: ```{sentence}```",
+                              color=discord_funcs.get_color(ctx.author))
         embed.set_footer(text=f"Confidence: {confidence}%")
 
         await ctx.send(embed=embed)
