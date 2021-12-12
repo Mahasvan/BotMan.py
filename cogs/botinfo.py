@@ -55,7 +55,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         latency = float(self.bot.latency) * 1000
         latency = f"{int(latency)} ms"  # integer is good enough in this case
         source = "__[Github](https://github.com/Code-Cecilia/BotMan.py)__"
-        guren_link = f"__[Guren Ichinose](https://github.com/Code-Cecilia/Guren)__"
+        cecilia_link = f"__[Code Cecilia](https://github.com/Code-Cecilia/)__"
         now = time.monotonic()
         uptime_seconds = int(now - self.startTime)
         m, s = divmod(uptime_seconds, 60)  # getting the uptime minutes, secs, hrs, days
@@ -65,27 +65,28 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed = discord.Embed(title=f'{self.bot.user.name} Stats', description='\uFEFF',
                               color=get_color(ctx.guild.me),
                               timestamp=ctx.message.created_at)
+        embed.description = f"I am made of {len(self.bot.commands)} commands across {len(self.bot.cogs)} cogs!"
         embed.set_thumbnail(url=self.bot.user.avatar_url)
         embed.add_field(name='PyCord version', value=pycord_version, inline=True)
-        embed.add_field(name='Total Guilds',
+        embed.add_field(name='Server Count',
                         value=str(server_count), inline=True)
-        embed.add_field(name='Total Users', value=str(
+        embed.add_field(name='Member Count', value=str(
             member_count), inline=True)
         embed.add_field(name='Latency', value=str(latency), inline=True)
         embed.add_field(
             name="Uptime", value=f"{d}d, {h}h, {m}m, {s}s", inline=True)
         embed.add_field(name='Talk to my maker!',
                         value="__[MTank.exe](https://discord.com/users/775176626773950474)__", inline=True)
-        embed.add_field(name="Source", value=source, inline=True)
-        embed.add_field(name="Sibling Bot", value=guren_link, inline=True)
+        embed.add_field(name="Source Code", value=source, inline=True)
+        embed.add_field(name="Parent Organization", value=cecilia_link, inline=True)
         embed.add_field(name="Found an issue?",
                         value="__[Report Here!](https://github.com/Code-Cecilia/BotMan.py/issues)__", inline=True)
         embed.add_field(name='Invite Me!',
-                        value=f"__[Link to invite](https://discord.com/api/oauth2/authorize?client_id"
+                        value=f"__[Link To Invite](https://discord.com/api/oauth2/authorize?client_id"
                               f"=848529420716867625&permissions=261993005047&scope=applications.commands%20bot)__",
                         inline=True)
         embed.add_field(name="Support Server",
-                        value="__[Link](https://discord.gg/pVEPfA3N3U)__", inline=True)
+                        value="__[Link To Server](https://discord.gg/8gUVYtT4cW)__", inline=True)
         embed.set_footer(
             text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
