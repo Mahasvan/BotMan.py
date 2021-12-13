@@ -26,6 +26,8 @@ class DbManager:
             (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS cookies 
             (user_id INTEGER PRIMARY KEY, cookies_count INTEGER)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS weather
+            (user_id INTEGER PRIMARY KEY, city VARCHAR(50))""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -94,3 +96,18 @@ class DbManager:
             return result[0] if result else 0
         except Exception as e:
             self.bot.logger.log_error(e, "get_cookies_count")
+
+    def set_weather_city(self, user_id: int, city: str):
+        try:
+            result = self.get_weather_city(user_id)
+            if result:
+                self.cursor.execute(f"""UPDATE weather SET city = \"{city}\" WHERE user_id = {user_id}""")
+            else:
+                self.cursor.execute(f"""INSERT INTO weather VALUES({user_id}, \"{city}\")""")
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_city")
+
+    def get_weather_city(self, user_id: int):
+        self.cursor.execute(f"""SELECT city FROM weather WHERE user_id = {user_id}""")
+        result = self.cursor.fetchone()
+        return result[0] if result else None

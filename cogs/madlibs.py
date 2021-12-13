@@ -40,7 +40,7 @@ class MadLibs(commands.Cog, description="A category for Mad Libs.\n"
             if not channel == ctx.message.channel:
                 return await ctx.send(f"You can only play MadLibs in {channel.mention}.")
         async with ctx.typing():
-            madlibs_dict = await internet_funcs.async_get(self.madlibsApi)
+            madlibs_dict = await internet_funcs.get_response(self.madlibsApi)
         self.playing_madlibs += [ctx.author.id]
         madlibs_dict = json.loads(madlibs_dict)
         title = madlibs_dict.get("title")

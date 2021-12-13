@@ -19,7 +19,7 @@ class Covid(commands.Cog, description="Get Covid-19 stats worldwide, or for a sp
             track_url = "https://disease.sh/v3/covid-19/all"
         else:
             track_url = f"https://disease.sh/v3/covid-19/countries/{country}?strict=true"
-        response_dict = await internet_funcs.async_get(track_url)
+        response_dict = await internet_funcs.get_response(track_url)
         response_dict = ast.literal_eval(response_dict)
 
         if response_dict.get("message") == "Country not found or doesn't have any cases":

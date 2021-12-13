@@ -18,7 +18,7 @@ class Memes(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        result = json.loads(await internet_funcs.async_get("https://api.imgflip.com/get_memes"))
+        result = json.loads(await internet_funcs.get_response("https://api.imgflip.com/get_memes"))
         if result["success"] is not True:
             return
         result = result["data"]["memes"]
@@ -85,7 +85,7 @@ class Memes(commands.Cog):
         # send the request
         payload = {"template_id": meme_id, "username": self.username, "password": self.password}
         payload.update(boxes_dict)
-        result = json.loads(await internet_funcs.async_post("https://api.imgflip.com/caption_image", data=payload))
+        result = json.loads(await internet_funcs.post("https://api.imgflip.com/caption_image", data=payload))
         if result["success"] is not True:
             await ctx.send("An error occurred:" + " " + "**"+result["error_message"]+"**")
             return
