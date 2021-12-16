@@ -24,13 +24,14 @@ fart_reactions = ['*farting noises*', 'Toot',
                   '*Blerrrtttt*', '**no.**', '_ew_',
                   'https://tenor.com/view/dance-moves-dancing-singer-groovy-gif-17029825']
 
-ask_answers_list = ['No', 'Yes', 'Perhaps' 'Can\'t say for sure', 'For sure!',
-                    'Why not?', 'hell naw', 'no, just no.', 'Definitely 👌']
+ask_answers_list = ['No', 'Yes', 'Perhaps' 'Can\'t say for sure', 'For sure!', 'Definitely 👌',
+                    'Reply hazy, try again later']
 
 toss_outcomes = ['Heads', 'Tails', 'Nothing']
 
-uptime_footers = ["I'm tired. I need coffee.", "Man, being a bot is a tiring job.", "I wanna take a nap.",
-                  "Sometimes I wonder why I exist. Am I an insignificant creature in a vast endless space?"]
+uptime_footers = ["I'm tired. I need coffee.", "Being a bot is a tiring job.", "I need to take a nap.",
+                  "Sometimes I wonder why I exist. Am I an insignificant creature in a vast endless space?",
+                  ""]
 
 countlines_responses = ["I am made of _{0}_ lines of python code. Pretty cool, huh?",
                         r"My owner has written _{0}_ lines of code in my brain. I a-a-am ... _glitches out_",
@@ -41,64 +42,3 @@ countlines_responses = ["I am made of _{0}_ lines of python code. Pretty cool, h
 
 spongebob_text_responses = ["You didn't enter any text, genius", "Enter some text, smartass",
                             "Look who didn't specify the text!"]
-
-good_games = ["GTA San Andreas", "Undertale", "Cyberpunk", "[Insert a good game's title here]",
-              "[Insert AAA title here]"]
-
-
-def ask_qn(msg):
-    if len(msg.split()) == 1:
-        return 'You didn\'t ask the question, smartass'
-    answer = random.choice(ask_answers_list)
-    return f'_{answer}_'
-
-
-def coin_flip():
-    result = random.choice(toss_outcomes)
-    return f'You tossed a coin and got... **_{result}_**.'
-
-
-def roll_dice():
-    result = random.randint(1, 6)
-    return f'You rolled a die and got a _**{result}**_'
-
-
-def eat_func(author, user, bot):
-    if user.id == bot.user.id:
-        return '''For the record, I **DO NOT** appreciate being eaten.
-Even though I am digital and you would probably get electrocuted.'''
-    elif not author == user:
-        return random.choice(eat_reactions).format(author.display_name, user.display_name)
-    else:
-        return 'You try to eat yourself, but fail miserably'
-
-
-def pet_func(author, user, bot):
-    if user.id == bot.user.id:
-        return 'Well, what can I say? I do like people petting me :)'
-    elif not author == user:
-        return random.choice(pet_reactions).format(author.display_name, user.display_name)
-    else:
-        return 'You pet yourself. I feel you, mate'
-
-
-def drink_func(author, user, bot):
-    if user.id == bot.user.id:
-        return 'You try to drink me, but you can\'t, because I\'m digital!'
-    elif not author == user:
-        return random.choice(drink_reactions).format(author.display_name, user.display_name)
-    else:
-        return 'You pierce yourself with a straw. Not surprisingly, it hurts.'
-
-
-def fart_reaction():
-    return random.choice(fart_reactions)
-
-
-def hug_func(author, user, bot):
-    if user.id == bot.user.id:
-        return 'Even though I\'m digital, I do appreciate hugs :)'
-    elif not author == user:
-        return random.choice(hug_reactions).format(author.display_name, user.display_name)
-    else:
-        return 'You try to hug yourself, I feel you. Mind if I give you a hug?'
