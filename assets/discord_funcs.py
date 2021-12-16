@@ -1,9 +1,12 @@
 import discord
-import json
 
 
 def get_color(user: discord.Member):
-    color = user.color
+    try:
+        color = user.color
+    except AttributeError:
+        # while fetching a user, and not a member
+        color = discord.Color.default()
     if str(color) == "#000000":
         color = discord.Color.random()
     return color
