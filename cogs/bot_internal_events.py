@@ -15,8 +15,10 @@ class Errors(commands.Cog):
     @commands.Cog.listener()
     async def on_message(self, message):
         if f"<@{self.bot.user.id}>" in str(message.content) or f"<@!{self.bot.user.id}>" in str(message.content):
-            reaction = random.choice(reactions_random).strip()
-            await message.add_reaction(reaction)
+            context = await self.bot.get_context(message)
+            if not context.valid:
+                reaction = random.choice(reactions_random).strip()
+                await message.add_reaction(reaction)
 
         if message.content in [f'<@{self.bot.user.id}>', f'<@!{self.bot.user.id}>']:
             pre = self.bot.dbmanager.get_guild_prefix(message.guild.id)
