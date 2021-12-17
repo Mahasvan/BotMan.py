@@ -156,7 +156,7 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
         self.bot.dbmanager.add_cookie(user.id)
         cookie_count_new = self.bot.dbmanager.get_cookies_count(user.id)
 
-        embed = discord.Embed(title=f"{user.display_name}, you a cookie from {ctx.author.display_name}!",
+        embed = discord.Embed(title=f"{user.display_name}, you got a cookie from {ctx.author.display_name}!",
                               description="Make sure to say thanks!",
                               color=discord_funcs.get_color(user))
         embed.set_thumbnail(url=
