@@ -24,14 +24,14 @@ class Weather(commands.Cog):
 
     @commands.command(name="weather")
     async def weather(self, ctx, user: discord.Member = None):
-        """Gets weather info for a user. Add your location to the database using the `weatherlocation` command."""
+        """Gets weather info for a user. Add your city to the database using the `weatherlocation` command."""
         # TODO: get location from timezone
         if not user:
             user = ctx.author
         pass
         location = self.bot.dbmanager.get_weather_city(user.id)
         if not location:
-            return await ctx.send(f"{user.display_name}, you haven't set your location yet. "
+            return await ctx.send(f"{user.display_name}, you haven't set your city location yet. "
                                   "Use `weatherlocation` to set it.")
 
         result = await internet_funcs.get_json(self.weather_url.format(cityName=location))
@@ -68,12 +68,12 @@ class Weather(commands.Cog):
 
     @commands.command(name="weatherlocation")
     async def weather_location(self, ctx, *, location: str):
-        """Sets your location for weather info. Use `weather` to get weather info."""
+        """Sets your city for weather info. Use `weather` to get weather info."""
         message = await ctx.send(f"Checking location - **{location}**...")
         result = await internet_funcs.get_json(self.weather_url.format(cityName=location))
         if result["cod"] == "404":
             await message.edit(content=f"_{ctx.author.display_name}_, "
-                                       f"**{location.title()}** doesn't seem to be recognized by the weather API!")
+                                       f"**{location.title()}** doesn't seem to be a city recognized by the weather API!")
             return
         self.bot.dbmanager.set_weather_city(ctx.author.id, location.title())
         await message.edit(content=f"{ctx.author.display_name}, your location has been set to **{location.title()}**.")
