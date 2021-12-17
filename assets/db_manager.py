@@ -33,19 +33,19 @@ class DbManager:
 
     def remove_guild_prefix(self, guild_id: int):
         try:
-            self.cursor.execute(f"""DELETE FROM prefixes WHERE id = {guild_id}""")
+            self.cursor.execute(f"""DELETE FROM prefixes WHERE id = (?)""", (guild_id,))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_guild_prefix")
 
     def add_guild_prefix(self, guild_id: int, prefix: str):
         self.remove_guild_prefix(guild_id)
         try:
-            self.cursor.execute(f"""INSERT INTO prefixes VALUES({guild_id}, \"{prefix}\")""")
+            self.cursor.execute(f"""INSERT INTO prefixes VALUES((?), (?))""", (guild_id, prefix))
         except Exception as e:
             self.bot.logger.log_error(e, "add_guild_prefix")
 
     def get_guild_prefix(self, guild_id: int):
-        self.cursor.execute(f"""SELECT prefix FROM prefixes WHERE id = {guild_id}""")
+        self.cursor.execute(f"""SELECT prefix FROM prefixes WHERE id = (?)""", (guild_id,))
         try:
             result = self.cursor.fetchone()[0]
             return result if result else self.bot.default_prefix
@@ -60,18 +60,18 @@ class DbManager:
     def set_madlib_channel(self, guild_id: int, channel_id: int):
         try:
             self.remove_madlib_channel(guild_id)
-            self.cursor.execute(f"""INSERT INTO madlibs_channels VALUES({guild_id}, {channel_id})""")
+            self.cursor.execute(f"""INSERT INTO madlibs_channels VALUES((?), (?))""", (guild_id, channel_id))
         except Exception as e:
             self.bot.logger.log_error(e, "add_madlib_channel")
 
     def remove_madlib_channel(self, guild_id: int):
         try:
-            self.cursor.execute(f"""DELETE FROM madlibs_channels WHERE guild_id = {guild_id}""")
+            self.cursor.execute(f"""DELETE FROM madlibs_channels WHERE guild_id = (?)""", (guild_id,))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_madlib_channel")
 
     def get_madlib_channel(self, guild_id: int):
-        self.cursor.execute(f"""SELECT channel_id FROM madlibs_channels WHERE guild_id = {guild_id}""")
+        self.cursor.execute(f"""SELECT channel_id FROM madlibs_channels WHERE guild_id = (?)""", (guild_id,))
         try:
             result = self.cursor.fetchone()[0]
             return result if result else None
@@ -80,18 +80,19 @@ class DbManager:
 
     def add_cookie(self, user_id: int):
         try:
-            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = {user_id}""")
+            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = (?)""", (user_id,))
             result = self.cursor.fetchone()
             if result:
-                self.cursor.execute(f"""UPDATE cookies SET cookies_count = {result[0] + 1} WHERE user_id = {user_id}""")
+                self.cursor.execute(f"""UPDATE cookies SET cookies_count = (?) WHERE user_id = (?)""",
+                                    (result[0] + 1, user_id))
             else:
-                self.cursor.execute(f"""INSERT INTO cookies VALUES({user_id}, 1)""")
+                self.cursor.execute(f"""INSERT INTO cookies VALUES((?), 1)""", (user_id,))
         except Exception as e:
             self.bot.logger.log_error(e, "add_cookie")
 
     def get_cookies_count(self, user_id: int):
         try:
-            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = {user_id}""")
+            self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = ?""", (user_id,))
             result = self.cursor.fetchone()
             return result[0] if result else 0
         except Exception as e:
@@ -101,13 +102,13 @@ class DbManager:
         try:
             result = self.get_weather_city(user_id)
             if result:
-                self.cursor.execute(f"""UPDATE weather SET city = \"{city}\" WHERE user_id = {user_id}""")
+                self.cursor.execute(f"""UPDATE weather SET city = (?) WHERE user_id = (?)""", (city, user_id))
             else:
-                self.cursor.execute(f"""INSERT INTO weather VALUES({user_id}, \"{city}\")""")
+                self.cursor.execute(f"""INSERT INTO weather VALUES((?), (?))""", (user_id, city))
         except Exception as e:
             self.bot.logger.log_error(e, "set_city")
 
     def get_weather_city(self, user_id: int):
-        self.cursor.execute(f"""SELECT city FROM weather WHERE user_id = {user_id}""")
+        self.cursor.execute(f"""SELECT city FROM weather WHERE user_id = (?)""", (user_id,))
         result = self.cursor.fetchone()
         return result[0] if result else None
