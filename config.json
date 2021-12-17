@@ -7,5 +7,7 @@
   "bot_stream_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 
   "imgflip_username": "",
-  "imgflip_password": ""
+  "imgflip_password": "",
+  
+  "weather_api_key": ""
 }
