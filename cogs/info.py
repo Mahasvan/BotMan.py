@@ -8,6 +8,10 @@ class Info(commands.Cog,
            description="Returns information about specific aspects of the server, role, emoji or a user."):
     def __init__(self, bot):
         self.bot = bot
+        self.twitch_logo = "https://upload.wikimedia.org/wikipedia/commons/d/dd" \
+                           "/LOGO_TWITCH_CAR_JE_LIVE_SUR_TWITCH_ET_J%27AI_60_000_ABONEE.png "
+        self.youtube_logo = "https://cdn.discordapp.com/attachments/556116525128613888/921405559910060112" \
+                            "/youtube_logo.png "
 
     @commands.command(name='userid', description='Returns the User\'s ID mentioned. '
                                                  'Returns author\'s ID if no argument is given.')
@@ -70,7 +74,6 @@ class Info(commands.Cog,
             embed.set_image(url=ctx.guild.banner_url)
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
-        print(ctx.guild.features)
 
         if "features" in args or "feature" in args:
             feature_string = ""
@@ -171,31 +174,25 @@ class Info(commands.Cog,
                 listening_embed.add_field(name="Song", value=activity.name, inline=False)
                 await ctx.send(embed=listening_embed)
             if type(activity) == discord.Streaming:
-                stream_embed = discord.Embed(title=f"Streaming", color=discord.Color.dark_purple())
+                stream_embed = discord.Embed(title=f"Streaming on {activity.platform}", color=discord.Color.dark_purple())
                 stream_embed.description = activity.name
                 stream_embed.add_field(name="URL", value=activity.url, inline=False)
-                print("Assets:", activity.assets)
                 if activity.assets.get("large_image"):
                     asset = activity.assets.get("large_image").split(":")[1]
-                    print(asset)
                     if activity.assets.get("large_image").split(":")[0] == "youtube":
                         image_url = f"https://img.youtube.com/vi/{asset}/maxresdefault.jpg"
                         stream_embed.set_image(url=image_url)
-                    # TODO: Add support for twitch embed image
+                        stream_embed.set_thumbnail(url=self.youtube_logo)
+                    elif activity.assets.get("large_image").split(":")[0] == "twitch":
+                        image_url = f"https://static-cdn.jtvnw.net/previews-ttv/live_user_{asset}-1920x1080.jpg"
+                        stream_embed.set_image(url=image_url)
+                        stream_embed.set_thumbnail(url=self.twitch_logo)
                 elif activity.assets.get("small_image"):
                     stream_embed.set_thumbnail(url=activity.assets["small_image"])
                 if activity.assets.get("large_text"):
                     stream_embed.description = activity.assets["large_text"]
                 if activity.assets.get("small_text"):
                     stream_embed.set_footer(text=activity.assets["small_text"])
-                # TODO: remove print statements after testing
-                print("Name:", activity.name)
-                print("URL:", activity.url)
-                print("Type:", activity.type)
-                print("Platform:", activity.platform)
-                if activity.platform:
-                    stream_embed.add_field(name="Platform", value=activity.platform, inline=True)
-                print("Details:", activity.details)
                 if activity.details:
                     stream_embed.add_field(name="Details", value=activity.details, inline=False)
                 await ctx.send(embed=stream_embed)
