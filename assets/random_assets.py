@@ -11,7 +11,7 @@ pet_reactions = ['_{0}_, you pet _{1}_, as they smile from your petting.',
                  '_{0}_, you take your hand near _{1}_, but they bite you.',
                  '_{0}_, you try petting _{1}_ but then they hiss and run away.']
 
-drink_reactions = ['_{0}_, you pierce {1} with a straw, as they cry out in pain.',
+drink_reactions = ['_{0}_, you pierce {1} with a straw, and they cry out in pain.',
                    '_{0}_, you try to drink _{1}_, but you realize they aren\'t liquid.',
                    '_{0}_, you try to drink _{1}_, but they have a mirror. So now you\'re drinking yourself.']
 
@@ -21,7 +21,7 @@ hug_reactions = ['_{0}_, you try to hug _{1}_, but they run away because they do
                  '_{0}_, you try to hug _{1}_, but they pull out a knife because they think you were gonna mug them.', ]
 
 fart_reactions = ['*farting noises*', 'Toot',
-                  '*Blerrrtttt*', '**no.**', '_ew_',
+                  '*Blerrrtttt*',
                   'https://tenor.com/view/dance-moves-dancing-singer-groovy-gif-17029825']
 
 ask_answers_list = ['No', 'Yes', 'Perhaps' 'Can\'t say for sure', 'For sure!', 'Definitely 👌',
