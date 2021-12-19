@@ -28,6 +28,8 @@ class DbManager:
             (user_id INTEGER PRIMARY KEY, cookies_count INTEGER)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS weather
             (user_id INTEGER PRIMARY KEY, city VARCHAR(50))""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS timezones 
+            (user_id INTEGER PRIMARY KEY, timezone VARCHAR(50), offset varchar(15))""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -112,3 +114,46 @@ class DbManager:
         self.cursor.execute(f"""SELECT city FROM weather WHERE user_id = (?)""", (user_id,))
         result = self.cursor.fetchone()
         return result[0] if result else None
+
+    def get_timezone(self, user_id: int):
+        self.cursor.execute(f"""SELECT timezone FROM timezones WHERE user_id = (?)""", (user_id,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    def get_offset(self, user_id: int):
+        self.cursor.execute(f"""SELECT offset FROM timezones WHERE user_id = (?)""", (user_id,))
+        result = self.cursor.fetchone()
+        return result[0] if result else None
+
+    def set_timezone_null_values(self, user_id: int):
+        try:
+            self.cursor.execute(f"""UPDATE timezones SET timezone = NULL, offset = NULL 
+            WHERE user_id = (?)""", (user_id,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_timezone_null_values")
+
+    def set_timezone(self, user_id: int, timezone: str):
+        try:
+            self.set_timezone_null_values(user_id)
+            self.cursor.execute(f"""UPDATE timezones SET timezone = (?) WHERE user_id = (?)""", (timezone, user_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_timezone")
+
+    def set_offset(self, user_id: int, offset: str):
+        try:
+            self.set_timezone_null_values(user_id)
+            self.cursor.execute(f"""UPDATE timezones SET offset = (?), timezone = (?) WHERE user_id = (?)""", (offset, None, user_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_offset")
+
+    def remove_timezone(self, user_id: int):
+        try:
+            self.cursor.execute(f"""UPDATE timezones SET timezone = (?) WHERE user_id = (?)""", (None, user_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_timezone")
+
+    def remove_offset(self, user_id: int):
+        try:
+            self.cursor.execute(f"""UPDATE timezones SET offset = (?) WHERE user_id = (?)""", (None, user_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_offset")
