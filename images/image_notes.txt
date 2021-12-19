@@ -1,0 +1,11 @@
+Delete image:
+    - top left corner of the box is at (360,320) from (0,0)
+    - size of box is 400px x 400px
+
+Spidey point image:
+
+    - top left corners of two boxes are at
+        - left image: (480, 145)
+        - right image: (1415, 175)
+    - size of boxes is 200px x 200px
+
