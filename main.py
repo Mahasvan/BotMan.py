@@ -20,6 +20,7 @@ with open('config.json', 'r') as detailsFile:
     bot_stream = details_data['bot_stream']
     stream_link = details_data['bot_stream_url']
     bot_description = details_data['bot_description']
+    blacklisted_cogs = details_data['blacklisted_cogs']
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -179,13 +180,15 @@ if __name__ == '__main__':
         if file.endswith(".py") and not file.startswith("_"):  # loading the cog
             print(f'Loading {file}...')
             try:
-                bot.load_extension(f"cogs.{file[:-3]}")  # loading the cogs
+                if not file[:-3] in blacklisted_cogs:
+                    bot.load_extension(f"cogs.{file[:-3]}")  # loading the cogs
+                else:
+                    continue
                 print(f'        |--- Success')
             except Exception as e:
-                print(f'        |--- Failed')  # if failed, print as failed
-                print(f'        | Reason: {str(e)}')
-                # append the file to the list of cogs which failed to load
-                failed_modules.append(file)
+                print(f'        |--- Failed: {str(e)}')  # if failed, print reason
+
+                failed_modules.append(file)  # append the file to the list of cogs which failed to load
     if len(failed_modules) != 0:
         print('====================')
         print('These cogs failed to load:')
