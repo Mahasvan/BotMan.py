@@ -115,6 +115,12 @@ class DbManager:
         result = self.cursor.fetchone()
         return result[0] if result else None
 
+    def remove_weather_city(self, user_id: int):
+        try:
+            self.cursor.execute(f"""DELETE FROM weather WHERE user_id = (?)""", (user_id,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_weather_city")
+
     def get_timezone(self, user_id: int):
         self.cursor.execute(f"""SELECT timezone FROM timezones WHERE user_id = (?)""", (user_id,))
         result = self.cursor.fetchone()

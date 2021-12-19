@@ -25,15 +25,19 @@ class Weather(commands.Cog):
     @commands.command(name="weather")
     async def weather(self, ctx, user: discord.Member = None):
         """Gets weather info for a user. Add your city to the database using the `weatherlocation` command."""
-        # TODO: get location from timezone
         if not user:
             user = ctx.author
         pass
         location = self.bot.dbmanager.get_weather_city(user.id)
-        if not location:
+        timezone = self.bot.dbmanager.get_timezone(user.id)
+        print(location, timezone)
+        gotten_from_tz = False
+        if location is None and timezone is None:
             return await ctx.send(f"{user.display_name}, you haven't set your city location yet. "
                                   "Use `weatherlocation` to set it.")
-
+        if not location:
+            location = timezone.split("/")[1] if len(timezone.split("/")) > 1 else timezone
+            gotten_from_tz = True
         result = await internet_funcs.get_json(self.weather_url.format(cityName=location))
 
         if result["cod"] == "404":
@@ -53,7 +57,7 @@ class Weather(commands.Cog):
 
         humidity = result.get("main").get("humidity")
 
-        embed = discord.Embed(title=f"{result.get('name')}, where {user.display_name} is, the weather is {weather}.",
+        embed = discord.Embed(title=f"{result.get('name')}, where {user.display_name} is, the weather is: {weather}.",
                               description=f"{longitude}_N_, {latitude}_E_",
                               color=discord_funcs.get_color(user))
         embed.add_field(name="Temperature", value=f"Actual: **{actual_temp}°C**\n"
@@ -64,6 +68,8 @@ class Weather(commands.Cog):
         embed.add_field(name="Country Code", value=result.get("sys").get("country"))
         if result.get("weather")[0].get("icon"):
             embed.set_thumbnail(url=self.weather_icon_url.format(code=result.get("weather")[0].get("icon")))
+        if gotten_from_tz:
+            embed.set_footer(text="Location fetched from timezone.")
         await ctx.send(embed=embed)
 
     @commands.command(name="weatherlocation")
@@ -77,6 +83,14 @@ class Weather(commands.Cog):
             return
         self.bot.dbmanager.set_weather_city(ctx.author.id, location.title())
         await message.edit(content=f"{ctx.author.display_name}, your location has been set to **{location.title()}**.")
+
+    @commands.command(name="removeweatherlocation", aliases=["removeweather"])
+    async def remove_weather_location(self, ctx):
+        """Removes your city for weather info from database."""
+        location = self.bot.dbmanager.get_weather_city(ctx.author.id)
+        await ctx.send(f"Your location was **{location}**. Removing from database...")
+        self.bot.dbmanager.remove_weather_city(ctx.author.id)
+        await ctx.send(f"Removed from database. You can use `weatherlocation` to set your location again.")
 
 
 def setup(bot):
