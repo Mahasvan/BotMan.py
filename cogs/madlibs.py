@@ -11,9 +11,7 @@ def is_author_check(ctx):
     return lambda message: message.channel == ctx.message.channel and message.author == ctx.author
 
 
-class MadLibs(commands.Cog, description="A category for Mad Libs.\n"
-                                        "You can restrict Mad Libs games to a single channel "
-                                        "using the `setmadlibschannel` command."):
+class MadLibs(commands.Cog, description="A category for Mad Libs."):
     def __init__(self, bot):
         self.bot = bot
         self.madlibsApi = "https://madlibz.herokuapp.com/api/random?minlength=5&maxlength=15"

@@ -5,7 +5,7 @@ import json
 from assets import internet_funcs, discord_funcs
 
 
-class Weather(commands.Cog):
+class Weather(commands.Cog, description="Commands for weather-related information"):
     def __init__(self, bot):
         self.bot = bot
         with open("config.json", "r") as f:

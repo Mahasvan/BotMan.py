@@ -1,7 +1,7 @@
 from discord.ext import commands
 
 
-class ServerSetup(commands.Cog):
+class ServerSetup(commands.Cog, description="Server setup commands. Commands can be used by admins only."):
     def __init__(self, bot):
         self.bot = bot
 

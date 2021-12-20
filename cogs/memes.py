@@ -6,7 +6,7 @@ from discord.ext import commands
 import json
 
 
-class Memes(commands.Cog):
+class Memes(commands.Cog, description="Memes from https://imgflip.com/"):
 
     def __init__(self, bot):
         self.bot = bot

@@ -8,7 +8,7 @@ from googletrans import Translator
 from assets import list_funcs, discord_funcs
 
 
-class Translate(commands.Cog, description='A set of commands that uses the google translate API'):
+class Translate(commands.Cog, description='Commands that uses the google translate API'):
 
     def __init__(self, bot):
         self.bot = bot

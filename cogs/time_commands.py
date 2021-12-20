@@ -1,15 +1,12 @@
-import ast
 import asyncio
 import re
-
-import aiohttp
 import discord
 from discord.ext import commands
 
 from assets import time_assets, list_funcs, internet_funcs, discord_funcs
 
 
-class Time(commands.Cog):
+class Time(commands.Cog, description="Commands related to time and timezones."):
 
     def __init__(self, bot):
         self.bot = bot
@@ -38,7 +35,7 @@ class Time(commands.Cog):
 
             if response_dict.get('datetime') is None:
                 return await ctx.reply(f'Couldn\'t get time data for **{timezone}**. '
-                                      f"Check the `tzlist` command for a list of valid timezones.\n")
+                                       f"Check the `tzlist` command for a list of valid timezones.\n")
 
             time = response_dict.get('datetime')[11:16]
             actual_timezone = response_dict.get('timezone')
@@ -65,7 +62,7 @@ class Time(commands.Cog):
             return await ctx.reply('Unknown timezone name. Check the `tzlist` command for a list of timezones.\n')
         if response_dict.get('datetime') is None:
             return await ctx.reply(f'Couldn\'t get time data for **{timezone}**. '
-                                  f'Check the `tzlist` command for a list of valid timezones.\n')
+                                   f'Check the `tzlist` command for a list of valid timezones.\n')
 
         self.bot.dbmanager.set_timezone(ctx.author.id, timezone)
         await ctx.reply(f'Timezone set as {timezone.title()} successfully.')
@@ -103,6 +100,23 @@ class Time(commands.Cog):
             await author.send(f'```{to_send}```')
             await asyncio.sleep(1)
 
+    @commands.command(name="removetz", aliases=["rmtz", "removetimezone", "rmoffset", "removeoffset"])
+    async def remove_timezone(self, ctx):
+        """Removes the user's timezone/offset from database"""
+        timezone = self.bot.dbmanager.get_timezone(ctx.author.id)
+        offset = self.bot.dbmanager.get_offset(ctx.author.id)
+        message = ""
+        if not timezone and not offset:
+            return await ctx.reply('You haven\'t set a timezone or offset yet!')
+        if timezone:
+            message += f"Your timezone was **{timezone}**\n"
+        if offset:
+            message += f"Your offset was **{offset}**\n"
+        await ctx.send(message)
+        self.bot.dbmanager.remove_timezone(ctx.author.id)
+        self.bot.dbmanager.remove_offset(ctx.author.id)
+        await ctx.send("Removed your timezone/offset from database.")
+
     @commands.command(name="timeinfo", aliases=['timezoneinfo', 'timezone'])
     async def get_time_info(self, ctx, location: str.lower):
         """Gets a list of time information for a specific location.\n
@@ -116,7 +130,7 @@ class Time(commands.Cog):
 
         if response_dict.get('datetime') is None:
             return await ctx.reply(f'Couldn\'t get time data for **{location}**. '
-                                  f'Check the `tzlist` command for a list of valid timezones.\n')
+                                   f'Check the `tzlist` command for a list of valid timezones.\n')
 
         time = response_dict.get('datetime')[11:19]
         date = response_dict.get('datetime')[:10]
