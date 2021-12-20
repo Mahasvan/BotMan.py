@@ -12,6 +12,8 @@ class ServerSetup(commands.Cog, description="Server setup commands. Commands can
         """Set the prefix for the server. Admin only."""
         if len(str(prefix)) > 10:
             return await ctx.send("Prefix must be 10 characters or less.")
+        if len(prefix) == 0:
+            return await ctx.send("Prefix cannot be empty.")
         message = await ctx.send(f'Setting prefix to `{prefix}`')
         self.bot.dbmanager.add_guild_prefix(ctx.guild.id, prefix)
         await message.edit(content=f'Prefix set to `{prefix}` successfully!')

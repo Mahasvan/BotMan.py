@@ -1,5 +1,4 @@
 import asyncio
-import json
 import os
 import subprocess
 import sys
@@ -21,6 +20,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     async def cls(self, ctx):
         """Clears the screen"""
         os.system('cls' if os.name == 'nt' else 'clear')
+        await ctx.message.add_reaction('\u2705')
 
     @commands.command(name='shutdown')
     @commands.is_owner()
@@ -146,6 +146,26 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             log_message = " | ".join(log.split(" | ")[1:])
             embed.add_field(name=timestamp, value=log_message, inline=False)
         await ctx.send(embed=embed)
+
+    @commands.command(name="loadjsk")
+    @commands.is_owner()
+    async def load_jsk(self, ctx):
+        async with ctx.typing():
+            try:
+                self.bot.load_extension("jishaku")
+            except commands.ExtensionAlreadyLoaded:
+                pass
+        await ctx.send("Loaded JSK!")
+
+    @commands.command(name="unloadjsk")
+    @commands.is_owner()
+    async def unload_jsk(self, ctx):
+        async with ctx.typing():
+            try:
+                self.bot.unload_extension("jishaku")
+            except commands.ExtensionNotLoaded:
+                pass
+        await ctx.send("Unloaded JSK!")
 
 
 def setup(bot):
