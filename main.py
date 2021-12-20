@@ -183,11 +183,11 @@ if __name__ == '__main__':
                 if not file[:-3] in blacklisted_cogs:
                     bot.load_extension(f"cogs.{file[:-3]}")  # loading the cogs
                 else:
+                    print("        |--- Blacklisted Cog")
                     continue
                 print(f'        |--- Success')
             except Exception as e:
                 print(f'        |--- Failed: {str(e)}')  # if failed, print reason
-
                 failed_modules.append(file)  # append the file to the list of cogs which failed to load
     if len(failed_modules) != 0:
         print('====================')
