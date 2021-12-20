@@ -14,6 +14,10 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
                                           'This is because you are not the bot\'s owner.'):
     def __init__(self, bot):
         self.bot = bot
+        try:
+            os.mkdir("./storage")
+        except FileExistsError:
+            pass
 
     @commands.command(name="cls")
     @commands.is_owner()
@@ -103,6 +107,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name="update")
     @commands.guild_only()
     async def update(self, ctx):
+        """Updates the bot using `git pull`"""
         async with ctx.typing():
             print(sys.argv)
             print(sys.path)
@@ -120,6 +125,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name="clearlog")
     @commands.is_owner()
     async def clear_logfile(self, ctx):
+        """Clears the log file"""
         try:
             self.bot.logger.clear_logfile()
         except Exception as e:
@@ -130,6 +136,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name="sendlog", aliases=["sendlogs", "logs"])
     @commands.is_owner()
     async def send_log(self, ctx, messages: int = None):
+        """Fetches recent logs from logfile"""
         if messages is None or messages == 0:
             messages = 5
         if messages > 25:
@@ -150,6 +157,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name="loadjsk")
     @commands.is_owner()
     async def load_jsk(self, ctx):
+        """Loads the Jishaku cog"""
         async with ctx.typing():
             try:
                 self.bot.load_extension("jishaku")
@@ -160,6 +168,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name="unloadjsk")
     @commands.is_owner()
     async def unload_jsk(self, ctx):
+        """Unloads the Jishaku cog"""
         async with ctx.typing():
             try:
                 self.bot.unload_extension("jishaku")
