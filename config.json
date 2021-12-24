@@ -11,5 +11,10 @@
   "imgflip_username": "",
   "imgflip_password": "",
   
-  "weather_api_key": ""
+  "weather_api_key": "",
+  
+  "spotify_client_id": "",
+  "spotify_client_secret": "",
+
+  "topgg_token": ""
 }
