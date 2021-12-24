@@ -6,7 +6,7 @@
   "bot_stream": true,
   "bot_stream_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   
-  "blacklisted_cogs": []
+  "blacklisted_cogs": [],
 
   "imgflip_username": "",
   "imgflip_password": "",
