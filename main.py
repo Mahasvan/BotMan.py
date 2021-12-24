@@ -5,7 +5,7 @@ from pathlib import Path
 import discord
 from discord.ext import commands, menus
 
-from assets import list_funcs, db_manager, logger
+from assets import list_funcs, db_manager, logger, spotify_search
 
 with open('config.json', 'r') as detailsFile:
     try:
@@ -21,6 +21,8 @@ with open('config.json', 'r') as detailsFile:
     stream_link = details_data['bot_stream_url']
     bot_description = details_data['bot_description']
     blacklisted_cogs = details_data['blacklisted_cogs']
+    spotify_client_id = details_data['spotify_client_id']
+    spotify_client_secret = details_data['spotify_client_secret']
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -140,7 +142,7 @@ bot.cwd = cwd
 bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
 bot.default_prefix = prefix
 bot.logger = logger.Logger("botman.log")
-
+bot.spotify = spotify_search.Spotify(spotify_client_id, spotify_client_secret)
 
 @bot.event
 async def on_ready():

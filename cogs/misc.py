@@ -28,8 +28,6 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
         except FileExistsError:
             pass
 
-    # todo: rewrite remindme command - it was removed from here
-
     @commands.command(name="bored", aliases=["randomactivity"], description="Bored? Let's find you something to do!")
     async def get_activity(self, ctx):
         async with aiohttp.ClientSession() as session:
@@ -37,11 +35,11 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
                 response_json = (await response.content.read()).decode("utf-8")
         response_json = json.loads(response_json)
         activity = response_json.get("activity")
-        type = response_json.get("type")
+        activity_type = response_json.get("type")
         participants = response_json.get("participants")
         price = response_json.get("price")
         accessibility = response_json.get("accessibility")
-        embed = discord.Embed(title=f"Type: {type.title()}", description=activity,
+        embed = discord.Embed(title=f"Type: {activity_type.title()}", description=activity,
                               color=discord_funcs.get_color(ctx.author))
         embed.add_field(name="Participants", value=participants, inline=True)
         embed.add_field(name="Accessibility", value=accessibility, inline=True)
