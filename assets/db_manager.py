@@ -1,4 +1,5 @@
 import sqlite3
+import time
 
 
 class DbManager:
@@ -11,7 +12,7 @@ class DbManager:
             self.setup_table()
         else:
             self.first_setup()
-
+    """Basic setup of the database"""
     def first_setup(self):
         open("assets/storage.db", "w").close()
         self.db = sqlite3.connect("assets/storage.db")
@@ -30,9 +31,12 @@ class DbManager:
             (user_id INTEGER PRIMARY KEY, city VARCHAR(50))""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS timezones 
             (user_id INTEGER PRIMARY KEY, timezone VARCHAR(50), offset varchar(15))""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS reminders
+            (user_id INTEGER, now_time VARCHAR(50),  reminder_time VARCHAR(50), reminder_text VARCHAR(500))""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
+    """Guild prefix functions"""
     def remove_guild_prefix(self, guild_id: int):
         try:
             self.cursor.execute(f"""DELETE FROM prefixes WHERE id = (?)""", (guild_id,))
@@ -59,6 +63,7 @@ class DbManager:
                 print(type(e).__name__, e)
                 return self.bot.default_prefix
 
+    """MadLibs functions"""
     def set_madlib_channel(self, guild_id: int, channel_id: int):
         try:
             self.remove_madlib_channel(guild_id)
@@ -80,6 +85,7 @@ class DbManager:
         except Exception as e:
             self.bot.logger.log_error(e, "get_madlib_channel")
 
+    """Cookies functions"""
     def add_cookie(self, user_id: int):
         try:
             self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = (?)""", (user_id,))
@@ -100,6 +106,7 @@ class DbManager:
         except Exception as e:
             self.bot.logger.log_error(e, "get_cookies_count")
 
+    """Weather functions"""
     def set_weather_city(self, user_id: int, city: str):
         try:
             result = self.get_weather_city(user_id)
@@ -121,6 +128,7 @@ class DbManager:
         except Exception as e:
             self.bot.logger.log_error(e, "remove_weather_city")
 
+    """Time functions"""
     def get_timezone(self, user_id: int):
         self.cursor.execute(f"""SELECT timezone FROM timezones WHERE user_id = (?)""", (user_id,))
         result = self.cursor.fetchone()
@@ -163,3 +171,44 @@ class DbManager:
             self.cursor.execute(f"""UPDATE timezones SET offset = (?) WHERE user_id = (?)""", (None, user_id))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_offset")
+
+    """Reminder functions"""
+    def get_completed_reminders(self):
+        current_time = time.time()
+        try:
+            self.cursor.execute(f"""SELECT user_id, now_time, reminder_time, reminder_text
+             FROM reminders WHERE reminder_time <= (?)""", (current_time,))
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_completed_reminders")
+
+    def get_all_reminders(self):
+        try:
+            self.cursor.execute(f"""SELECT user_id, reminder_time, reminder_text
+             FROM reminders""")
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_all_reminders")
+
+    def set_reminder(self, user_id: int, now_time: int, reminder_time: int, reminder_text: str):
+        try:
+            self.cursor.execute(f"""INSERT INTO reminders VALUES((?), (?), (?), (?))""",
+                                (user_id, now_time, reminder_time, reminder_text))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_reminder")
+
+    def remove_reminder(self, user_id: int, reminder_time):
+        try:
+            self.cursor.execute(f"""DELETE FROM reminders WHERE user_id = (?) AND reminder_time <= (?)""",
+                                (user_id, reminder_time))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_reminder")
+
+    def prune_reminders(self):
+        now_time = time.time()
+        try:
+            self.cursor.execute(f"""DELETE FROM reminders WHERE reminder_time <= (?)""", (now_time,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "prune_reminders")

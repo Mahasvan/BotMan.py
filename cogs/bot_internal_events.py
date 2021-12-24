@@ -1,5 +1,5 @@
 import random
-
+import difflib
 import aiohttp
 import discord.errors
 import requests
@@ -32,11 +32,16 @@ class Errors(commands.Cog):
         if isinstance(error, commands.CommandInvokeError):
             error = error.original
 
-        self.bot.logger.log_error(error, "command error listener")
-
         if isinstance(error, commands.CommandNotFound):
-            pass
-        elif isinstance(error, discord.errors.Forbidden):
+            commands_list = [command.name for command in self.bot.commands]
+            closest_matches = difflib.get_close_matches(ctx.invoked_with, commands_list, n=1)
+            if closest_matches:
+                return await ctx.send(f"Did you mean: `{closest_matches[0]}`?")
+
+        self.bot.logger.log_error(error, f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
+        # we don't want a CommandNotFound error in the logs, it'll only eat up the file
+
+        if isinstance(error, discord.errors.Forbidden):
             await ctx.send("I do not have enough permissions to perform this action.")
         elif isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.add_reaction("‼️".strip())

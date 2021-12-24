@@ -7,6 +7,7 @@ import discord
 from discord.ext import commands
 
 from assets.discord_funcs import get_color
+from assets import otp_assets
 
 
 class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
@@ -126,6 +127,9 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.is_owner()
     async def clear_logfile(self, ctx):
         """Clears the log file"""
+        passed_otp_check = await otp_assets.send_otp(ctx, self.bot, "clearing of log")
+        if not passed_otp_check:
+            return
         try:
             self.bot.logger.clear_logfile()
         except Exception as e:

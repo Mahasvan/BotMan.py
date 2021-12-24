@@ -22,7 +22,6 @@ class Logger:
         self.logfile.flush()
 
     def clear_logfile(self):
-        # TODO: Implement OTP
         self.logfile.close()
         self.logfile = open(self.logfile_path, 'w')
         self.logfile.close()

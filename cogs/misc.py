@@ -50,7 +50,7 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
 
     @commands.command(name="spongebob", aliases=["timecard"], description="Returns an image, the spongebob style.")
     async def get_spongebob_timecard(self, ctx, *, text=None):
-        one_time_int = otp_assets.get_otp(digits=5)
+        one_time_int = otp_assets.generate_otp(digits=5)
         #  random 4 digit int so multiple requests dont overwrite the file
         async with ctx.typing():
             if text is None:
@@ -75,7 +75,7 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
     async def rainbow_pfp(self, ctx, member: discord.Member = None):
         if member is None:
             member = ctx.author
-        random_number = otp_assets.get_otp(digits=5)
+        random_number = otp_assets.generate_otp(digits=5)
         #  random 5 digit int so multiple requests dont overwrite the file
         async with ctx.typing():
             image_url = f"{self.rainbow_url}{member.avatar_url}"
@@ -95,7 +95,7 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
     @commands.command(name="delete", aliases=["deleteuser"])
     async def delete_user(self, ctx, *, member: discord.Member = None):
         """Delete the user. Show no mercy."""
-        random_number = otp_assets.get_otp(5)
+        random_number = otp_assets.generate_otp(5)
         if member is None:
             member = ctx.author
         await ctx.trigger_typing()
@@ -121,7 +121,7 @@ class Misc(commands.Cog, description="A category for miscellaneous commands."):
         """Make a spidey-point meme with the given members."""
         if member2 is None:
             member2 = ctx.author
-        random_number = otp_assets.get_otp(5)
+        random_number = otp_assets.generate_otp(5)
         await ctx.trigger_typing()
         pfp_path1 = await image_assets.save_image(member1.avatar_url, f"storage/pfp{member1.id}.png")
         pfp_path2 = await image_assets.save_image(member2.avatar_url, f"storage/pfp{member2.id}.png")

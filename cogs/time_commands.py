@@ -1,7 +1,9 @@
 import asyncio
 import re
+import time
+
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 
 from assets import time_assets, list_funcs, internet_funcs, discord_funcs
 
@@ -11,6 +13,37 @@ class Time(commands.Cog, description="Commands related to time and timezones."):
     def __init__(self, bot):
         self.bot = bot
         self.time_link = 'http://worldtimeapi.org/api/timezone/'
+
+    @commands.Cog.listener()
+    async def on_ready(self):
+        self.send_completed_reminders.start()
+
+    @tasks.loop(seconds=1)
+    async def send_completed_reminders(self):
+        """Send completed reminders to the users"""
+        await self.bot.wait_until_ready()
+        completed_reminders = self.bot.dbmanager.get_completed_reminders()
+        incomplete_reminders = []
+        if not completed_reminders:
+            return
+        for user_id, message_time, reminder_time, reminder_note in completed_reminders:
+            user = self.bot.get_user(user_id)
+            when_reminded = time_assets.get_pretty_time_remaining_from_unix(reminder_time, message_time)
+            if not user:
+                continue
+            embed = discord.Embed(title="Reminder",
+                                  description=f"{user.name}, you asked me to remind you **{when_reminded}** ago.",
+                                  color=discord.Color.random())
+            if reminder_note:
+                embed.add_field(name="Note", value=reminder_note)
+            try:
+                await user.send(embed=embed)
+            except discord.Forbidden:
+                incomplete_reminders.append((user_id, message_time, reminder_time, reminder_note))
+        for entry in incomplete_reminders:
+            completed_reminders.remove(entry)
+        for reminder in completed_reminders:
+            self.bot.dbmanager.remove_reminder(reminder[0], reminder[2])
 
     @commands.command(name='time')
     @commands.guild_only()
@@ -155,6 +188,17 @@ class Time(commands.Cog, description="Commands related to time and timezones."):
         embed.set_footer(text=f"UTC format: {utc_datetime}")
 
         await ctx.reply(embed=embed)
+
+    @commands.command(name="reminder", aliases=["remindme", "remind"])
+    async def reminder(self, ctx, reminder_time: str.lower, *, reminder_note=None):
+        """Sets a reminder for a specific time.\n
+        Reminder time must be in the format `XhYmZs` where X, Y, Z are integers.\n
+        Example: `{}reminder 1h30m Hello World`""".format(ctx.prefix)
+        reminder_seconds = time_assets.get_seconds_from_input(reminder_time)
+        reminder_time = time.time() + reminder_seconds
+        pretty_time_remaining = time_assets.get_pretty_time_remaining_from_unix(reminder_time)
+        self.bot.dbmanager.set_reminder(ctx.author.id, time.time(), reminder_time, reminder_note)
+        await ctx.send(f"Okay _{ctx.author.display_name}_, I will remind you in **{pretty_time_remaining}**.")
 
 
 def setup(bot):

@@ -1,4 +1,5 @@
 import datetime
+import time
 
 
 def get_time(time):
@@ -80,3 +81,52 @@ def time_from_offset(timezone):
         minute += 60
     return f"{hour}:{minute}"
 
+
+def get_pretty_time_remaining_from_unix(unix_time, now_time=None):
+    if not now_time:
+        now_time = time.time()
+    time_remaining = int(float(unix_time) - float(now_time))
+    if time_remaining < 0:
+        return "0 seconds"
+    minutes, seconds = divmod(time_remaining, 60)
+    hours, minutes = divmod(minutes, 60)
+    days, hours = divmod(hours, 24)
+
+    final_string_to_join = []
+    if days > 0:
+        final_string_to_join.append(f"{days} {'days' if days != 1 else 'day'}")
+    if hours > 0:
+        final_string_to_join.append(f"{hours} {'hours' if hours != 1 else 'hour'}")
+    if minutes > 0:
+        final_string_to_join.append(f"{minutes} {'minutes' if minutes != 1 else 'minute'}")
+    if seconds > 0:
+        final_string_to_join.append(f"{seconds} {'seconds' if seconds != 1 else 'second'}")
+
+    final_string = ", ".join(final_string_to_join)
+    return final_string
+
+
+def get_seconds_from_input(input_time_str: str):
+    """Thanks to CorpNewt for helping out with this function"""
+    accepted_chars = {
+        "w": 604_800,
+        "d": 86_400,
+        "h": 3_600,
+        "m": 60,
+        "s": 1
+    }
+    time_seconds = 0
+    last_number = ""
+    for char in input_time_str:
+        if char.isdigit():  # Check if we have a number
+            last_number += char
+        elif char in accepted_chars:  # Check if it's a valid suffix, and we have a time so far
+            if last_number == "":
+                continue
+            time_seconds += int(last_number) * accepted_chars[char]
+            last_number = ""
+        else:
+            last_number = ""
+    if last_number:  # Check if we have any left - and add it
+        time_seconds += int(last_number)
+    return time_seconds
