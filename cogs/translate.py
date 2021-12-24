@@ -66,7 +66,7 @@ class Translate(commands.Cog, description='Commands that uses the google transla
                               color=discord_funcs.get_color(ctx.author))
         embed.add_field(name=f"Source Text", value=f"```{' '.join(split_text)}```", inline=False)
         embed.add_field(name="Translated", value=f"```{result.text}```", inline=False)
-        if not result.dest == "en":  # add pronunciation field to non-english languages
+        if not result.dest == "en" and result.pronunciation:  # add pronunciation field to non-english languages
             embed.add_field(name="Pronunciation", value=f"```{result.pronunciation}```", inline=False)
         embed.set_footer(text=f"{footer_from} --> {footer_to}")
         await ctx.send(embed=embed)
