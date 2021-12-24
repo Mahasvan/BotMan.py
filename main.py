@@ -23,6 +23,7 @@ with open('config.json', 'r') as detailsFile:
     blacklisted_cogs = details_data['blacklisted_cogs']
     spotify_client_id = details_data['spotify_client_id']
     spotify_client_secret = details_data['spotify_client_secret']
+    topgg_token = details_data['topgg_token']
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -143,6 +144,8 @@ bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
 bot.default_prefix = prefix
 bot.logger = logger.Logger("botman.log")
 bot.spotify = spotify_search.Spotify(spotify_client_id, spotify_client_secret)
+bot.topgg_token = topgg_token
+
 
 @bot.event
 async def on_ready():
