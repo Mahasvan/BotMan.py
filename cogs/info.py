@@ -196,6 +196,26 @@ class Info(commands.Cog,
                 if activity.details:
                     stream_embed.add_field(name="Details", value=activity.details, inline=False)
                 await ctx.send(embed=stream_embed)
+            if activity.type == discord.ActivityType.playing:
+                playing_embed = discord.Embed(title=f"Playing {activity.name}", color=discord.Color.blue())
+                try:
+                    if activity.details:
+                        playing_embed.add_field(name="Details", value=activity.details, inline=False)
+                    if activity.state:
+                        playing_embed.add_field(name="State", value=activity.state, inline=False)
+                    if activity.assets.get("large_image"):
+                        image_url = f"https://cdn.discordapp.com/app-assets/{activity.application_id}/{activity.assets['large_image']}.png"
+                        playing_embed.set_image(url=image_url)
+                    if activity.assets.get("small_image"):
+                        image_url = f"https://cdn.discordapp.com/app-assets/{activity.application_id}/{activity.assets['small_image']}.png"
+                        playing_embed.set_thumbnail(url=image_url)
+                    if activity.assets.get("large_text"):
+                        playing_embed.description = activity.assets["large_text"]
+                    if activity.assets.get("small_text"):
+                        playing_embed.description += f" - {activity.assets['small_text']}"
+                except AttributeError:
+                    pass
+                await ctx.send(embed=playing_embed)
 
     @commands.command(name='emojiinfo')
     @commands.guild_only()

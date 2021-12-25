@@ -71,6 +71,46 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         embed.set_footer(text=f"{footer_from} --> {footer_to}")
         await ctx.send(embed=embed)
 
+    @commands.command(name="pronounce", aliases=["pr"])
+    async def pronounce(self, ctx, *, text, source_lang=None):
+        """Pronunciation for a sentence in the English language.\n
+        Usage: `bm-pronounce こんにちは` --> returns `Kon'nichiwa`"""
+        if text.split()[-1] in self.lang_list:
+            source_lang = text.split()[-1]
+            text = " ".join(text.split()[:-1])
+        if len(text) > 1000:
+            return await ctx.send("Text too long. Please keep it under 1000 characters.")
+        detect_result = self.translator.detect(text)
+        if not source_lang:
+            if isinstance(detect_result.confidence, list):
+                source_lang = detect_result.lang[0]
+                lang_confidence = detect_result.confidence[0]
+            else:
+                source_lang = detect_result.lang
+                lang_confidence = detect_result.confidence
+        else:
+            lang_confidence = 1
+        try:
+            pronunciation_result = self.translator.translate(text, src=source_lang, dest=source_lang)
+            english_translation = self.translator.translate(text, src=source_lang, dest="en")
+        except Exception as e:
+            self.bot.logger.log_error(e, "pronounce")
+            return await ctx.reply(f"Something went wrong. Please try again later.")
+        print(pronunciation_result)
+        print(english_translation)
+        embed = discord.Embed(title=f"{ctx.author.display_name}, your pronunciation is:",
+                              colour=discord_funcs.get_color(ctx.author))
+
+        embed.add_field(name="Source Text", value=f"```{text}```", inline=False)
+        embed.add_field(name="Pronunciation", value=f"```{pronunciation_result.pronunciation}```", inline=False)
+        embed.add_field(name="Translated to English", value=f"```{english_translation.text}```", inline=False)
+        if int(lang_confidence) != 1:
+            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title()} "
+                                  f"(Confidence: {lang_confidence*100:.2f}%)")
+        else:
+            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title()}")
+        await ctx.send(embed=embed)
+
     @commands.command(name='langcodes', aliases=['languagecodes', 'listlanguagecodes', 'listlangcodes'])
     async def get_lang_codes(self, ctx):
         """List the language codes for use in the `translate` command."""

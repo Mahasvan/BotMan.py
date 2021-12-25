@@ -16,7 +16,10 @@ class Time(commands.Cog, description="Commands related to time and timezones."):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.send_completed_reminders.start()
+        try:
+            self.send_completed_reminders.start()
+        except RuntimeError:
+            pass
 
     @tasks.loop(seconds=1)
     async def send_completed_reminders(self):
@@ -195,7 +198,7 @@ class Time(commands.Cog, description="Commands related to time and timezones."):
         Reminder time must be in the format `XhYmZs` where X, Y, Z are integers.\n
         Example: `{}reminder 1h30m Hello World`""".format(ctx.prefix)
         reminder_seconds = time_assets.get_seconds_from_input(reminder_time)
-        reminder_time = time.time() + reminder_seconds
+        reminder_time = time.time() + reminder_seconds + 1  # +1 because it reduces by one second for some reason
         pretty_time_remaining = time_assets.get_pretty_time_remaining_from_unix(reminder_time)
         self.bot.dbmanager.set_reminder(ctx.author.id, time.time(), reminder_time, reminder_note)
         await ctx.send(f"Okay _{ctx.author.display_name}_, I will remind you in **{pretty_time_remaining}**.")
