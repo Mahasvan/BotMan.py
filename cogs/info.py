@@ -151,12 +151,13 @@ class Info(commands.Cog,
             activity_string = ""
             for activity in activities:
                 activity_string += f"{activity.name}\n"
-            embed.add_field(name='Current Activities',
-                            value=activity_string, inline=False)
+            embed.add_field(name='Current Activities', value=activity_string, inline=False)
         if banner_url:
             embed.add_field(name="Banner", value="See image below!", inline=False)
             embed.set_image(url=banner_url)
         await ctx.send(embed=embed)
+
+        """Embed for each activity"""
         for activity in user.activities:
             if type(activity) == discord.Spotify:
                 spot_embed = discord.Embed(title=f"Listening to Spotify", color=discord.Color.green())
@@ -214,7 +215,7 @@ class Info(commands.Cog,
                     if activity.assets.get("small_text"):
                         playing_embed.description += f" - {activity.assets['small_text']}"
                 except AttributeError:
-                    pass
+                    continue
                 await ctx.send(embed=playing_embed)
 
     @commands.command(name='emojiinfo')
