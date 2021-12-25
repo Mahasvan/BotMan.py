@@ -4,6 +4,7 @@ from pathlib import Path
 
 import discord
 from discord.ext import commands, menus
+import asyncpraw
 
 from assets import list_funcs, db_manager, logger, spotify_search
 
@@ -24,6 +25,10 @@ with open('config.json', 'r') as detailsFile:
     spotify_client_id = details_data['spotify_client_id']
     spotify_client_secret = details_data['spotify_client_secret']
     topgg_token = details_data['topgg_token']
+    reddit_username = details_data['reddit_username']
+    reddit_password = details_data['reddit_password']
+    reddit_client_id = details_data['reddit_client_id']
+    reddit_client_secret = details_data['reddit_client_secret']
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -145,6 +150,11 @@ bot.default_prefix = prefix
 bot.logger = logger.Logger("botman.log")
 bot.spotify = spotify_search.Spotify(spotify_client_id, spotify_client_secret)
 bot.topgg_token = topgg_token
+bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
+                              client_secret=reddit_client_secret,
+                              username=reddit_username,
+                              password=reddit_password,
+                              user_agent="pythonPraw")
 
 
 @bot.event

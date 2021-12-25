@@ -101,7 +101,7 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         embed = discord.Embed(title=f"{ctx.author.display_name}, your pronunciation is:",
                               colour=discord_funcs.get_color(ctx.author))
 
-        embed.add_field(name="Source Text", value=f"```{text}```", inline=False)
+        embed.add_field(name="Source Text", value=f"```{pronunciation_result.text}```", inline=False)
         embed.add_field(name="Pronunciation", value=f"```{pronunciation_result.pronunciation}```", inline=False)
         embed.add_field(name="Translated to English", value=f"```{english_translation.text}```", inline=False)
         if int(lang_confidence) != 1:
