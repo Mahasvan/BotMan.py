@@ -96,8 +96,6 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         except Exception as e:
             self.bot.logger.log_error(e, "pronounce")
             return await ctx.reply(f"Something went wrong. Please try again later.")
-        print(pronunciation_result)
-        print(english_translation)
         embed = discord.Embed(title=f"{ctx.author.display_name}, your pronunciation is:",
                               colour=discord_funcs.get_color(ctx.author))
 
