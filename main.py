@@ -22,6 +22,9 @@ with open('config.json', 'r') as detailsFile:
     stream_link = details_data['bot_stream_url']
     bot_description = details_data['bot_description']
     blacklisted_cogs = details_data['blacklisted_cogs']
+    imgflip_username = details_data['imgflip_username']
+    imgflip_password = details_data['imgflip_password']
+    weather_api_key = details_data['weather_api_key']
     spotify_client_id = details_data['spotify_client_id']
     spotify_client_secret = details_data['spotify_client_secret']
     topgg_token = details_data['topgg_token']
@@ -29,6 +32,27 @@ with open('config.json', 'r') as detailsFile:
     reddit_password = details_data['reddit_password']
     reddit_client_id = details_data['reddit_client_id']
     reddit_client_secret = details_data['reddit_client_secret']
+    currency_api_key = details_data['currency_api_key']
+
+    if not imgflip_password or not imgflip_password:
+        print("Imgflip username and password not found. Adding the memes cog to blacklist...")
+        blacklisted_cogs.append('memes')
+    if not weather_api_key:
+        print("Weather API key not found. Adding the weather cog to blacklist...")
+        blacklisted_cogs.append('weather')
+    if not spotify_client_id or not spotify_client_secret:
+        print("Spotify API keys not found. Adding the spotify cog to blacklist...")
+        blacklisted_cogs.append('spotify')
+    if not topgg_token:
+        print("Top.gg token not found. Adding the topgg_commands cog to blacklist...")
+        blacklisted_cogs.append('topgg_commands')
+    if not reddit_username or not reddit_password or not reddit_client_id or not spotify_client_secret:
+        print("Reddit API keys not found. Adding the websurf cog to blacklist...")
+        blacklisted_cogs.append('websurf')
+
+    if not currency_api_key:
+        print("CurrencyAPI key not found. Adding the currency cog to blacklist...")
+        blacklisted_cogs.append('currency')
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -155,6 +179,8 @@ bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
                               username=reddit_username,
                               password=reddit_password,
                               user_agent="pythonPraw")
+bot.weather_api_key = weather_api_key
+bot.currency_api_key = currency_api_key
 
 
 @bot.event

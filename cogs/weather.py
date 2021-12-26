@@ -8,8 +8,7 @@ from assets import internet_funcs, discord_funcs
 class Weather(commands.Cog, description="Commands for weather-related information"):
     def __init__(self, bot):
         self.bot = bot
-        with open("config.json", "r") as f:
-            self.api_key = json.load(f)["weather_api_key"]
+        self.api_key = bot.weather_api_key
         self.weather_url = "https://api.openweathermap.org/data/2.5/weather?q={cityName}" + f"&appid={self.api_key}"
         self.weather_icon_url = "https://openweathermap.org/img/wn/{code}@2x.png"
 

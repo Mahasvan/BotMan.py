@@ -1,4 +1,7 @@
+import os
 import random
+import re
+import urllib.parse
 
 import discord
 from discord.ext import commands
@@ -10,6 +13,10 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
                                         'Basically gets data from the internet.'):
     def __init__(self, bot):
         self.bot = bot
+        try:
+            os.mkdir("./storage")
+        except FileExistsError:
+            pass
 
     @commands.command(name='nocontext', description='Returns a random post\'t title from r/NoContext')
     async def no_context(self, ctx):
@@ -124,41 +131,50 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
 
     # todo: continue from here
 
+    @commands.command(name='art')
+    async def art_command(self, ctx):
+        """Gets a random piece of artwork from '__[this website](https://thisartworkdoesnotexist.com)__"""
+        f = await internet_funcs.get_binary("https://thisartworkdoesnotexist.com/")
+        with open('./storage/art.png', 'wb') as imageFile:
+            imageFile.write(f)  # f is already in binary, so don't need to decode
+        with open('./storage/art.png', 'rb') as imageFile:
+            pic = discord.File(imageFile)
+        await ctx.send(file=pic)
 
-#     @commands.command(name='art', description='You might think this uses a machine learning algorithm, '
-#                                               'but no.\nIt just gets a random image from '
-#                                               '__[this website](https://thisartworkdoesnotexist.com)__')
-#     async def art_command(self, ctx):
-#         async with aiohttp.ClientSession() as session:
-#             async with session.get(f"https://thisartworkdoesnotexist.com/") as response:
-#                 f = await response.content.read()
-#         if not os.path.exists('./storage/art.png'):
-#             with open('./storage/art.png', 'w') as imageFile:
-#                 # create file if not present
-#                 print('created file art.png inside the storage folder')
-#         with open('./storage/art.png', 'wb') as fl:
-#             fl.write(f)  # f is already in binary, so don't need to decode
-#             fl = open('./storage/art.png', 'rb')
-#             pic = discord.File(fl)
-#         await ctx.send(file=pic)
-#
-#     @commands.command(name='define', description='Pulls a description from Urban Dictionary of the term entered as '
-#                                                  'argument.\n '
-#                                                  'Take caution, as sometimes it can be a bit... too accurate.')
-#     async def define_from_urban(self, ctx, *, term):
-#         try:
-#             word, definition, likes, dislikes, example, author = await UrbanDict.define(term)
-#         except:
-#             await ctx.send(f'Could not load definition for **{term}**.')
-#             return
-#         embed = discord.Embed(
-#             title=word, description=definition, color=discord.Color.random())
-#         embed.add_field(name="Example", value=example, inline=False)
-#         embed.add_field(
-#             name='Likes', value=f"👍 {likes} | 👎 {dislikes}", inline=True)
-#         embed.set_footer(
-#             text=f'Powered by UrbanDictionary | Author - {author}')
-#         await ctx.send(embed=embed)
+    @commands.command(name="define", aliases=["urbandictionary", "urban"])
+    async def define(self, ctx, *, word):
+        """Fetches the definition of a word from Urban Dictionary"""
+        json_response_url = f"http://api.urbandictionary.com/v0/define?term={urllib.parse.quote(word)}"
+        search_url = f"https://www.urbandictionary.com/define.php?term={urllib.parse.quote(word)}"
+        response = await internet_funcs.get_json(json_response_url)
+        # Thanks to CorpNewt for the idea, and his help in making this command work
+        thing = response
+        define1 = thing.get('list')[0]
+        word = str(define1.get('word')).title()
+        definition = str(define1.get('definition'))
+        example = str(define1.get('example'))
+
+        pattern = r'\[(.+?)\]'
+        result = set(re.findall(pattern, definition))
+        for x in result:
+            encoded = urllib.parse.quote(x)
+            definition = definition.replace(f"[{x}]",
+                                            f"__[{x}](https://www.urbandictionary.com/define.php?term={encoded})__")
+
+        result2 = set(re.findall(pattern, example))
+        for x in result2:
+            encoded2 = urllib.parse.quote(x)
+            example = example.replace(f"[{x}]",
+                                      f"__[{x}](https://www.urbandictionary.com/define.php?term={encoded2})__")
+
+        embed = discord.Embed(title=f"Definition for {word}", url=search_url,
+                              colour=discord_funcs.get_color(ctx.author))
+        embed.add_field(name="Definition", value=definition, inline=False)
+        embed.add_field(name="Example", value=example, inline=False)
+        embed.add_field(name="Likes", value=f"👍 {define1.get('thumbs_up')} | 👎 {define1.get('thumbs_down')}", inline=False)
+        embed.set_footer(text=f"Author - {define1.get('author')} | Powered by Urban Dictionary")
+        await ctx.send(embed=embed)
+
 #
 #     @commands.command(name='convert', description='Converts an integer value from one currency to another.\n'
 #                                                   f'Usage example: `bm-convert 100 USD EUR`\n'
