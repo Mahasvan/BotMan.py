@@ -50,12 +50,11 @@ class Currency(commands.Cog):
         await ctx.trigger_typing()
         result = await internet_funcs.get_json(f"https://free.currconv.com/api/v7/convert?q="
                                                f"{from_currency}_{to_currency}&compact=ultra&apiKey={self.api_key}")
-        print(result)
         if result == {}:
             return await ctx.send("Could not find any currency conversion results. Please check the currency codes.")
         from_currency, to_currency = [x.upper() for x in list(result.keys())[0].split("_")]
         multiplier = list(result.values())[0]
-        await ctx.send(f"**{amount}** {from_currency} is **{amount * multiplier}** {to_currency}.")
+        await ctx.send(f"`{amount}` **{from_currency}** --> `{amount * multiplier}` **{to_currency}**.")
 
 
 def setup(bot):
