@@ -60,7 +60,6 @@ class DbManager:
                 return self.bot.default_prefix
             else:
                 self.bot.logger.log_error(e, "get_guild_prefix")
-                print(type(e).__name__, e)
                 return self.bot.default_prefix
 
     """MadLibs functions"""

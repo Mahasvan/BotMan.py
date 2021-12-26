@@ -29,7 +29,6 @@ class Weather(commands.Cog, description="Commands for weather-related informatio
         pass
         location = self.bot.dbmanager.get_weather_city(user.id)
         timezone = self.bot.dbmanager.get_timezone(user.id)
-        print(location, timezone)
         gotten_from_tz = False
         if location is None and timezone is None:
             return await ctx.send(f"{user.display_name}, you haven't set your city location yet. "

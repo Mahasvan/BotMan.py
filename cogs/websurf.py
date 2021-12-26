@@ -76,7 +76,6 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
             await ctx.send("You choices contain one or more nsfw subreddits. "
                            "They have been removed from your choices list.\n"
                            "Please use this command in an nsfw channel to view nsfw content.")
-        print(subreddits)
         if len(subreddits) == 0:
             subreddits = ["all"]
             await ctx.send("Here's a random post from r/all")

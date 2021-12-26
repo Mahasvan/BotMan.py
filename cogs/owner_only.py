@@ -110,8 +110,6 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     async def update(self, ctx):
         """Updates the bot using `git pull`"""
         async with ctx.typing():
-            print(sys.argv)
-            print(sys.path)
             with open("./storage/update.txt", "w") as output:
                 subprocess.call(["git", "pull"], stdout=output)
             with open("./storage/update.txt", "r") as output:
