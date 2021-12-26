@@ -96,6 +96,10 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         except Exception as e:
             self.bot.logger.log_error(e, "pronounce")
             return await ctx.reply(f"Something went wrong. Please try again later.")
+
+        if not self.lang_dict.get(source_lang):
+            return await ctx.send("I couldn't detect the language of the text!")
+
         embed = discord.Embed(title=f"{ctx.author.display_name}, your pronunciation is:",
                               colour=discord_funcs.get_color(ctx.author))
 
@@ -103,10 +107,10 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         embed.add_field(name="Pronunciation", value=f"```{pronunciation_result.pronunciation}```", inline=False)
         embed.add_field(name="Translated to English", value=f"```{english_translation.text}```", inline=False)
         if int(lang_confidence) != 1:
-            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title()} "
+            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'} "
                                   f"(Confidence: {lang_confidence*100:.2f}%)")
         else:
-            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title()}")
+            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'}")
         await ctx.send(embed=embed)
 
     @commands.command(name='langcodes', aliases=['languagecodes', 'listlanguagecodes', 'listlangcodes'])
@@ -143,6 +147,8 @@ class Translate(commands.Cog, description='Commands that uses the google transla
             lang_confidence = result.confidence[0]
 
         confidence = (round(lang_confidence * 100))
+        if not self.lang_dict.get(lang_name):
+            return await ctx.send(f"I couldn't detect the language of the text!")
         lang_name = self.lang_dict.get(lang_name).title()
 
         embed = discord.Embed(title=f'Detected language! - {lang_name}', description=f"Text entered: ```{sentence}```",
