@@ -23,7 +23,10 @@ class TopGG(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.update_bot_stats.start()
+        try:
+            self.update_bot_stats.start()
+        except RuntimeError:  # ignore the "Task is already launched and not completed" error
+            pass
 
     @commands.command(name="getbot", description="Gets information of a bot from top.gg\n"
                                                  "Use the bot's ID as argument.")
