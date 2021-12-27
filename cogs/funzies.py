@@ -27,24 +27,27 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
     def __init__(self, bot):
         self.bot = bot
         self.hello_last = None
-        self.last_lenny = None
+        self.last_lenny = {}
         self.joke_available_flags = ["nsfw", "religious", "political", "racist", "sexist", "explicit"]
         self.joke_categories = ["Any", "Misc", "Programming", "Dark", "Pun", "Spooky", "Christmas"]
 
+        self.cookie_image_url = "https://cdn.discordapp.com/attachments/612050519506026506/870332758348668998/cookie.png"
+
     @commands.command(name='fart', description='Does this really need a description?')
     async def fart_func(self, ctx):
-        await ctx.send(rand_ass.fart_reaction())
+        await ctx.send(random.choice(rand_ass.fart_reactions))
 
     @commands.command(name='hello', description='Says hello, and remembers nothing after that. I\'m kidding, '
                                                 'it knows who last said hello to it.')
     async def hello(self, ctx, *, some_text=None):
-        await ctx.send(f'Hello, {ctx.author.display_name}!')
-        if some_text is not None:
-            await ctx.send(f'I don\'t understand why you say "{some_text}". Doesn\'t make sense.')
-        if self.hello_last == ctx.author.id:
-            await ctx.send('This does feel familiar, though')
+        to_send = f"Hello, {ctx.author.display_name}!\n"
 
+        if some_text is not None:
+            to_send += f'I don\'t understand why you say "{some_text}". Doesn\'t make sense.\n'
+        if self.hello_last == ctx.author.id:
+            to_send += 'This does feel familiar, though'
         self.hello_last = ctx.author.id  # saves the last user's id to be used again
+        await ctx.send(to_send)
 
     @commands.command(name='sendemoji', description='Sends the emoji, and that\'s it.\n'
                                                     'It can send animated emojis too!\n'
@@ -54,7 +57,7 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
         for x in ctx.guild.emojis:
             if emoji_name == x.name:
                 return await ctx.send(str(x))
-        await ctx.send(f'No guild-only emoji called **{emoji_name}** found.')
+        await ctx.send(f'No guild-only emoji called `{emoji_name}` found.')
 
     @commands.command(name='selfdestruct', description='**DO NOT USE THIS COMMAND**')
     async def selfdestruct_command(self, ctx):
@@ -69,32 +72,34 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
 
     @commands.command(name='lenny', description='( ͡° ͜ʖ ͡°)')
     async def lenny(self, ctx):
-        await ctx.send('( ͡° ͜ʖ ͡°)')
-        self.last_lenny = ctx.author.id
         try:
             await ctx.message.delete()
         except discord.Forbidden:
             pass
+        await ctx.send('( ͡° ͜ʖ ͡°)')
+        self.last_lenny[ctx.guild.id] = ctx.author.id
 
     @commands.command(name='lastlenny', description='Last Lenny user is returned')
     @commands.guild_only()
     async def lastlenny(self, ctx):
-        last_user_id = self.last_lenny
+        last_user_id = self.last_lenny.get(ctx.guild.id)
+        if not last_user_id:
+            return await ctx.send('Nobody used the `lenny` command since I woke up.')
         user = self.bot.get_user(last_user_id)
         if user is None:
             return await ctx.send('Nobody used the `lenny` command since I woke up.')
-        await ctx.send(f'`{user}` was the last `lenny` user')
+        await ctx.send(f'{user} was the last `lenny` user')
 
     @commands.command(name='editmagic', aliases=['edit', 'messagemagic'], )
     async def edit_fun(self, ctx):
         """Who said bots can't be magicians?"""
         message = await ctx.send('Wanna see something cool?')
         await asyncio.sleep(1)
-        await message.edit(content='Look, I \u202b this message \u202B')
+        await message.edit(content='Look, I \u202B this message \u202B')
 
     @commands.command(name='empty', aliases=['emptymessage'])
     async def empty_message(self, ctx):
-        """[pretend there\'s no text here]"""
+        """*[pretend there\'s no text here]*"""
         await ctx.send("\uFEFF")
 
     @commands.command(name='choose', aliases=['choice'], description='Chooses an option from a list of choices.\n'
@@ -159,8 +164,7 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
         embed = discord.Embed(title=f"{user.display_name}, you got a cookie from {ctx.author.display_name}!",
                               description="Make sure to say thanks!",
                               color=discord_funcs.get_color(user))
-        embed.set_thumbnail(url=
-                            "https://cdn.discordapp.com/attachments/612050519506026506/870332758348668998/cookie.png")
+        embed.set_thumbnail(url=self.cookie_image_url)
         embed.set_footer(text=f"You now have {cookie_count_new} cookie{'' if cookie_count_new == 1 else 's'}!")
         await ctx.send(embed=embed)
 
@@ -211,7 +215,9 @@ class Funzies(commands.Cog, description='Fun commands for everyone to try out'):
             blacklist_flags = ["nsfw", "racist"]
 
         async with ctx.typing():
-            response = await get_joke(categories=list(categories), blacklist=blacklist_flags)
+            response = await get_joke(categories=list(categories),
+                                      blacklist=blacklist_flags if not categories else None)
+            # we dont want blacklists if user specifies the category
 
         if response.get("error"):
             return await ctx.send(f"The API I use encountered an error - **{response.get('message')}**")
