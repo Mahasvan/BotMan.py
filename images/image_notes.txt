@@ -8,4 +8,3 @@ Spidey point image:
         - left image: (480, 145)
         - right image: (1415, 175)
     - size of boxes is 200px x 200px
-

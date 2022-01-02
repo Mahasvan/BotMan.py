@@ -14,6 +14,9 @@ class Errors(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message(self, message):
+        if message.author.bot or message.guild is None or message.author.id == self.bot.user.id:
+            return
+
         if f"<@{self.bot.user.id}>" in str(message.content) or f"<@!{self.bot.user.id}>" in str(message.content):
             context = await self.bot.get_context(message)
             if not context.valid:
@@ -43,12 +46,10 @@ class Errors(commands.Cog):
 
         if isinstance(error, discord.errors.Forbidden):
             await ctx.send("I do not have enough permissions to perform this action.")
-        elif isinstance(error, commands.MissingRequiredArgument):
-            await ctx.message.add_reaction("‼️".strip())
-            await ctx.send("An argument is missing or invalid. Check the help command for the correct usage..")
-        elif isinstance(error, commands.BadArgument):
-            await ctx.message.add_reaction("‼️".strip())
-            await ctx.send("A bad argument has been passed, check the context and the needed arguments.")
+
+        elif isinstance(error, commands.MissingRequiredArgument) or isinstance(error, commands.BadArgument):
+            await ctx.send(f"**__Usage for `{ctx.command.qualified_name}`__**:\n"
+                           f"`{ctx.prefix}{ctx.command.qualified_name} {ctx.command.signature}`")
         elif isinstance(error, commands.NoPrivateMessage):
             await ctx.message.add_reaction("‼️".strip())
             await ctx.send("This command cannot be used in private messages. Please use this command in a server.")

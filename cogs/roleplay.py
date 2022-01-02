@@ -254,9 +254,13 @@ class Roleplay(commands.Cog):
         embed.set_image(url=f"attachment://spidey{random_number}.png")
         embed.set_footer(text=f"{ctx.author.display_name} wanted this.", icon_url=ctx.author.avatar_url)
         await ctx.reply(file=file, embed=embed)
-        os.remove(f"./storage/spidey{random_number}.png")
-        os.remove(f"./storage/pfp{member1.id}.png")
-        os.remove(f"./storage/pfp{member2.id}.png")
+        try:
+            os.remove(f"./storage/spidey{random_number}.png")
+            os.remove(f"./storage/pfp{member1.id}.png")
+            os.remove(f"./storage/pfp{member2.id}.png")
+        except FileNotFoundError:
+            pass
+
 
 def setup(bot):
     bot.add_cog(Roleplay(bot))
