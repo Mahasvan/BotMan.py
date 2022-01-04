@@ -223,29 +223,21 @@ class Info(commands.Cog,
     async def emoji_info(self, ctx, *, emoji: discord.Emoji):
         """Returns information about a custom emoji.
         This command can only be used for emojis in the current server."""
-        emoji_actual = self.bot.get_emoji(int(emoji.id))
-        if emoji_actual is None:
+        emoji = await ctx.guild.fetch_emoji(int(emoji.id))
+        if emoji is None:
             return await ctx.send("I couldn't find information on that emoji!")
-        emoji = ctx.author if not emoji else emoji
-        emoji_name = emoji.name
-        guild = emoji.guild
-        available_for_use = emoji.available
-        creation_date, creation_time = time_assets.parse_utc(
-            str(emoji.created_at))
-        emoji_id = emoji.id
-        emoji_url = emoji.url
+        creation_date, creation_time = time_assets.parse_utc(str(emoji.created_at))
         try:
             # emoji.user.mention cannot be used - it returns None
-            creator = emoji_actual.user.mention
+            creator = emoji.user.mention
         except AttributeError:
             creator = "Insufficient Permissions"
         embed = discord.Embed(
-            title=emoji_name, description=f'ID: {emoji_id}', color=discord_funcs.get_color(ctx.author))
-        embed.set_thumbnail(url=emoji_url)
-        embed.add_field(name='Source Server', value=guild, inline=True)
+            title=emoji.name, description=f'ID: {emoji.id}', color=discord_funcs.get_color(ctx.author))
+        embed.set_thumbnail(url=emoji.url)
         embed.add_field(name='Creator', value=creator, inline=True)
-        embed.add_field(name="Is available",
-                        value=available_for_use, inline=True)
+        embed.add_field(name="Available for use",
+                        value="Yes" if emoji.available else "No", inline=True)
         embed.add_field(name='Date of creation',
                         value=creation_date, inline=True)
         embed.add_field(name='Time of creation',
