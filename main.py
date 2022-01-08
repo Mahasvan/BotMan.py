@@ -217,19 +217,20 @@ async def on_ready():
     print("Ready to rock and roll!\n====================")
 if __name__ == '__main__':
     failed_modules = []
-    for file in os.listdir(cwd + "/cogs"):
-        if file.endswith(".py") and not file.startswith("_"):  # loading the cog
-            print(f'Loading {file}...')
-            try:
-                if not file[:-3] in blacklisted_cogs:
-                    bot.load_extension(f"cogs.{file[:-3]}")  # loading the cogs
-                else:
-                    print("        |--- Blacklisted Cog")
-                    continue
-                print(f'        |--- Success')
-            except Exception as e:
-                print(f'        |--- Failed: {str(e)}')  # if failed, print reason
-                failed_modules.append(file)  # append the file to the list of cogs which failed to load
+    cogs_to_load = [file[:-3] for file in os.listdir(os.path.join(cwd, "cogs"))
+                    if file.endswith(".py") and not file.startswith("_")]
+
+    for cog in cogs_to_load:
+        print(f"Loading {cog}...")
+        if cog in blacklisted_cogs:  # skip loading the cog if it's blacklisted
+            print("        |--- Blacklisted Cog, skipping...")
+        try:
+            bot.load_extension(f"cogs.{cog}")  # load the cog
+            print("        |--- Success!")  # if the cog loaded successfully, print this
+        except Exception as e:
+            print(f"        |--- Failed: {str(e)}")
+            failed_modules.append(cog)  # add cog to failed list
+
     if len(failed_modules) != 0:
         print('====================')
         print('These cogs failed to load:')
