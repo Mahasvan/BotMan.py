@@ -1,7 +1,4 @@
 import aiohttp
-import json
-import re
-import urllib.parse
 
 
 async def get_response(url: str):
@@ -44,4 +41,3 @@ async def post_json(url: str, data: dict = None, params: dict = None):
         async with session.post(url, data=data, params=params) as response:
             response = (await response.json())
     return response
-

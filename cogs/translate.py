@@ -107,10 +107,12 @@ class Translate(commands.Cog, description='Commands that uses the google transla
         embed.add_field(name="Pronunciation", value=f"```{pronunciation_result.pronunciation}```", inline=False)
         embed.add_field(name="Translated to English", value=f"```{english_translation.text}```", inline=False)
         if int(lang_confidence) != 1:
-            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'} "
-                                  f"(Confidence: {lang_confidence*100:.2f}%)")
+            embed.set_footer(
+                text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'} "
+                     f"(Confidence: {lang_confidence * 100:.2f}%)")
         else:
-            embed.set_footer(text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'}")
+            embed.set_footer(
+                text=f"Language: {self.lang_dict.get(source_lang).title() if self.lang_dict.get(source_lang) else 'Unknown'}")
         await ctx.send(embed=embed)
 
     @commands.command(name='langcodes', aliases=['languagecodes', 'listlanguagecodes', 'listlangcodes'])

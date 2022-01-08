@@ -131,8 +131,9 @@ class Info(commands.Cog,
         else:
             banner_url = None
 
-        embed = discord.Embed(title=user.display_name if user.name == user.display_name else f"{user.name}, who goes by {user.display_name}",
-                              description=f'ID: {user.id}', color=user.color, timestamp=ctx.message.created_at)
+        embed = discord.Embed(
+            title=user.display_name if user.name == user.display_name else f"{user.name}, who goes by {user.display_name}",
+            description=f'ID: {user.id}', color=user.color, timestamp=ctx.message.created_at)
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(
             text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
@@ -175,7 +176,8 @@ class Info(commands.Cog,
                 listening_embed.add_field(name="Song", value=activity.name, inline=False)
                 await ctx.send(embed=listening_embed)
             if type(activity) == discord.Streaming:
-                stream_embed = discord.Embed(title=f"Streaming on {activity.platform}", color=discord.Color.dark_purple())
+                stream_embed = discord.Embed(title=f"Streaming on {activity.platform}",
+                                             color=discord.Color.dark_purple())
                 stream_embed.description = activity.name
                 stream_embed.add_field(name="URL", value=activity.url, inline=False)
                 if activity.assets.get("large_image"):

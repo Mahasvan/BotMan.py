@@ -80,7 +80,7 @@ class Spotify(commands.Cog, description="A category for viewing information rela
         """Returns information about a Spotify album. This is not a music player command."""
         try:
             album_name, album_url, album_id, artist_dict, \
-                total_tracks, release_date, markets, thumbnail = self.bot.spotify.search_album(str(search_term))
+            total_tracks, release_date, markets, thumbnail = self.bot.spotify.search_album(str(search_term))
         except ValueError:
             return await ctx.send(f"Uh-oh! Looks like **{search_term}** isn't a valid album!")
         artists = "**Artists**\n"
@@ -92,7 +92,8 @@ class Spotify(commands.Cog, description="A category for viewing information rela
         embed.add_field(name="Album URL", value=f"__[Link]({album_url})__", inline=True)
         embed.add_field(name="Release Date", value=release_date, inline=True)
         embed.add_field(name="Total Tracks", value=total_tracks, inline=True)
-        embed.add_field(name="Availability", value=f"{markets} {'countries' if int(markets) != 1 else 'country'}", inline=True)
+        embed.add_field(name="Availability", value=f"{markets} {'countries' if int(markets) != 1 else 'country'}",
+                        inline=True)
         embed.set_footer(text=f"Album ID: {album_id}")
         embed.set_thumbnail(url=thumbnail)
         await ctx.send(embed=embed)

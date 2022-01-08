@@ -6,8 +6,8 @@ import aiohttp
 import discord
 from discord.ext import commands
 
-from assets import random_assets as rand_ass
 from assets import discord_funcs
+from assets import random_assets as rand_ass
 
 
 async def get_joke(categories: list = None, blacklist: list = None):

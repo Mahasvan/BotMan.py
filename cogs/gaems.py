@@ -1,9 +1,10 @@
 import asyncio
 import random
+import string
 
 import discord
 from discord.ext import commands
-import string
+
 from assets import discord_funcs, internet_funcs
 
 number_list = string.digits

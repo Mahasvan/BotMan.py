@@ -45,8 +45,9 @@ class TopGG(commands.Cog):
         avatar_text = info.get("avatar")
         avatar_url = f"https://cdn.discordapp.com/avatars/{user_id}/{avatar_text}.png?size=1024"
         prefix = info.get("prefix")
-        long_desc = info.get("longdesc")[
-            :1000] + "..." if len(info.get("longdesc")) > 1000 else info.get("longdesc")
+        long_desc = info.get("longdesc")[:1000] + "..." \
+            if len(info.get("longdesc")) > 1000 \
+            else info.get("longdesc")
         invite = info.get("invite")
         topgg_link = f"https://top.gg/bot/{user_id}"
 

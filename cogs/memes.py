@@ -1,9 +1,10 @@
+import json
+
 import discord
+from discord.ext import commands
 
 from assets import internet_funcs
 from assets.list_funcs import chunks
-from discord.ext import commands
-import json
 
 
 class Memes(commands.Cog, description="Memes from https://imgflip.com/"):
@@ -87,7 +88,7 @@ class Memes(commands.Cog, description="Memes from https://imgflip.com/"):
         payload.update(boxes_dict)
         result = json.loads(await internet_funcs.post("https://api.imgflip.com/caption_image", data=payload))
         if result["success"] is not True:
-            await ctx.send("An error occurred:" + " " + "**"+result["error_message"]+"**")
+            await ctx.send("An error occurred:" + " " + "**" + result["error_message"] + "**")
             return
         await ctx.send(result["data"]["url"])
 

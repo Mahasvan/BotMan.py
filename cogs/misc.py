@@ -1,14 +1,12 @@
 import asyncio
-import json
 import os
 import random
 import urllib.parse
 
-import aiohttp
 import discord
 from discord.ext import commands
 
-from assets import discord_funcs, random_assets, internet_funcs, otp_assets, image_assets
+from assets import discord_funcs, random_assets, internet_funcs, otp_assets
 
 
 class Misc(commands.Cog, description="A category for miscellaneous commands."):

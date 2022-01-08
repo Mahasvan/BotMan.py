@@ -1,6 +1,7 @@
+import difflib
+
 import discord
 from discord.ext import commands
-import difflib
 
 from assets import internet_funcs, list_funcs
 

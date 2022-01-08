@@ -204,7 +204,6 @@ class Roleplay(commands.Cog):
         await asyncio.sleep(1)
         os.remove(f"./storage/beautiful{one_time_int}.png")
 
-
     @commands.command(name="delete", aliases=["deleteuser"])
     async def delete_user(self, ctx, *, member: discord.Member = None):
         """Delete the user. Show no mercy."""

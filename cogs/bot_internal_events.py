@@ -1,5 +1,6 @@
-import random
 import difflib
+import random
+
 import aiohttp
 import discord.errors
 import requests

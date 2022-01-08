@@ -170,9 +170,11 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
                               colour=discord_funcs.get_color(ctx.author))
         embed.add_field(name="Definition", value=definition, inline=False)
         embed.add_field(name="Example", value=example, inline=False)
-        embed.add_field(name="Likes", value=f"👍 {define1.get('thumbs_up')} | 👎 {define1.get('thumbs_down')}", inline=False)
+        embed.add_field(name="Likes", value=f"👍 {define1.get('thumbs_up')} | 👎 {define1.get('thumbs_down')}",
+                        inline=False)
         embed.set_footer(text=f"Author - {define1.get('author')} | Powered by Urban Dictionary")
         await ctx.send(embed=embed)
+
 
 #
 #     @commands.command(name='convert', description='Converts an integer value from one currency to another.\n'

@@ -6,8 +6,8 @@ import sys
 import discord
 from discord.ext import commands
 
-from assets.discord_funcs import get_color
 from assets import otp_assets
+from assets.discord_funcs import get_color
 
 
 class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'

@@ -1,6 +1,7 @@
+from urllib.parse import quote
+
 import discord
 from discord.ext import commands
-from urllib.parse import quote
 
 from assets import internet_funcs, discord_funcs
 

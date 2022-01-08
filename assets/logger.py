@@ -47,4 +47,3 @@ class Logger:
                 checking = False
         to_return = [line.strip("\n") for line in log_lines[:message_count][::-1]]
         return to_return
-

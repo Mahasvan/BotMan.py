@@ -12,7 +12,9 @@ class DbManager:
             self.setup_table()
         else:
             self.first_setup()
+
     """Basic setup of the database"""
+
     def first_setup(self):
         open("assets/storage.db", "w").close()
         self.db = sqlite3.connect("assets/storage.db")
@@ -37,6 +39,7 @@ class DbManager:
             self.bot.logger.log_error(e, "setup_table")
 
     """Guild prefix functions"""
+
     def remove_guild_prefix(self, guild_id: int):
         try:
             self.cursor.execute(f"""DELETE FROM prefixes WHERE id = (?)""", (guild_id,))
@@ -63,6 +66,7 @@ class DbManager:
                 return self.bot.default_prefix
 
     """MadLibs functions"""
+
     def set_madlib_channel(self, guild_id: int, channel_id: int):
         try:
             self.remove_madlib_channel(guild_id)
@@ -85,6 +89,7 @@ class DbManager:
             self.bot.logger.log_error(e, "get_madlib_channel")
 
     """Cookies functions"""
+
     def add_cookie(self, user_id: int):
         try:
             self.cursor.execute(f"""SELECT cookies_count FROM cookies WHERE user_id = (?)""", (user_id,))
@@ -106,6 +111,7 @@ class DbManager:
             self.bot.logger.log_error(e, "get_cookies_count")
 
     """Weather functions"""
+
     def set_weather_city(self, user_id: int, city: str):
         try:
             result = self.get_weather_city(user_id)
@@ -128,6 +134,7 @@ class DbManager:
             self.bot.logger.log_error(e, "remove_weather_city")
 
     """Time functions"""
+
     def get_timezone(self, user_id: int):
         self.cursor.execute(f"""SELECT timezone FROM timezones WHERE user_id = (?)""", (user_id,))
         result = self.cursor.fetchone()
@@ -155,7 +162,8 @@ class DbManager:
     def set_offset(self, user_id: int, offset: str):
         try:
             self.set_timezone_null_values(user_id)
-            self.cursor.execute(f"""UPDATE timezones SET offset = (?), timezone = (?) WHERE user_id = (?)""", (offset, None, user_id))
+            self.cursor.execute(f"""UPDATE timezones SET offset = (?), timezone = (?) WHERE user_id = (?)""",
+                                (offset, None, user_id))
         except Exception as e:
             self.bot.logger.log_error(e, "set_offset")
 
@@ -172,6 +180,7 @@ class DbManager:
             self.bot.logger.log_error(e, "remove_offset")
 
     """Reminder functions"""
+
     def get_completed_reminders(self):
         current_time = time.time()
         try:
