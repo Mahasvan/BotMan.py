@@ -40,6 +40,8 @@ class Errors(commands.Cog):
             closest_matches = difflib.get_close_matches(ctx.invoked_with, commands_list, n=1)
             if closest_matches:
                 return await ctx.send(f"Did you mean: `{closest_matches[0]}`?")
+            else:
+                return
 
         self.bot.logger.log_error(error, f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
         # we don't want a CommandNotFound error in the logs, it'll only eat up the file
