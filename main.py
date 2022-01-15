@@ -145,6 +145,7 @@ if __name__ == '__main__':
         print(f"Loading {cog}...")
         if cog in blacklisted_cogs:  # skip loading the cog if it's blacklisted
             print("        |--- Blacklisted Cog, skipping...")
+            continue
         try:
             bot.load_extension(f"cogs.{cog}")  # load the cog
             print("        |--- Success!")  # if the cog loaded successfully, print this
