@@ -35,6 +35,10 @@ class DbManager:
             (user_id INTEGER PRIMARY KEY, timezone VARCHAR(50), offset varchar(15))""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS reminders
             (user_id INTEGER, now_time VARCHAR(50),  reminder_time VARCHAR(50), reminder_text VARCHAR(500))""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS links 
+            (guild_id INTEGER, link_title VARCHAR(50), link_url VARCHAR(255), creator_id INTEGER)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS tags
+            (guild_id INTEGER, tag_name VARCHAR(50), tag_text VARCHAR(500), creator_id INTEGER)""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -220,3 +224,79 @@ class DbManager:
             self.cursor.execute(f"""DELETE FROM reminders WHERE reminder_time <= (?)""", (now_time,))
         except Exception as e:
             self.bot.logger.log_error(e, "prune_reminders")
+
+    """Links and Tags"""
+
+    def fetch_link(self, guild_id: int, link_name: str):
+        try:
+            self.cursor.execute(f"""SELECT link_title, link_url, creator_id FROM links WHERE guild_id = (?) and link_title = (?)""",
+                                (guild_id, link_name,))
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "fetch_link")
+
+    def fetch_all_guild_links(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""SELECT link_title, link_url FROM links WHERE guild_id = (?)""", (guild_id,))
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "fetch_all_guild_links")
+
+    def fetch_tag(self, guild_id: int, tag_name: str):
+        try:
+            self.cursor.execute(f"""SELECT tag_name, tag_text, creator_id FROM tags WHERE guild_id = (?) and tag_name = (?)""",
+                                (guild_id, tag_name,))
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "fetch_tag")
+
+    def fetch_all_guild_tags(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""SELECT tag_name, tag_text FROM tags WHERE guild_id = (?)""", (guild_id,))
+            result = self.cursor.fetchall()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "fetch_all_guild_tags")
+
+    def add_link(self, guild_id: int, link_title: str, link_url: str, creator_id: int):
+        try:
+            prev_link = self.fetch_link(guild_id, link_title)
+            if prev_link is None:
+                self.cursor.execute(f"""INSERT INTO links VALUES((?), (?), (?), (?))""",
+                                    (guild_id, link_title, link_url, creator_id))
+            else:
+                self.cursor.execute(
+                    f"""UPDATE links SET link_url = (?), creator_id = (?) WHERE guild_id = (?) and link_title = (?)""",
+                    (link_url, creator_id, guild_id, link_title))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_link")
+
+    def remove_link(self, guild_id: int, link_title: str):
+        try:
+            self.cursor.execute(f"""DELETE FROM links WHERE guild_id = (?) and link_title = (?)""",
+                                (guild_id, link_title,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_link")
+
+    def add_tag(self, guild_id: int, tag_name: str, tag_text: str, creator_id: int):
+        try:
+            prev_tag = self.fetch_tag(guild_id, tag_name)
+            if prev_tag is None:
+                self.cursor.execute(f"""INSERT INTO tags VALUES((?), (?), (?), (?))""",
+                                    (guild_id, tag_name, tag_text, creator_id))
+            else:
+                self.cursor.execute(
+                    f"""UPDATE tags SET tag_text = (?), creator_id = (?) WHERE guild_id = (?) and tag_name = (?)""",
+                    (tag_text, creator_id, guild_id, tag_name))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_tag")
+
+    def remove_tag(self, guild_id: int, tag_name: str):
+        try:
+            self.cursor.execute(f"""DELETE FROM tags WHERE guild_id = (?) and tag_name = (?)""",
+                                (guild_id, tag_name,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_tag")
