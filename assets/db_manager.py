@@ -39,6 +39,8 @@ class DbManager:
             (guild_id INTEGER, link_title VARCHAR(50), link_url VARCHAR(255), creator_id INTEGER)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS tags
             (guild_id INTEGER, tag_name VARCHAR(50), tag_text VARCHAR(500), creator_id INTEGER)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS logs_channels
+            (guild_id INTEGER, channel_id INTEGER)""")
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -300,3 +302,30 @@ class DbManager:
                                 (guild_id, tag_name,))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_tag")
+
+    """Logging"""
+    def fetch_log_channel(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""SELECT channel_id FROM logs_channels WHERE guild_id = (?)""", (guild_id,))
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_log_channel")
+
+    def set_log_channel(self, guild_id: int, channel_id: int):
+        try:
+            channel = self.fetch_log_channel(guild_id)
+            print(channel)
+            if channel is None:
+                self.cursor.execute(f"""INSERT INTO logs_channels VALUES((?), (?))""", (guild_id, channel_id))
+            else:
+                self.cursor.execute(f"""UPDATE logs_channels SET channel_id = (?) WHERE guild_id = (?)""",
+                                    (channel_id, guild_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_log_channel")
+
+    def remove_log_channel(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""DELETE FROM logs_channels WHERE guild_id = (?)""", (guild_id,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_log_channel")
