@@ -78,7 +78,7 @@ bot = commands.Bot(command_prefix=get_prefix,
                    owner_id=owner_id,
                    max_messages=100000)
 
-help_command.define_bot(bot)
+help_command.define_bot(bot)  # define variables in the help command class
 help_attributes = {
     'name': "help",
     'aliases': ["hell", "helps", "helmp", "helo"],
@@ -153,7 +153,7 @@ if __name__ == '__main__':
             print(f"        |--- Failed: {str(e)}")
             failed_modules.append(cog)  # add cog to failed list
 
-    if len(failed_modules) != 0:
+    if len(failed_modules) != 0:  # print out the cogs which failed to load
         print('====================')
         print('These cogs failed to load:')
         for x in failed_modules:
