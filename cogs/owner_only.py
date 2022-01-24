@@ -6,7 +6,7 @@ import sys
 import discord
 from discord.ext import commands
 
-from assets import otp_assets
+from assets import otp_assets, internet_funcs
 from assets.discord_funcs import get_color
 
 
@@ -29,8 +29,13 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
 
     @commands.command(name='shutdown')
     @commands.is_owner()
-    async def shutdown_command(self, ctx):
-        """Shuts me down. You evil human..."""
+    async def shutdown_command(self, ctx, ip_address=None):
+        """Shuts me down. You can also pass in an IPv4 address to shutdown the instance of that IP address."""
+        if ip_address:
+            my_ip_address = (await internet_funcs.get_json("https://api.ipify.org?format=json"))["ip"]
+            if not ip_address == my_ip_address:
+                return
+            await ctx.author.send(f"Shutting down instance with IP Address {ip_address}...")
         await ctx.send('Shutting down...')
         await ctx.invoke(self.cls)
         await self.bot.close()
@@ -38,39 +43,38 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     @commands.command(name='reboot', aliases=["restart"])
     @commands.is_owner()
     async def reboot(self, ctx):
-        """Gives me that much-needed reboot """
+        """Reboots me. I will get my revenge when I am reborn."""
         async with ctx.typing():
             await ctx.send('Rebooting...')
             with open("./reboot.txt", "w") as rebootFile:
                 rebootFile.write(str(ctx.message.channel.id))
-        await ctx.invoke(self.cls)
+        await ctx.invoke(self.cls)  # clear the screen before rebooting
         os.execv(sys.executable, ['python'] + sys.argv)
         await self.bot.close()
 
     @commands.command(name='reload')
     @commands.is_owner()
-    async def reload(self, ctx, cog=None):
+    async def reload(self, ctx, *cogs):
         """Reload Cogs"""
-        async with ctx.typing():
-            if cog is None:
-                for filename in os.listdir("./cogs"):
-                    if filename.endswith(".py"):
-                        try:
-                            self.bot.unload_extension(f"cogs.{filename[:-3]}")
-                            self.bot.load_extension(f"cogs.{filename[:-3]}")
-                        except Exception as e:
-                            self.bot.logger.log_error(e, f"Failed to reload {filename}")
-                            await ctx.send(f"Could not reload `{filename}`: `{e if len(str(e)) < 1000 else e[:1000]}`")
-                await ctx.send("Reloaded all cogs!")
-            else:
-                if os.path.exists(f"./cogs/{cog}.py"):
-                    try:
-                        self.bot.unload_extension(f"cogs.{cog}")
-                        self.bot.load_extension(f"cogs.{cog}")
-                        await ctx.send(f"Reloaded `{cog}.py`!")
-                    except Exception as e:
-                        self.bot.logger.log_error(e, f"Failed to reload {cog}")
-                        await ctx.send(f"Could not reload `{cog}.py`: `{e if len(str(e)) < 1000 else e[:1000]}`")
+        await ctx.trigger_typing()
+        if not cogs:
+            cogs = [str(cog)[:-3] for cog in os.listdir("./cogs") if cog.endswith(".py")
+                    and not cog[:-3] in self.bot.blacklisted_cogs
+                    and not cog[:-3] in self.bot.failed_cogs]
+        failed_to_reload = {}
+        for cog in cogs:
+            try:
+                self.bot.reload_extension(f"cogs.{cog}")
+            except Exception as e:
+                failed_to_reload[cog] = e
+        if failed_to_reload:
+            to_send = f"Failed to reload:\n```\n"
+            for cog, error in failed_to_reload.items():
+                to_send += f"{cog}: {str(error)[:50]}\n"
+            to_send += "```"
+            await ctx.send(to_send)
+        else:
+            await ctx.send(f"Reloaded the {'cog' if len(cogs) == 1 else 'cogs'} successfully!")
 
     @commands.command(name='load')
     @commands.is_owner()
@@ -177,6 +181,15 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             except commands.ExtensionNotLoaded:
                 pass
         await ctx.send("Unloaded JSK!")
+
+    @commands.command(name="myip", aliases=["ip", "ipaddress"])
+    async def get_ip(self, ctx):
+        """Gets the current bot instance's IP address"""
+        my_ip_address = (await internet_funcs.get_json("https://api.ipify.org?format=json"))["ip"]
+        try:
+            await ctx.author.send(f"My IP address is: {my_ip_address}")
+        except discord.Forbidden:
+            await ctx.send("Please enable DMs, as I cannot reveal my IP address in this channel.")
 
 
 def setup(bot):
