@@ -196,7 +196,7 @@ class Time(commands.Cog, description="Commands related to time and timezones."):
     async def reminder(self, ctx, reminder_time: str.lower, *, reminder_note=None):
         """Sets a reminder for a specific time.\n
         Reminder time must be in the format `XhYmZs` where X, Y, Z are integers.\n
-        Example: `{}reminder 1h30m Hello World`""".format(ctx.prefix)
+        Example: `bm-reminder 1h30m Hello World`"""
         reminder_seconds = time_assets.get_seconds_from_input(reminder_time)
         reminder_time = time.time() + reminder_seconds + 1  # +1 because it reduces by one second for some reason
         pretty_time_remaining = time_assets.get_pretty_time_remaining_from_unix(reminder_time)

@@ -56,8 +56,8 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
     @commands.command(name="redditpost", aliases=["reddit"])
     async def get_reddit_post(self, ctx, *subreddits):
         """Gets a random reddit post from the subreddit(s) mentioned as arguments.\n
-        Example Usage: `{}redditpost memes nocontext` gets one random post 
-        from the subreddits "memes" and "nocontext" combined""".format(ctx.prefix)
+        Example Usage: `bm-redditpost memes nocontext` gets one random post
+        from the subreddits "memes" and "nocontext" combined"""
         subreddits = list(subreddits)
         has_nsfw = False
         for subreddit in subreddits:
@@ -94,9 +94,9 @@ class WebSurf(commands.Cog, description='Fun commands using the Reddit API, and 
             if final_choice.url.startswith("https://i"):
                 embed.set_image(url=final_choice.url)
             elif final_choice.url.startswith("https://v"):
-                embed.description = f"__[Video Link]({final_choice.url})__"
+                embed.description = f"__[Video]({final_choice.url})__"
             else:
-                embed.description = f"__[Asset Link]({final_choice.url})__"
+                embed.description = f"__[Image]({final_choice.url})__"
                 embed.set_image(url=final_choice.url)
             embed.set_footer(
                 text=f"By u/{author} | {int(like_ratio)}% upvoted | r/{final_choice.subreddit.display_name}")
