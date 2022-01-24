@@ -42,7 +42,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if message.guild is None:
+        if message.guild is None or message.author.bot:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(message.guild.id)
         if log_channel is None:
@@ -63,7 +63,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_edit(self, before, after):
-        if before.guild is None:
+        if before.guild is None or before.author.bot:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(before.guild.id)
         if log_channel is None:
@@ -91,7 +91,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_message_delete(self, message):
-        if message.guild is None:
+        if message.guild is None or message.author.bot:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(message.guild.id)
         if log_channel is None:
@@ -111,7 +111,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_bulk_message_delete(self, messages):
-        if messages[0].guild is None:
+        if messages[0].guild is None or messages[0].author.bot:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(messages[0].guild.id)
         if log_channel is None:
@@ -137,14 +137,14 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild is None:
+        if member.guild is None or member.id == self.bot.id:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(member.guild.id)
         if log_channel is None:
             return
         log_channel = log_channel[0]  # log_channel is a tuple
-        embed = discord.Embed(title="Member Joined", color=0x00FF00)
-        embed.add_field(name="Member", value=member.mention)
+        embed = discord.Embed(title=f"{'Member' if not member.bot else 'Bot'} Joined", color=0x00FF00)
+        embed.add_field(name="User", value=member.mention)
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f"Member ID: {member.id}")
         try:
@@ -156,12 +156,12 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_remove(self, member):
-        if member.guild is None:
+        if member.guild is None or member.id == self.bot.id:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(member.guild.id)
         if log_channel is None:
             return
-        embed = discord.Embed(title="Member Left", color=0xFF0000)
+        embed = discord.Embed(title=f"{'Member' if not member.bot else 'Bot'} Left", color=0xFF0000)
         embed.add_field(name="Member", value=member.mention)
         embed.set_thumbnail(url=member.avatar_url)
         embed.set_footer(text=f"Member ID: {member.id}")
@@ -174,7 +174,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_update(self, before, after):
-        if before.guild is None:
+        if before.guild is None or before.bot:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(before.guild.id)
         if log_channel is None:
@@ -217,8 +217,8 @@ class Logging(commands.Cog):
         if log_channel is None:
             return
         log_channel = log_channel[0]  # log_channel is a tuple
-        embed = discord.Embed(title="Member Banned", color=0xFF0000)
-        embed.add_field(name="Member", value=f"{user.name}#{user.discriminator} ({user.mention})")
+        embed = discord.Embed(title=f"{'Member' if not user.bot else 'Bot'} Banned", color=0xFF0000)
+        embed.add_field(name="User", value=f"{user.name}#{user.discriminator} ({user.mention})")
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f"Member ID: {user.id}")
         try:
@@ -234,8 +234,8 @@ class Logging(commands.Cog):
         if log_channel is None:
             return
         log_channel = log_channel[0]  # log_channel is a tuple
-        embed = discord.Embed(title="Member Unbanned", color=0x00FF00)
-        embed.add_field(name="Member", value=f"{user.name}#{user.discriminator} ({user.mention})")
+        embed = discord.Embed(title=f"{'Member' if not user.bot else 'Bot'} Unbanned", color=0x00FF00)
+        embed.add_field(name="User", value=f"{user.name}#{user.discriminator} ({user.mention})")
         embed.set_thumbnail(url=user.avatar_url)
         embed.set_footer(text=f"Member ID: {user.id}")
         try:
