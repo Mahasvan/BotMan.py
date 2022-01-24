@@ -100,6 +100,7 @@ bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
                               user_agent="pythonPraw")
 bot.weather_api_key = weather_api_key
 bot.currency_api_key = currency_api_key
+bot.blacklisted_cogs = blacklisted_cogs
 
 
 @bot.event
@@ -125,9 +126,9 @@ async def on_ready():
             return
         # send message to channel
         embed = discord.Embed(title="Rebooted Successfully", color=discord.Color.blurple())
-        if failed_modules:
+        if bot.failed_cogs:
             embed.description = "**These cogs failed to load**"
-            for module in failed_modules:
+            for module in bot.failed_cogs:
                 embed.description += f"\n{module}"
         await channel.send(embed=embed)
 
@@ -137,7 +138,7 @@ async def on_ready():
 
 
 if __name__ == '__main__':
-    failed_modules = []
+    bot.failed_cogs = []
     cogs_to_load = [file[:-3] for file in os.listdir(os.path.join(cwd, "cogs"))
                     if file.endswith(".py") and not file.startswith("_")]
 
@@ -151,12 +152,12 @@ if __name__ == '__main__':
             print("        |--- Success!")  # if the cog loaded successfully, print this
         except Exception as e:
             print(f"        |--- Failed: {str(e)}")
-            failed_modules.append(cog)  # add cog to failed list
+            bot.failed_cogs.append(cog)  # add cog to failed list
 
-    if len(failed_modules) != 0:  # print out the cogs which failed to load
+    if len(bot.failed_cogs) != 0:  # print out the cogs which failed to load
         print('====================')
         print('These cogs failed to load:')
-        for x in failed_modules:
+        for x in bot.failed_cogs:
             print(x)
     print('====================')
     try:
