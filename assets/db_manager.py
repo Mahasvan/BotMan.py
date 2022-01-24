@@ -28,19 +28,29 @@ class DbManager:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS madlibs_channels 
             (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS cookies 
+            
             (user_id INTEGER PRIMARY KEY, cookies_count INTEGER)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS weather
+            
             (user_id INTEGER PRIMARY KEY, city VARCHAR(50))""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS timezones 
             (user_id INTEGER PRIMARY KEY, timezone VARCHAR(50), offset varchar(15))""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS reminders
+            
             (user_id INTEGER, now_time VARCHAR(50),  reminder_time VARCHAR(50), reminder_text VARCHAR(500))""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS links 
+            
             (guild_id INTEGER, link_title VARCHAR(50), link_url VARCHAR(255), creator_id INTEGER)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS tags
             (guild_id INTEGER, tag_name VARCHAR(50), tag_text VARCHAR(500), creator_id INTEGER)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS logs_channels
             (guild_id INTEGER, channel_id INTEGER)""")
+
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS muted_users
+            (guild_id INTEGER, user_id INTEGER, unmute_time INTEGER)""")
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS mute_roles
+            (guild_id INTEGER, role_id INTEGER)""")
+
         except Exception as e:
             self.bot.logger.log_error(e, "setup_table")
 
@@ -231,8 +241,9 @@ class DbManager:
 
     def fetch_link(self, guild_id: int, link_name: str):
         try:
-            self.cursor.execute(f"""SELECT link_title, link_url, creator_id FROM links WHERE guild_id = (?) and link_title = (?)""",
-                                (guild_id, link_name,))
+            self.cursor.execute(
+                f"""SELECT link_title, link_url, creator_id FROM links WHERE guild_id = (?) and link_title = (?)""",
+                (guild_id, link_name,))
             result = self.cursor.fetchone()
             return result
         except Exception as e:
@@ -248,8 +259,9 @@ class DbManager:
 
     def fetch_tag(self, guild_id: int, tag_name: str):
         try:
-            self.cursor.execute(f"""SELECT tag_name, tag_text, creator_id FROM tags WHERE guild_id = (?) and tag_name = (?)""",
-                                (guild_id, tag_name,))
+            self.cursor.execute(
+                f"""SELECT tag_name, tag_text, creator_id FROM tags WHERE guild_id = (?) and tag_name = (?)""",
+                (guild_id, tag_name,))
             result = self.cursor.fetchone()
             return result
         except Exception as e:
@@ -304,6 +316,7 @@ class DbManager:
             self.bot.logger.log_error(e, "remove_tag")
 
     """Logging"""
+
     def fetch_log_channel(self, guild_id: int):
         try:
             self.cursor.execute(f"""SELECT channel_id FROM logs_channels WHERE guild_id = (?)""", (guild_id,))
@@ -329,3 +342,59 @@ class DbManager:
             self.cursor.execute(f"""DELETE FROM logs_channels WHERE guild_id = (?)""", (guild_id,))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_log_channel")
+
+    """Moderation"""
+
+    def fetch_mute_role(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""SELECT role_id FROM mute_roles WHERE guild_id = (?)""", (guild_id,))
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_mute_role")
+
+    def set_mute_role(self, guild_id: int, role_id: int):
+        try:
+            prev_role = self.fetch_mute_role(guild_id)
+            if prev_role is None:
+                self.cursor.execute(f"""INSERT INTO mute_roles VALUES((?), (?))""", (guild_id, role_id))
+            else:
+                self.cursor.execute(f"""UPDATE mute_roles SET role_id = (?) WHERE guild_id = (?)""",
+                                    (role_id, guild_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_mute_role")
+
+    def remove_mute_role(self, guild_id: int):
+        try:
+            self.cursor.execute(f"""DELETE FROM mute_roles WHERE guild_id = (?)""", (guild_id,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_mute_role")
+
+    def get_unmute_time(self, guild_id: int, user_id: int):
+        try:
+            self.cursor.execute(f"""SELECT unmute_time FROM muted_users WHERE guild_id = (?) and user_id = (?)""",
+                                (guild_id, user_id,))
+            result = self.cursor.fetchone()
+            return result
+        except Exception as e:
+            self.bot.logger.log_error(e, "get_unmute_time")
+
+    def set_unmute_time(self, guild_id: int, user_id: int, unmute_time: int):
+        try:
+            already_muted = self.get_unmute_time(guild_id, user_id)
+            if already_muted is None:
+                self.cursor.execute(f"""INSERT INTO muted_users VALUES((?), (?), (?))""",
+                                    (guild_id, user_id, unmute_time))
+            else:
+                self.cursor.execute(
+                    f"""UPDATE muted_users SET unmute_time = (?) WHERE guild_id = (?) and user_id = (?)""",
+                    (unmute_time, guild_id, user_id))
+        except Exception as e:
+            self.bot.logger.log_error(e, "set_unmute_time")
+
+    def remove_unmute_time(self, guild_id: int, user_id: int):
+        try:
+            self.cursor.execute(f"""DELETE FROM muted_users WHERE guild_id = (?) and user_id = (?)""",
+                                (guild_id, user_id,))
+        except Exception as e:
+            self.bot.logger.log_error(e, "remove_unmute_time")
