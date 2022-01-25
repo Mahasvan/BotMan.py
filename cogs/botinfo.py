@@ -157,7 +157,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed = discord.Embed(title=f"Host Name: {system.node}",
                               description=f"Platform: {system.system} {system.release}",
                               color=get_color(ctx.guild.me))
-        embed.add_field(name="Machine Type", value=system.machine, inline=False)
+        embed.add_field(name="Machine Type", value=system.machine, inline=True)
         embed.add_field(name="CPU", value=processor, inline=True)
         if processor_freq:
             embed.add_field(name="CPU Frequency", value=f"{processor_freq} MHz", inline=True)
