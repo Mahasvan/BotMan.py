@@ -44,8 +44,10 @@ class Errors(commands.Cog):
             else:
                 return
 
-        self.bot.logger.log_error(error, f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
-        # we don't want a CommandNotFound error in the logs, it'll only eat up the file
+        if type(error) in [aiohttp.ServerDisconnectedError, aiohttp.ServerDisconnectedError,
+                           aiohttp.ServerTimeoutError, aiohttp.ClientConnectionError,
+                           requests.ReadTimeout, requests.ConnectionError]:
+            self.bot.logger.log_error(error, f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
 
         if isinstance(error, discord.errors.Forbidden):
             await ctx.send("I do not have enough permissions to perform this action.")
@@ -68,6 +70,11 @@ class Errors(commands.Cog):
         elif isinstance(error, requests.ReadTimeout):
             await ctx.send("Timed out. Please try again.")
         else:
+            self.bot.logger.log_error(error,
+                                      f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
+            # we log the error in case the error it not in one of the important ones
+            # (the first if statement to check for exceptions)
+            # or if the error is not in one of the handled ones
             raise error
 
     @commands.Cog.listener()
