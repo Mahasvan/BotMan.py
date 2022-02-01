@@ -78,17 +78,17 @@ class Logging(commands.Cog):
         if log_channel is None:
             return
         log_channel = log_channel[0]  # log_channel is a tuple
-        if not before.content == after.content:
+        if before.content == after.content:
             return
 
         added_words = []
-        for word in before.content.lower().split():
-            if word not in after.content.lower().split():
+        for word in after.content.split():
+            if word not in before.content.split():
                 added_words.append(word)
 
         removed_words = []
-        for word in before.content.lower().split():
-            if word not in after.content.lower().split():
+        for word in before.content.split():
+            if word not in after.content.split():
                 removed_words.append(word)
 
         embed = discord.Embed(title="Message Edited", color=before.author.color)
