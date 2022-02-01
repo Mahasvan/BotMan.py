@@ -20,7 +20,10 @@ class Logging(commands.Cog):
     async def set_log_channel(self, ctx, channel: discord.TextChannel):
         """Sets the channel to log to.
         Requires Manage Server permission."""
-        existing_log_channel = self.bot.get_channel(self.bot.dbmanager.fetch_log_channel(ctx.guild.id)[0])
+        try:
+            existing_log_channel = self.bot.get_channel(self.bot.dbmanager.fetch_log_channel(ctx.guild.id)[0])
+        except TypeError:
+            existing_log_channel = None
         if existing_log_channel is not None:
             await ctx.send(f"Existing log channel: {existing_log_channel.mention}. Overriding...")
         self.bot.dbmanager.set_log_channel(ctx.guild.id, channel.id)
@@ -31,7 +34,10 @@ class Logging(commands.Cog):
     async def remove_log_channel(self, ctx):
         """Removes the log channel.
         Requires Manage Server permission."""
-        existing_log_channel = self.bot.dbmanager.fetch_log_channel(ctx.guild.id)[0]
+        try:
+            existing_log_channel = self.bot.dbmanager.fetch_log_channel(ctx.guild.id)[0]
+        except TypeError:
+            existing_log_channel = None
         if existing_log_channel is None:
             await ctx.send("No log channel set.")
         else:
@@ -44,7 +50,10 @@ class Logging(commands.Cog):
     async def on_message_delete(self, message):
         if message.guild is None or message.author.bot:
             return
-        log_channel = self.bot.dbmanager.fetch_log_channel(message.guild.id)
+        try:
+            log_channel = self.bot.dbmanager.fetch_log_channel(message.guild.id)
+        except TypeError:
+            return
         if log_channel is None:
             return
         embed = discord.Embed(title="Message Deleted", color=0xFF0000)
