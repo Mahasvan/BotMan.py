@@ -71,6 +71,17 @@ class Logging(commands.Cog):
         log_channel = log_channel[0]  # log_channel is a tuple
         if not before.content == after.content:
             return
+
+        added_words = []
+        for word in before.content.lower().split():
+            if word not in after.content.lower().split():
+                added_words.append(word)
+
+        removed_words = []
+        for word in before.content.lower().split():
+            if word not in after.content.lower().split():
+                removed_words.append(word)
+
         embed = discord.Embed(title="Message Edited", color=before.author.color)
         embed.add_field(name="Channel", value=before.channel.mention)
         embed.add_field(name="Author", value=before.author.mention)
@@ -78,6 +89,11 @@ class Logging(commands.Cog):
                         inline=False)
         embed.add_field(name="After", value=f"```{after.content}```" if after.content != "" else "No content",
                         inline=False)
+        if added_words:
+            embed.add_field(name="Added", value=f"```{' '.join(added_words)}```", inline=False)
+        if removed_words:
+            embed.add_field(name="Removed", value=f"```{' '.join(removed_words)}```", inline=False)
+
         embed.add_field(name="Link to message", value=f"__[Link](https://discord.com/channels/{before.guild.id}/"
                                                       f"{before.channel.id}/{before.id})__")
         embed.set_footer(text=f"Message ID: {before.id}")
@@ -234,10 +250,10 @@ class Logging(commands.Cog):
         if log_channel is None:
             return
         log_channel = log_channel[0]  # log_channel is a tuple
-        embed = discord.Embed(title=f"{'Member' if not user.bot else 'Bot'} Unbanned", color=0x00FF00)
+        embed = discord.Embed(title=f"{'User' if not user.bot else 'Bot'} Unbanned", color=0x00FF00)
         embed.add_field(name="User", value=f"{user.name}#{user.discriminator} ({user.mention})")
         embed.set_thumbnail(url=user.avatar_url)
-        embed.set_footer(text=f"Member ID: {user.id}")
+        embed.set_footer(text=f"User ID: {user.id}")
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
         except AttributeError:  # bot.get_channel might return None
