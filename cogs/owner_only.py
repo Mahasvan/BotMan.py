@@ -39,6 +39,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         await ctx.send('Shutting down...')
         await ctx.invoke(self.cls)
         await self.bot.close()
+        await ctx.send("I couldn't shut down!")
 
     @commands.command(name='reboot', aliases=["restart"])
     @commands.is_owner()
