@@ -328,7 +328,6 @@ class DbManager:
     def set_log_channel(self, guild_id: int, channel_id: int):
         try:
             channel = self.fetch_log_channel(guild_id)
-            print(channel)
             if channel is None:
                 self.cursor.execute(f"""INSERT INTO logs_channels VALUES((?), (?))""", (guild_id, channel_id))
             else:
