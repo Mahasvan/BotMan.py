@@ -33,6 +33,7 @@ with open('config.json', 'r') as detailsFile:
     reddit_client_id = details_data['reddit_client_id']
     reddit_client_secret = details_data['reddit_client_secret']
     currency_api_key = details_data['currency_api_key']
+    openrobot_api_key = details_data['openrobot_api_key']
 
     if not imgflip_password or not imgflip_password:
         print("Imgflip username and password not found. Adding the memes cog to blacklist...")
@@ -53,6 +54,10 @@ with open('config.json', 'r') as detailsFile:
     if not currency_api_key:
         print("CurrencyAPI key not found. Adding the currency cog to blacklist...")
         blacklisted_cogs.append('currency')
+
+    if not openrobot_api_key:
+        print("OpenRobot API key not found. Adding the openrobot cog to blacklist...")
+        blacklisted_cogs.append('openrobot')
 
 intents = discord.Intents.all()
 if bot_stream:
@@ -100,6 +105,7 @@ bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
                               user_agent="pythonPraw")
 bot.weather_api_key = weather_api_key
 bot.currency_api_key = currency_api_key
+bot.openrobot_api_key = openrobot_api_key
 bot.blacklisted_cogs = blacklisted_cogs
 
 
