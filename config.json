@@ -23,6 +23,8 @@
   "reddit_client_id": "",
   "reddit_client_secret": "",
 
-  "currency_api_key": ""
+  "currency_api_key": "",
+  
+  "openrobot_api_key": ""
 
 }
