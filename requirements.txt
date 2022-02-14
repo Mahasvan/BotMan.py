@@ -2,7 +2,7 @@ git+https://github.com/Rapptz/discord-ext-menus
 py-cord
 aiohttp
 requests
-googletrans~=3.1.0a0
+googletrans==4.0.0rc1
 Pillow
 Jishaku
 speedtest-cli
