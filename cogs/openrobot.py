@@ -43,33 +43,6 @@ class OpenRobot(commands.Cog):
         embed.set_footer(text="Powered by the OpenRobot API")
         await ctx.reply(embed=embed)
 
-    @commands.command(name="ocr")
-    async def ocr(self, ctx, image_url: str = None):
-        """Read text from an image."""
-        if image_url is None:
-            if ctx.message.attachments:
-                image_url = ctx.message.attachments[0].url
-
-        if image_url is None:
-            return await ctx.send("Please provide an image URL.")
-        await ctx.trigger_typing()
-
-        response = await internet_funcs.post_json(url=f"https://api.openrobot.xyz/api/ocr",
-                                                  headers={"Authorization": self.api_key},
-                                                  params={"url": image_url})
-
-        if response.get("error"):
-            code = response.get("error").get("code")
-            message = response.get("error").get("message")
-            return await ctx.reply(f"Error {code}: **{message}**")
-        text = response.get("text")
-        embed = discord.Embed(
-            title=f"Character Recognition Done!",
-            description=f"```{text}```" if text else "No text found.",
-            color=ctx.author.color)
-        embed.set_footer(text="Powered by the OpenRobot API")
-        await ctx.reply(embed=embed)
-
     @commands.command(name="lyrics", aliases=["lyric"])
     async def lyrics(self, ctx, *, query: str = None):
         """Search for lyrics for a song."""

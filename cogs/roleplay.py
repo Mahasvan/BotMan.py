@@ -204,62 +204,6 @@ class Roleplay(commands.Cog):
         await asyncio.sleep(1)
         os.remove(f"./storage/beautiful{one_time_int}.png")
 
-    @commands.command(name="delete", aliases=["deleteuser"])
-    async def delete_user(self, ctx, *, member: discord.Member = None):
-        """Delete the user. Show no mercy."""
-        random_number = otp_assets.generate_otp(5)
-        if member is None:
-            member = ctx.author
-        await ctx.trigger_typing()
-        pfp_path = await image_assets.save_image(member.avatar_url, f"storage/pfp{member.id}.png")
-        image_assets.resize_image(pfp_path, (400, 400))
-        image_assets.superimpose_image(pfp_path, self.delete_path, offset=(360, 320),
-                                       final_path=f"storage/delete{random_number}.png")
-        file = discord.File(f"./storage/delete{random_number}.png", filename=f"delete{random_number}.png")
-        embed = discord.Embed(title=f"{member.display_name} has been **deleted**!",
-                              color=discord_funcs.get_color(member))
-        embed.set_image(url=f"attachment://delete{random_number}.png")
-        if member != ctx.author:
-            embed.set_footer(text=f"{member.display_name} was deleted by {ctx.author.display_name} :(",
-                             icon_url=ctx.author.avatar_url)
-        else:
-            embed.set_footer(text=f"{ctx.author.display_name} deleted themselves :(", icon_url=ctx.author.avatar_url)
-        await ctx.reply(file=file, embed=embed)
-        os.remove(f"./storage/delete{random_number}.png")
-        os.remove(f"./storage/pfp{member.id}.png")
-
-    @commands.command(name="point", aliases=["spideypoint", "spiderman"])
-    async def point(self, ctx, member1: discord.Member, member2: discord.Member = None):
-        """Make a spidey-point meme with the given members."""
-        if member2 is None:
-            member2 = ctx.author
-        random_number = otp_assets.generate_otp(5)
-        await ctx.trigger_typing()
-        pfp_path1 = await image_assets.save_image(member1.avatar_url, f"storage/pfp{member1.id}.png")
-        pfp_path2 = await image_assets.save_image(member2.avatar_url, f"storage/pfp{member2.id}.png")
-        image_assets.resize_image(pfp_path1, (200, 200))
-        image_assets.resize_image(pfp_path2, (200, 200))
-        image_assets.superimpose_image(pfp_path1, self.spidey_path, offset=(480, 145),
-                                       final_path=f"storage/spidey{random_number}.png")
-        image_assets.superimpose_image(pfp_path2, f"storage/spidey{random_number}.png", offset=(1415, 175),
-                                       final_path=f"storage/spidey{random_number}.png")
-        file = discord.File(f"./storage/spidey{random_number}.png", filename=f"spidey{random_number}.png")
-        if member1 != member2:
-            embed = discord.Embed(title=f"{member1.display_name} and {member2.display_name} point at each other.",
-                                  color=discord_funcs.get_color(ctx.author))
-        else:
-            embed = discord.Embed(title=f"{member1.display_name} points at themselves. Is this the multiverse?",
-                                  color=discord_funcs.get_color(member2))
-        embed.set_image(url=f"attachment://spidey{random_number}.png")
-        embed.set_footer(text=f"{ctx.author.display_name} wanted this.", icon_url=ctx.author.avatar_url)
-        await ctx.reply(file=file, embed=embed)
-        try:
-            os.remove(f"./storage/spidey{random_number}.png")
-            os.remove(f"./storage/pfp{member1.id}.png")
-            os.remove(f"./storage/pfp{member2.id}.png")
-        except FileNotFoundError:
-            pass
-
 
 def setup(bot):
     bot.add_cog(Roleplay(bot))
