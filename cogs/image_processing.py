@@ -8,6 +8,7 @@ import discord
 from discord.ext import commands
 
 from assets import list_funcs, otp_assets, image_assets, discord_funcs
+from assets.discord_funcs import get_avatar_url
 
 
 class ImageProcessing(commands.Cog):
@@ -84,7 +85,7 @@ class ImageProcessing(commands.Cog):
         if member is None:
             member = ctx.author
         await ctx.trigger_typing()
-        pfp_path = await image_assets.save_image(member.avatar_url, f"storage/pfp{member.id}.png")
+        pfp_path = await image_assets.save_image(get_avatar_url(member), f"storage/pfp{member.id}.png")
         image_assets.resize_image(pfp_path, (400, 400))
         image_assets.superimpose_image(pfp_path, self.delete_path, offset=(360, 320),
                                        final_path=f"storage/delete{random_number}.png")
@@ -94,9 +95,9 @@ class ImageProcessing(commands.Cog):
         embed.set_image(url=f"attachment://delete{random_number}.png")
         if member != ctx.author:
             embed.set_footer(text=f"{member.display_name} was deleted by {ctx.author.display_name} :(",
-                             icon_url=ctx.author.avatar_url)
+                             icon_url=get_avatar_url(ctx.author))
         else:
-            embed.set_footer(text=f"{ctx.author.display_name} deleted themselves :(", icon_url=ctx.author.avatar_url)
+            embed.set_footer(text=f"{ctx.author.display_name} deleted themselves :(", icon_url=get_avatar_url(ctx.author))
         await ctx.reply(file=file, embed=embed)
         os.remove(f"./storage/delete{random_number}.png")
         os.remove(f"./storage/pfp{member.id}.png")
@@ -108,8 +109,8 @@ class ImageProcessing(commands.Cog):
             member2 = ctx.author
         random_number = otp_assets.generate_otp(5)
         await ctx.trigger_typing()
-        pfp_path1 = await image_assets.save_image(member1.avatar_url, f"storage/pfp{member1.id}.png")
-        pfp_path2 = await image_assets.save_image(member2.avatar_url, f"storage/pfp{member2.id}.png")
+        pfp_path1 = await image_assets.save_image(get_avatar_url(member1), f"storage/pfp{member1.id}.png")
+        pfp_path2 = await image_assets.save_image(get_avatar_url(member2), f"storage/pfp{member2.id}.png")
         image_assets.resize_image(pfp_path1, (200, 200))
         image_assets.resize_image(pfp_path2, (200, 200))
         image_assets.superimpose_image(pfp_path1, self.spidey_path, offset=(480, 145),
@@ -124,7 +125,7 @@ class ImageProcessing(commands.Cog):
             embed = discord.Embed(title=f"{member1.display_name} points at themselves. Is this the multiverse?",
                                   color=discord_funcs.get_color(member2))
         embed.set_image(url=f"attachment://spidey{random_number}.png")
-        embed.set_footer(text=f"{ctx.author.display_name} wanted this.", icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f"{ctx.author.display_name} wanted this.", icon_url=get_avatar_url(ctx.author))
         await ctx.reply(file=file, embed=embed)
         try:
             os.remove(f"./storage/spidey{random_number}.png")

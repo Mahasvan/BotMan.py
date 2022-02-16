@@ -4,6 +4,7 @@ from discord.ext import commands
 import discord
 
 from assets import otp_assets
+from assets.discord_funcs import get_avatar_url
 
 
 class Logging(commands.Cog):
@@ -62,7 +63,7 @@ class Logging(commands.Cog):
         embed.add_field(name="Message", value=f"```{message.content}```" if message.content != "" else "No content",
                         inline=False)
         embed.set_footer(text=f"Message ID: {message.id}")
-        embed.set_thumbnail(url=message.author.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(message.author))
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
         except AttributeError:  # bot.get_channel might return None
@@ -106,7 +107,7 @@ class Logging(commands.Cog):
         embed.add_field(name="Link to message", value=f"__[Link](https://discord.com/channels/{before.guild.id}/"
                                                       f"{before.channel.id}/{before.id})__")
         embed.set_footer(text=f"Message ID: {before.id}")
-        embed.set_thumbnail(url=before.author.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(before.author))
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
         except AttributeError:  # bot.get_channel might return None
@@ -126,7 +127,7 @@ class Logging(commands.Cog):
         embed.add_field(name="Message", value=f"""```{message.content[:1024] + "..."
         if len(message.content) > 1024 else ""}```""")
         embed.set_footer(text=f"Message ID: {message.id}")
-        embed.set_thumbnail(url=message.author.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(message.author))
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
         except AttributeError:  # bot.get_channel might return None
@@ -170,7 +171,7 @@ class Logging(commands.Cog):
         log_channel = log_channel[0]  # log_channel is a tuple
         embed = discord.Embed(title=f"{'Member' if not member.bot else 'Bot'} Joined", color=0x00FF00)
         embed.add_field(name="User", value=member.mention)
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(member))
         embed.set_footer(text=f"Member ID: {member.id}")
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
@@ -188,7 +189,7 @@ class Logging(commands.Cog):
             return
         embed = discord.Embed(title=f"{'Member' if not member.bot else 'Bot'} Left", color=0xFF0000)
         embed.add_field(name="Member", value=member.mention)
-        embed.set_thumbnail(url=member.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(member))
         embed.set_footer(text=f"Member ID: {member.id}")
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
@@ -212,7 +213,7 @@ class Logging(commands.Cog):
             embed.add_field(name="Before", value=before.nick, inline=False)
             embed.add_field(name="After", value=after.nick, inline=False)
             embed.set_footer(text=f"Member ID: {before.id}")
-            embed.set_thumbnail(url=before.avatar_url)
+            embed.set_thumbnail(url=get_avatar_url(before))
             try:
                 await self.bot.get_channel(log_channel).send(embed=embed)
             except AttributeError:  # bot.get_channel might return None
@@ -228,7 +229,7 @@ class Logging(commands.Cog):
             embed.add_field(name="After", value=" ".join([role.mention for role in after.roles[::-1]])[:1024],
                             inline=False)
             embed.set_footer(text=f"Member ID: {before.id}")
-            embed.set_thumbnail(url=before.avatar_url)
+            embed.set_thumbnail(url=get_avatar_url(before))
             try:
                 await self.bot.get_channel(log_channel).send(embed=embed)
             except AttributeError:  # bot.get_channel might return None
@@ -244,7 +245,7 @@ class Logging(commands.Cog):
         log_channel = log_channel[0]  # log_channel is a tuple
         embed = discord.Embed(title=f"{'Member' if not user.bot else 'Bot'} Banned", color=0xFF0000)
         embed.add_field(name="User", value=f"{user.name}#{user.discriminator} ({user.mention})")
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(user))
         embed.set_footer(text=f"Member ID: {user.id}")
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)
@@ -261,7 +262,7 @@ class Logging(commands.Cog):
         log_channel = log_channel[0]  # log_channel is a tuple
         embed = discord.Embed(title=f"{'User' if not user.bot else 'Bot'} Unbanned", color=0x00FF00)
         embed.add_field(name="User", value=f"{user.name}#{user.discriminator} ({user.mention})")
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(user))
         embed.set_footer(text=f"User ID: {user.id}")
         try:
             await self.bot.get_channel(log_channel).send(embed=embed)

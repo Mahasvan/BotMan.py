@@ -1,7 +1,7 @@
 import discord
 from discord.ext import menus, commands
 
-from assets import list_funcs
+from assets import list_funcs, discord_funcs
 
 bot = None
 
@@ -16,7 +16,7 @@ class EmbedPageSource(menus.ListPageSource):
         embed = discord.Embed(title=bot.description, color=discord.Color.blue(),
                               description="Use `bm-help [command/category]` for more information on a command/category.")
         embed.set_footer(text="React with the emojis to switch pages!")
-        embed.set_thumbnail(url=bot.user.avatar_url)
+        embed.set_thumbnail(url=discord_funcs.get_avatar_url(bot.user))
         for x in item:
             embed.add_field(name=x["name"], value=x["value"], inline=x["inline"])
         return embed
@@ -28,16 +28,16 @@ def get_command_clean(command):
 
 class MyHelp(commands.MinimalHelpCommand):
     def get_command_signature(self, command):
-        return '%s%s %s' % (self.clean_prefix, command.qualified_name, command.signature)
+        return '%s%s %s' % (self.context.clean_prefix, command.qualified_name, command.signature)
 
     def get_command_name(self, command):
-        return '%s%s' % (self.clean_prefix, command.qualified_name)
+        return '%s%s' % (self.context.clean_prefix, command.qualified_name)
 
     async def send_bot_help(self, mapping):
         embed = discord.Embed(title=bot.description, colour=discord.Color.blue())  # defining the embed
-        embed.description = f"Use `{self.clean_prefix}help [command/category]` " \
+        embed.description = f"Use `{self.context.clean_prefix}help [command/category]` " \
                             f"for more information on a command/category."  # setting description
-        embed.set_thumbnail(url=bot.user.avatar_url)  # setting thumbnail as bot's avatar
+        embed.set_thumbnail(url=discord_funcs.get_avatar_url(bot.user))  # setting thumbnail as bot's avatar
         for cog, commands_list in mapping.items():
             filtered = await self.filter_commands(commands_list, sort=True)
             command_signatures = [get_command_clean(c) for c in filtered]
@@ -60,7 +60,7 @@ class MyHelp(commands.MinimalHelpCommand):
         else:  # if the command is not in a cog
             embed = discord.Embed(title=f"{self.get_command_signature(command)}"
                                   , color=discord.Color.blue())
-        embed.set_thumbnail(url=bot.user.avatar_url)  # setting the thumbnail as bot's avatar
+        embed.set_thumbnail(url=discord_funcs.get_avatar_url(bot.user))  # setting the thumbnail as bot's avatar
         if command.description:
             embed.add_field(name="Description", value=command.description, inline=False)
         if command.help:
@@ -77,8 +77,8 @@ class MyHelp(commands.MinimalHelpCommand):
         cog_title = cog.qualified_name
         filtered = await self.filter_commands(commands_list, sort=True)
         embed = discord.Embed(title=f"Cog - {cog_title}", colour=discord.Color.blue())
-        embed.set_thumbnail(url=bot.user.avatar_url)
-        commands_embed_list = "\n".join([("%s%s" % (self.clean_prefix, command.name)) for command in filtered])
+        embed.set_thumbnail(url=discord_funcs.get_avatar_url(bot.user))
+        commands_embed_list = "\n".join([("%s%s" % (self.context.clean_prefix, command.name)) for command in filtered])
         if cog.description:
             embed.description = cog.description
         if not len(commands_embed_list) == 0:

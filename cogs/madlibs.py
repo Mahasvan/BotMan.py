@@ -5,6 +5,7 @@ import discord
 from discord.ext import commands
 
 from assets import internet_funcs, discord_funcs
+from assets.discord_funcs import get_avatar_url
 
 
 def is_author_check(ctx):
@@ -61,7 +62,7 @@ class MadLibs(commands.Cog, description="A category for Mad Libs."):
         string += value[-1]  # adding the final value tha twas missed in the for loop
 
         embed = discord.Embed(title=title, description=string, colour=discord_funcs.get_color(ctx.author))
-        embed.set_footer(text=f"Good job, {ctx.author.display_name}!", icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f"Good job, {ctx.author.display_name}!", icon_url=get_avatar_url(ctx.author))
         self.playing_madlibs.remove(ctx.author.id)
         await ctx.send(embed=embed)
 

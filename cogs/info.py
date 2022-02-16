@@ -2,6 +2,7 @@ import discord
 from discord.ext import commands
 
 from assets import time_assets, discord_funcs
+from assets.discord_funcs import get_avatar_url
 
 
 class Info(commands.Cog,
@@ -32,7 +33,8 @@ class Info(commands.Cog,
             user = ctx.guild.get_member(user.id)
         embed = discord.Embed(
             title=f'Avatar of {user.display_name}', colour=discord_funcs.get_color(user))
-        embed.set_image(url=user.avatar_url)
+        embed.set_image(url=get_avatar_url(user))
+
         await ctx.send(embed=embed)
 
     @commands.command(name='serverinfo', aliases=["server"])
@@ -72,20 +74,20 @@ class Info(commands.Cog,
         if not str(ctx.guild.banner_url) == "":
             embed.add_field(name="Banner", value="Banner below!", inline=False)
             embed.set_image(url=ctx.guild.banner_url)
-        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=get_avatar_url(ctx.author))
         await ctx.send(embed=embed)
 
         if "features" in args or "feature" in args:
             feature_string = ""
             if len(ctx.guild.features) == 0:
                 embed_features = discord.Embed(title=f"{ctx.guild.name} does not have any special features",
-                                               color=embed.color)
+                                               color=embed.colour)
                 return await ctx.send(embed=embed_features)
             for feature in ctx.guild.features:
                 new_str = str(feature).replace("_", " ").title()
                 feature_string += new_str + "\n"
             embed_features = discord.Embed(title=f"{ctx.guild.name}'s Special Features",
-                                           description=feature_string, color=embed.color)
+                                           description=feature_string, color=embed.colour)
             await ctx.send(embed=embed_features)
 
     @commands.command(name='roleinfo')
@@ -106,7 +108,7 @@ class Info(commands.Cog,
                         value=str(len(role.members)), inline=True)
         embed.add_field(name='Mentionable', value="Yes" if role.mentionable else "No", inline=True)
         embed.set_footer(
-            text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+            text=f'Requested by {ctx.author.name}', icon_url=get_avatar_url(ctx.author))
 
         await ctx.send(embed=embed)
 
@@ -134,9 +136,9 @@ class Info(commands.Cog,
         embed = discord.Embed(
             title=user.display_name if user.name == user.display_name else f"{user.name}, who goes by {user.display_name}",
             description=f'ID: {user.id}', color=user.color, timestamp=ctx.message.created_at)
-        embed.set_thumbnail(url=user.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(user))
         embed.set_footer(
-            text=f'Requested by {ctx.author.name}', icon_url=ctx.author.avatar_url)
+            text=f'Requested by {ctx.author.name}', icon_url=get_avatar_url(ctx.author))
         embed.add_field(name='Username',
                         value=f"{user.name}#{user.discriminator}", inline=True)
         embed.add_field(name='Is a Bot', value="Yes" if user.bot else "No", inline=True)
@@ -245,7 +247,7 @@ class Info(commands.Cog,
         embed.add_field(name='Time of creation',
                         value=creation_time, inline=True)
         embed.set_footer(
-            text=f'Requested by {ctx.author}', icon_url=ctx.author.avatar_url)
+            text=f'Requested by {ctx.author}', icon_url=get_avatar_url(ctx.author))
         await ctx.send(embed=embed)
 
 

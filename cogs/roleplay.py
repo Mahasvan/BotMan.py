@@ -8,7 +8,7 @@ from discord.ext import commands
 
 from assets import internet_funcs, discord_funcs, otp_assets, image_assets
 from assets import random_assets as rand_ass
-
+from assets.discord_funcs import get_avatar_url
 
 class Roleplay(commands.Cog):
 
@@ -83,8 +83,8 @@ class Roleplay(commands.Cog):
         if member is None:
             member = ctx.author
         async with ctx.typing():
-            user1 = ctx.author.avatar_url
-            user2 = member.avatar_url
+            user1 = get_avatar_url(ctx.author)
+            user2 = get_avatar_url(member)
             spank_url = f"{self.spank_url}face={user1}&face2={user2}"
 
             binary_data = await internet_funcs.get_binary(spank_url)
@@ -107,7 +107,7 @@ class Roleplay(commands.Cog):
         if member is None:
             member = ctx.author
         async with ctx.typing():
-            hitler_url = f"{self.hitler_url}{member.avatar_url}"
+            hitler_url = f"{self.hitler_url}{get_avatar_url(member)}"
 
             binary_data = await internet_funcs.get_binary(hitler_url)
 
@@ -129,7 +129,7 @@ class Roleplay(commands.Cog):
         #  random 4 digit int so multiple requests dont overwrite the file
         if user is None:
             user = ctx.author
-        grab_url = f"{self.grab_url}{user.avatar_url}"
+        grab_url = f"{self.grab_url}{get_avatar_url(user)}"
         async with ctx.typing():
             binary_data = await internet_funcs.get_binary(grab_url)
             try:
@@ -151,11 +151,11 @@ class Roleplay(commands.Cog):
     @commands.command(name="trigger", description="Trigger a user! Get a \"Triggered!\" image!")
     @commands.guild_only()
     async def trigger(self, ctx, *, member: discord.Member = None):
-        one_time_int = otp_assets.get_otp(digits=4)
+        one_time_int = otp_assets.generate_otp(digits=4)
         #  random 4 digit int so multiple requests dont overwrite the file
         if member is None:
             member = ctx.author
-        grab_url = f"{self.trigger_url}{member.avatar_url}"
+        grab_url = f"{self.trigger_url}{get_avatar_url(member)}"
         async with ctx.typing():
             binary_data = await internet_funcs.get_binary(grab_url)
             with open(f"./storage/trigger{one_time_int}.gif", "wb") as writeFile:
@@ -173,8 +173,8 @@ class Roleplay(commands.Cog):
     async def wasted(self, ctx, *, user: discord.Member = None):
         if user is None:
             user = ctx.author
-        url = f"{self.wasted_url}{user.avatar_url}"
-        one_time_int = otp_assets.get_otp(digits=4)
+        url = f"{self.wasted_url}{get_avatar_url(user)}"
+        one_time_int = otp_assets.generate_otp(digits=4)
         async with ctx.typing():
             binary_data = await internet_funcs.get_binary(url)
             with open(f"./storage/wasted{one_time_int}.png", "wb") as writeFile:
@@ -191,8 +191,8 @@ class Roleplay(commands.Cog):
     async def beautiful(self, ctx, *, user: discord.Member = None):
         if user is None:
             user = ctx.author
-        url = f"{self.beautiful_url}{user.avatar_url}"
-        one_time_int = otp_assets.get_otp(digits=4)
+        url = f"{self.beautiful_url}{get_avatar_url(user)}"
+        one_time_int = otp_assets.generate_otp(digits=4)
         async with ctx.typing():
             binary_data = await internet_funcs.get_binary(url)
             with open(f"./storage/beautiful{one_time_int}.png", "wb") as writeFile:

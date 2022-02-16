@@ -24,3 +24,10 @@ def is_client(client, user):
         return True
     else:
         return False
+
+
+def get_avatar_url(user):
+    if user.avatar is None:
+        return user.display_avatar.url
+    else:
+        return user.avatar.url

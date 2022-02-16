@@ -9,7 +9,7 @@ from discord.ext import commands
 import psutil
 
 from assets import random_assets
-from assets.discord_funcs import get_color
+from assets.discord_funcs import get_color, get_avatar_url
 from assets.file_handling import count_lines
 
 
@@ -66,7 +66,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
                               color=get_color(ctx.guild.me),
                               timestamp=ctx.message.created_at)
         embed.description = f"I am made of {len(self.bot.commands)} commands across {len(self.bot.cogs)} cogs!"
-        embed.set_thumbnail(url=self.bot.user.avatar_url)
+        embed.set_thumbnail(url=get_avatar_url(self.bot.user))
         embed.add_field(name='PyCord version', value=pycord_version, inline=True)
         embed.add_field(name='Server Count',
                         value=str(server_count), inline=True)
@@ -88,7 +88,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed.add_field(name="Support Server",
                         value="__[Link To Server](https://discord.gg/8gUVYtT4cW)__", inline=True)
         embed.set_footer(
-            text=f"Requested by {ctx.author}", icon_url=ctx.author.avatar_url)
+            text=f"Requested by {ctx.author}", icon_url=get_avatar_url(ctx.author))
         await ctx.send(embed=embed)
 
     @commands.command(name="uptime")
