@@ -69,10 +69,12 @@ class Errors(commands.Cog):
             await ctx.send("Could not get response! The API I use may be down.")
         elif isinstance(error, requests.ReadTimeout):
             await ctx.send("Timed out. Please try again.")
+        elif isinstance(error, aiohttp.InvalidURL):
+            await ctx.send("The URL you provided is invalid! I was not able to fetch the data :(")
         else:
             self.bot.logger.log_error(error,
                                       f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
-            # we log the error in case the error it not in one of the important ones
+            # we log the error in case the error is not in one of the important ones
             # (the first if statement to check for exceptions)
             # or if the error is not in one of the handled ones
             raise error
