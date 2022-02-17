@@ -25,6 +25,9 @@
 
   "currency_api_key": "",
   
-  "openrobot_api_key": ""
+  "openrobot_api_key": "",
+  
+  "tesseract_custom_path": "",
+  "tesseract_tessdata_path": ""
 
 }
