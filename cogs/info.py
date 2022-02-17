@@ -33,8 +33,11 @@ class Info(commands.Cog,
             user = ctx.guild.get_member(user.id)
         embed = discord.Embed(
             title=f'Avatar of {user.display_name}', colour=discord_funcs.get_color(user))
-        embed.set_image(url=get_avatar_url(user))
-
+        if not user.guild_avatar:
+            embed.set_image(url=get_avatar_url(user))
+        else:
+            embed.set_thumbnail(url=get_avatar_url(user))
+            embed.set_image(url=user.guild_avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command(name='serverinfo', aliases=["server"])
@@ -121,17 +124,6 @@ class Info(commands.Cog,
 
         creation_date, creation_time = time_assets.parse_utc(
             str(user.created_at))
-        try:
-            mutual_guilds = len(user.mutual_guilds)
-        except:
-            mutual_guilds = 0
-        req = await self.bot.http.request(discord.http.Route("GET", "/users/{uid}", uid=user.id))
-        banner_id = req["banner"]
-        # the user may not have a banner
-        if banner_id:
-            banner_url = f"https://cdn.discordapp.com/banners/{user.id}/{banner_id}?size=4096"
-        else:
-            banner_url = None
 
         embed = discord.Embed(
             title=user.display_name if user.name == user.display_name else f"{user.name}, who goes by {user.display_name}",
@@ -146,19 +138,25 @@ class Info(commands.Cog,
         embed.add_field(name='Account Creation Date',
                         value=creation_date, inline=True)
         embed.add_field(name='Creation Time', value=creation_time, inline=True)
-        embed.add_field(name=f'Mutual Servers with {self.bot.user.name}',
-                        value=mutual_guilds if not user.id == self.bot.user.id else "<:risizoom:897053027637284885>",
-                        inline=False)
+        embed.add_field(name="Status", value=user.raw_status.title(), inline=True)
         activities = user.activities
         if activities:
             activity_string = ""
             for activity in activities:
                 activity_string += f"{activity.name}\n"
             embed.add_field(name='Current Activities', value=activity_string, inline=False)
-        if banner_url:
-            embed.add_field(name="Banner", value="See image below!", inline=False)
-            embed.set_image(url=banner_url)
+
+        if user.guild_avatar:
+            embed.add_field(name="Guild Avatar", value=f"See image below!", inline=False)
+            embed.set_image(url=user.guild_avatar.url)
         await ctx.send(embed=embed)
+
+        """Embed for user's banner"""
+        banner_user = await self.bot.fetch_user(user.id)
+        if banner_user.banner:
+            embed = discord.Embed(title=f"{banner_user.name}'s Banner", color=embed.colour)
+            embed.set_image(url=banner_user.banner.url)
+            await ctx.send(embed=embed)
 
         """Embed for each activity"""
         for activity in user.activities:
