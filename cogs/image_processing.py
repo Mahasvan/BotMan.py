@@ -3,6 +3,8 @@ import subprocess
 import asyncio
 import pytesseract
 from PIL import Image
+import numpy as np
+import cv2
 
 import discord
 from discord.ext import commands
@@ -78,7 +80,18 @@ class ImageProcessing(commands.Cog):
         file_path = f"storage/ocr{otp}.png"
         await image_assets.save_image(image_url, file_path)
         await ctx.trigger_typing()
-        text = str(pytesseract.image_to_string(Image.open(file_path), lang=language_code.lower())).strip("\n")
+        img_to_ocr = Image.open(file_path)
+
+        text = pytesseract.image_to_string(img_to_ocr, lang=language_code.lower())
+        if not text:
+            # we further clean up the image if the OCR didn't get anything
+            img_to_ocr = np.array(img_to_ocr)
+            norm_img = np.zeros((img_to_ocr.shape[0], img_to_ocr.shape[1]))
+            img_to_ocr = cv2.normalize(img_to_ocr, norm_img, 0, 255, cv2.NORM_MINMAX)
+            img_to_ocr = cv2.threshold(img_to_ocr, 100, 255, cv2.THRESH_BINARY)[1]
+            img_to_ocr = cv2.GaussianBlur(img_to_ocr, (1, 1), 0)
+            text = pytesseract.image_to_string(img_to_ocr, lang=language_code.lower())
+
         embed = discord.Embed(title="OCR Result", description=f"```"
                                                               f"{text[:2000] if text else 'No text was recognized :('}"
                                                               f"```",

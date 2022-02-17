@@ -11,3 +11,5 @@ topggpy
 asyncpraw
 psutil
 pytesseract
+numpy
+opencv-python
