@@ -15,8 +15,14 @@ class ImageProcessing(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        response = subprocess.run(["tesseract", "--list-langs"], stdout=subprocess.PIPE)
-        self.tesseract_languages = response.stdout.decode("utf-8").split("\n")[1:-1]
+        self.tesseract_path = bot.tesseract_custom_path if bot.tesseract_custom_path else "tesseract"
+        pytesseract.pytesseract.tesseract_cmd = self.tesseract_path
+        response = subprocess.run([self.tesseract_path, "--list-langs"], stdout=subprocess.PIPE, shell=True)
+        # We are getting the list of languages from the tesseract command.
+        self.tesseract_languages = [x.strip("\r") for x in response.stdout.decode("UTF-8").split("\n")[1:-1]]
+        # the response we get will be an intro line in the first, and then an empty line in the last.
+        # Hence, we remove the first and last lines.
+        # Each response may also have an \r at the end in some cases. So we strip it
 
         self.delete_path = "images/delete.png"
         self.spidey_path = "images/spidey_point.png"
@@ -56,7 +62,10 @@ class ImageProcessing(commands.Cog):
         if not image_url and not ctx.message.attachments:
             return await ctx.send("Please provide an image to OCR.")
         if not language_code:
-            language_code = "eng" if "eng" in self.tesseract_languages else self.tesseract_languages[0]
+            try:
+                language_code = "eng" if "eng" in self.tesseract_languages else self.tesseract_languages[0]
+            except IndexError:
+                return await ctx.send("Something went wrong! I couldn't find any languages to use :(")
         else:
             # Check if passed language code is valid
             if language_code.lower() not in [x.lower() for x in self.tesseract_languages]:

@@ -15,6 +15,9 @@ with open('config.json', 'r') as detailsFile:
         if isinstance(e, UnicodeDecodeError):
             print("UnicodeDecodeError: config.json could not be decoded properly. Please use only ASCII characters.")
             exit()
+        else:
+            raise e
+
     prefix = details_data['bot_prefix']
     token = details_data['bot_token']
     owner_id = int(details_data['bot_owner_id'])
@@ -34,6 +37,8 @@ with open('config.json', 'r') as detailsFile:
     reddit_client_secret = details_data['reddit_client_secret']
     currency_api_key = details_data['currency_api_key']
     openrobot_api_key = details_data['openrobot_api_key']
+    tesseract_custom_path = details_data['tesseract_custom_path']
+    tesseract_tessdata_path = details_data['tesseract_tessdata_path']
 
     if not imgflip_password or not imgflip_password:
         print("Imgflip username and password not found. Adding the memes cog to blacklist...")
@@ -107,6 +112,9 @@ bot.weather_api_key = weather_api_key
 bot.currency_api_key = currency_api_key
 bot.openrobot_api_key = openrobot_api_key
 bot.blacklisted_cogs = blacklisted_cogs
+bot.tesseract_custom_path = tesseract_custom_path
+bot.tesseract_tessdata_path = tesseract_tessdata_path
+os.environ['TESSDATA_PREFIX'] = bot.tesseract_tessdata_path
 
 
 @bot.event
