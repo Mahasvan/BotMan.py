@@ -1,19 +1,12 @@
 import os
 
 
-def count_lines(start, lines=0):
-    for thing in os.listdir(start):
-        thing = os.path.join(start, thing)
-        if os.path.isfile(thing):
-            if thing.endswith('.py'):
-                with open(thing, 'r', encoding='utf-8') as f:
-                    newlines = f.readlines()
-                    newlines = len(newlines)
-                    lines += newlines
-
-    for thing in os.listdir(start):
-        thing = os.path.join(start, thing)
-        if os.path.isdir(thing):
-            lines = count_lines(thing, lines)
-
+def count_lines(start=".", lines=0, blacklisted_dirs=["venv"], file_extensions=["py"]):
+    for file in os.listdir(start):
+        relative_path = os.path.join(start, file)
+        if os.path.isfile(relative_path) and relative_path.split(".")[-1] in file_extensions:
+            with open(relative_path, 'r', encoding='utf-8') as f:
+                lines += len(f.readlines())
+        elif os.path.isdir(relative_path) and file not in blacklisted_dirs:
+            lines = count_lines(relative_path, lines, blacklisted_dirs, file_extensions)
     return lines
