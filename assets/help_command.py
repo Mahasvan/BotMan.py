@@ -36,7 +36,7 @@ class MyHelp(commands.MinimalHelpCommand):
                 embed.add_field(name=cog_name, value=", ".join([f"`{x}`" for x in command_signatures]), inline=False)
                 # adding fields. each cog is in one field
         fields = embed.to_dict().get("fields")
-        chunked_fields = list(list_funcs.chunks(fields, 15))  # making chunks of 10 cogs rach
+        chunked_fields = list(list_funcs.chunks(fields, 15))  # making chunks of 15 cogs rach
 
         to_send = embed.to_dict()  # sending the first embed chunk
         to_send["fields"] = chunked_fields[0]
