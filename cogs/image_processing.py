@@ -60,6 +60,11 @@ class ImageProcessing(commands.Cog):
         """Recognizes text characters in an image.
         Use the `ocrlangs` command to see a list of language codes."""
 
+        if language_code not in self.tesseract_languages:
+            # User may specify an image url without specifying a language code.
+            image_url = language_code
+            language_code = None
+
         if not image_url and not ctx.message.attachments:
             return await ctx.send("Please provide an image to OCR.")
         if not language_code:
