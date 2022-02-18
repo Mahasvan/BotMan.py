@@ -6,7 +6,7 @@ import asyncpraw
 import discord
 from discord.ext import commands
 
-from assets import db_manager, logger, spotify_search, help_command
+from assets import db_manager, logger, spotify_search, help_command, verify_dependencies, shell_assets
 
 with open('config.json', 'r') as detailsFile:
     try:
@@ -148,7 +148,7 @@ async def on_ready():
 
         # delete reboot.txt
         os.remove("reboot.txt")
-    print("Ready to rock and roll!\n====================")
+    print(shell_assets.colour_pink("===================="))
 
 
 if __name__ == '__main__':
@@ -159,21 +159,21 @@ if __name__ == '__main__':
     for cog in cogs_to_load:
         print(f"Loading {cog}...")
         if cog in blacklisted_cogs:  # skip loading the cog if it's blacklisted
-            print("        |--- Blacklisted Cog, skipping...")
+            print(shell_assets.colour_cyan("        |--- Blacklisted Cog, skipping..."))
             continue
         try:
             bot.load_extension(f"cogs.{cog}")  # load the cog
-            print("        |--- Success!")  # if the cog loaded successfully, print this
+            print(shell_assets.colour_green("        |--- Success!"))  # if the cog loaded successfully, print this
         except Exception as e:
-            print(f"        |--- Failed: {str(e)}")
+            print(shell_assets.colour_red(f"        |--- Failed: {str(e)}"))
             bot.failed_cogs.append(cog)  # add cog to failed list
 
     if len(bot.failed_cogs) != 0:  # print out the cogs which failed to load
         print('====================')
         print('These cogs failed to load:')
         for x in bot.failed_cogs:
-            print(x)
-    print('====================')
+            print(shell_assets.colour_yellow(x))
+    print(shell_assets.colour_pink("===================="))
     try:
         bot.run(token)  # actually running the bot
     except Exception as e:
