@@ -6,9 +6,10 @@ import random
 import discord
 from discord.ext import commands
 
-from assets import internet_funcs, discord_funcs, otp_assets, image_assets
+from assets import internet_funcs, discord_funcs, otp_assets
 from assets import random_assets as rand_ass
 from assets.discord_funcs import get_avatar_url
+
 
 class Roleplay(commands.Cog):
 
