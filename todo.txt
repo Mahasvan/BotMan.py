@@ -1,0 +1,8 @@
+readme
+    - config structure
+    - procedure to get entries for config
+    - dependencies used by each file
+    - procedure to get dependencies
+
+use env variables instead of bot variables
+reduce size of point image
