@@ -72,32 +72,32 @@ Common dependencies to every Cog:
 
 Dependencies used by:
 
-| Cog                 | Dependencies                 |
-|---------------------|------------------------------|
-| bot_internal_events | aiohttp, requests            |
-| botinfo             | aiohttp, speedtest-cli       |
-| covid               | aiohttp                      |
-| currency            | aiohttp                      |
-| funzies             | aiohttp                      |
-| gaems               | aiohttp                      |
-| image_processing    | aiohttp, pillow, pytesseract |
-| info                | None                         |
-| links               | None                         |
-| logging             | None                         |
-| madlibs             | aiohttp                      |
-| memes               | aiohttp                      |
-| misc                | aiohttp                      |
-| openrobot           | aiohttp                      |
-| owner_only          | aiohttp                      |
-| roleplay            | aiohttp                      |
-| server_setup        | None                         |
-| spotify             | aiohttp, spotipy             |
-| time_commands       | aiohttp                      |
-| topgg_commands      | None                         |
-| translate           | googletrans                  |
-| weather             | aiohttp                      |
-| websurf             | aiohttp                      |
-| wikipedia           | aiohttp                      |
+| Cog                 | Dependencies                                       |
+|---------------------|----------------------------------------------------|
+| bot_internal_events | aiohttp, requests                                  |
+| botinfo             | aiohttp, speedtest-cli                             |
+| covid               | aiohttp                                            |
+| currency            | aiohttp                                            |
+| funzies             | aiohttp                                            |
+| gaems               | aiohttp                                            |
+| image_processing    | aiohttp, pillow, pytesseract, numpy, opencv-python |
+| info                | None                                               |
+| links               | None                                               |
+| logging             | None                                               |
+| madlibs             | aiohttp                                            |
+| memes               | aiohttp                                            |
+| misc                | aiohttp                                            |
+| openrobot           | aiohttp                                            |
+| owner_only          | aiohttp, jishaku                                   |
+| roleplay            | aiohttp                                            |
+| server_setup        | None                                               |
+| spotify             | aiohttp, spotipy                                   |
+| time_commands       | aiohttp                                            |
+| topgg_commands      | topggpy                                            |
+| translate           | googletrans                                        |
+| weather             | aiohttp                                            |
+| websurf             | aiohttp                                            |
+| wikipedia           | aiohttp                                            |
 
 
 # Work in Progress.
