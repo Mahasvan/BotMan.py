@@ -39,11 +39,17 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
     @commands.command(name='countlines', aliases=['countline'], description='Counts the number of lines of python code '
                                                                             'the bot currently has.')
     async def countlines_func(self, ctx):
-        lines = count_lines('./')  # get lines
-        final_str = random.choice(
-            random_assets.countlines_responses).format(lines)  # get response sentence
-        embed = discord.Embed(
-            title=final_str, color=get_color(self.bot.user))
+        total_lines = count_lines('./')
+        asset_lines = count_lines('./assets')
+        cog_lines = count_lines('./cogs')
+        text_lines = count_lines('.', file_extensions=['txt', 'md', 'rtf'])
+        misc_lines = count_lines('.', blacklisted_dirs=['assets', 'cogs', 'venv'])
+        embed = discord.Embed(title=random.choice(random_assets.countlines_responses).format(total_lines),
+                              color=get_color(ctx.author))
+        embed.add_field(name='Assets', value=f"{asset_lines} lines", inline=True)
+        embed.add_field(name='Cogs', value=f"{cog_lines} lines", inline=True)
+        embed.add_field(name='Miscellaneous', value=f"{misc_lines} lines", inline=True)
+        embed.set_footer(text=f"I also have {text_lines} lines of text-file documentation, apparently.")
         await ctx.send(embed=embed)
 
     @commands.command(name='botinfo', aliases=['clientinfo', 'botstats'],
