@@ -6,7 +6,7 @@ import asyncpraw
 import discord
 from discord.ext import commands
 
-from assets import db_manager, logger, spotify_search, help_command, verify_dependencies, shell_assets
+from assets import db_manager, logger, spotify_search, help_command, shell_assets
 
 with open('config.json', 'r') as detailsFile:
     try:
@@ -114,7 +114,8 @@ bot.openrobot_api_key = openrobot_api_key
 bot.blacklisted_cogs = blacklisted_cogs
 bot.tesseract_custom_path = tesseract_custom_path
 bot.tesseract_tessdata_path = tesseract_tessdata_path
-os.environ['TESSDATA_PREFIX'] = bot.tesseract_tessdata_path  # setting the environment variable for tesseract
+if bot.tesseract_tessdata_path:
+    os.environ['TESSDATA_PREFIX'] = bot.tesseract_tessdata_path  # setting the environment variable for tesseract
 
 
 @bot.event
