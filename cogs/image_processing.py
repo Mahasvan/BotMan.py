@@ -18,7 +18,12 @@ class ImageProcessing(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.tesseract_path = bot.tesseract_custom_path if bot.tesseract_custom_path else "tesseract"
-        response = subprocess.run(f"{self.tesseract_path} --list-langs", stdout=subprocess.PIPE, shell=True)
+        if bot.tesseract_custom_path:
+            pytesseract.pytesseract.tesseract_cmd = self.tesseract_path
+        if os.name == "nt":
+            response = subprocess.run([self.tesseract_path, "--list-langs"], stdout=subprocess.PIPE, shell=True)
+        else:  # its just windows being weird, i don't know why.
+            response = subprocess.run(f"{self.tesseract_path} --list-langs", stdout=subprocess.PIPE, shell=True)
         # We are getting the list of languages from the tesseract command.
         self.tesseract_languages = [x.strip("\r") for x in response.stdout.decode("UTF-8").split("\n")[1:-1]]
         # the response we get will be an intro line in the first, and then an empty line in the last.
