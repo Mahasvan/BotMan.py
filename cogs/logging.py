@@ -163,7 +163,7 @@ class Logging(commands.Cog):
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
-        if member.guild is None or member.id == self.bot.id:
+        if member.guild is None or member.id == self.bot.user.id:
             return
         log_channel = self.bot.dbmanager.fetch_log_channel(member.guild.id)
         if log_channel is None:
