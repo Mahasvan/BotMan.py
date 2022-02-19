@@ -65,7 +65,7 @@ class ImageProcessing(commands.Cog):
         """Recognizes text characters in an image.
         Use the `ocrlangs` command to see a list of language codes."""
 
-        if language_code not in self.tesseract_languages:
+        if language_code not in self.tesseract_languages and not (image_url or ctx.message.attachments):
             # User may specify an image url without specifying a language code.
             image_url = language_code
             language_code = None
