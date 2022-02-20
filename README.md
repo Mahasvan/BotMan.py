@@ -147,7 +147,7 @@ If you want to add a cog to the blacklist, add it to the `blacklisted_cogs` arra
 For example, if you don't want the `owner_only.py` to be loaded, add `owner_only` to the `blacklisted_cogs` array.
 A sample array would be something like
 ```json
-{"owner_only", "spotify", "covid"}
+["owner_only", "spotify", "covid"]
 ```
 
 
