@@ -33,11 +33,14 @@ class Info(commands.Cog,
             user = ctx.guild.get_member(user.id)
         embed = discord.Embed(
             title=f'Avatar of {user.display_name}', colour=discord_funcs.get_color(user))
-        if not user.guild_avatar:
+        try:
+            if not user.guild_avatar:
+                embed.set_image(url=get_avatar_url(user))
+            else:
+                embed.set_thumbnail(url=get_avatar_url(user))
+                embed.set_image(url=user.guild_avatar.url)
+        except AttributeError:
             embed.set_image(url=get_avatar_url(user))
-        else:
-            embed.set_thumbnail(url=get_avatar_url(user))
-            embed.set_image(url=user.guild_avatar.url)
         await ctx.send(embed=embed)
 
     @commands.command(name='serverinfo', aliases=["server"])
