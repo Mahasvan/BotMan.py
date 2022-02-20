@@ -70,11 +70,11 @@ A list of all dependencies each Cog uses can be found [here](#dependencies-used-
 
 ### Misc Dependencies
 Outside of the dependencies mentioned in the `requirements.txt` file, there are a few dependencies which need to be installed manually.
-They are
 
 - `tesseract-ocr`
     - For Linux:
   ```shell
+  # Works on my Ubuntu machine, I don't really know about other distros
   sudo apt-get install tesseract-ocr
   # Install all available languages
   sudo apt-get install tesseract-ocr-all
