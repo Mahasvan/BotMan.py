@@ -20,9 +20,9 @@ class ImageProcessing(commands.Cog):
         self.tesseract_path = bot.tesseract_custom_path if bot.tesseract_custom_path else "tesseract"
         if bot.tesseract_custom_path:
             pytesseract.pytesseract.tesseract_cmd = self.tesseract_path
-        if os.name == "nt":
+        if " " in self.tesseract_path:
             response = subprocess.run([self.tesseract_path, "--list-langs"], stdout=subprocess.PIPE, shell=True)
-        else:  # its just windows being weird, i don't know why.
+        else:  # If the path doesn't have spaces, its safe to pass it as a string
             response = subprocess.run(f"{self.tesseract_path} --list-langs", stdout=subprocess.PIPE, shell=True)
         # We are getting the list of languages from the tesseract command.
         self.tesseract_languages = [x.strip("\r") for x in response.stdout.decode("UTF-8").split("\n")[1:-1]]
