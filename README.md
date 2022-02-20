@@ -7,7 +7,9 @@
 ## Sections
 - [Config Structure](#config-structure)
 - [Dependencies](#dependencies)
+- [Misc Dependencies](#misc-dependencies)
 - [Dependencies Used By Each Cog](#dependencies-used-by-each-cog)
+
 
 ### Config Structure
 ```json
@@ -65,6 +67,30 @@ not all dependencies can be installed on your machine.
 In that case, you can install the available dependencies manually, 
 then add the cogs which use the unavailable dependencies to the `blacklisted_cogs` array in the config.
 A list of all dependencies each Cog uses can be found [here](#dependencies-used-by-each-cog).
+
+### Misc Dependencies
+Outside of the dependencies mentioned in the `requirements.txt` file, there are a few dependencies which need to be installed manually.
+They are
+
+- `tesseract-ocr`
+    - For Linux:
+  ```shell
+  sudo apt-get install tesseract-ocr
+  # Install all available languages
+  sudo apt-get install tesseract-ocr-all
+  ```
+    - For macOS:
+  ```shell
+  # You need Homebrew for this
+  brew install tesseract
+  # Install all available languages
+  brew install tesseract-lang
+  ```    
+  - For Windows
+  ```
+  # There is no official installer, but this one works just fine
+  Download from https://github.com/UB-Mannheim/tesseract/wiki
+  ```
 
 ### Dependencies Used by each Cog
 Common dependencies to every Cog:
