@@ -64,8 +64,8 @@ with open('config.json', 'r') as detailsFile:
     reddit_client_secret = details_data.get('reddit_client_secret')
     if not (reddit_username or reddit_password or reddit_client_id or reddit_client_secret):
         if "reddit" not in blacklisted_cogs:
-            print("No reddit credentials found in config.json. Adding websurf cog to blacklist...")
-            blacklisted_cogs.append('websurf')
+            print("No reddit credentials found in config.json. Adding reddit cog to blacklist...")
+            blacklisted_cogs.append('reddit')
     currency_api_key = details_data.get('currency_api_key')
     if not currency_api_key:
         if "currency" not in blacklisted_cogs:
