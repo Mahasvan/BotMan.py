@@ -18,51 +18,64 @@ with open('config.json', 'r') as detailsFile:
         else:
             raise e
 
-    prefix = details_data['bot_prefix']
-    token = details_data['bot_token']
-    owner_id = int(details_data['bot_owner_id'])
-    bot_stream = details_data['bot_stream']
-    stream_link = details_data['bot_stream_url']
-    bot_description = details_data['bot_description']
-    blacklisted_cogs = details_data['blacklisted_cogs']
-    imgflip_username = details_data['imgflip_username']
-    imgflip_password = details_data['imgflip_password']
-    weather_api_key = details_data['weather_api_key']
-    spotify_client_id = details_data['spotify_client_id']
-    spotify_client_secret = details_data['spotify_client_secret']
-    topgg_token = details_data['topgg_token']
-    reddit_username = details_data['reddit_username']
-    reddit_password = details_data['reddit_password']
-    reddit_client_id = details_data['reddit_client_id']
-    reddit_client_secret = details_data['reddit_client_secret']
-    currency_api_key = details_data['currency_api_key']
-    openrobot_api_key = details_data['openrobot_api_key']
-    tesseract_custom_path = details_data['tesseract_custom_path']
-    tesseract_tessdata_path = details_data['tesseract_tessdata_path']
-
-    if not imgflip_password or not imgflip_password:
-        print("Imgflip username and password not found. Adding the memes cog to blacklist...")
-        blacklisted_cogs.append('memes')
+    prefix = details_data.get('bot_prefix')
+    if not prefix:
+        print("No bot prefix found in config.json. Setting default prefix to `bm-`")
+        prefix = 'bm-'
+    token = details_data.get('bot_token')
+    if not token:
+        print("No bot token found in config.json. Please add a bot token.")
+        exit()
+    owner_id = details_data.get('owner_id')
+    bot_stream = details_data.get('bot_stream')
+    stream_link = details_data.get('bot_stream_url')
+    if bot_stream and not stream_link:
+        print("No stream link found in config.json. Please add a stream link.")
+        exit()
+    bot_description = details_data.get('bot_description')
+    if not bot_description:
+        print("No bot description found in config.json. Falling back to default...")
+        bot_description = "The coolest Python bot ever 😎"
+    blacklisted_cogs = details_data.get('blacklisted_cogs')
+    imgflip_username = details_data.get('imgflip_username')
+    imgflip_password = details_data.get('imgflip_password')
+    if not imgflip_username or not imgflip_password:
+        if "memes" not in blacklisted_cogs:
+            print("No imgflip credentials found in config.json. Adding memes cog to blacklist...")
+            blacklisted_cogs.append('memes')
+    weather_api_key = details_data.get('weather_api_key')
     if not weather_api_key:
-        print("Weather API key not found. Adding the weather cog to blacklist...")
-        blacklisted_cogs.append('weather')
-    if not spotify_client_id or not spotify_client_secret:
-        print("Spotify API keys not found. Adding the spotify cog to blacklist...")
-        blacklisted_cogs.append('spotify')
+        if "weather" not in blacklisted_cogs:
+            print("No weather API key found in config.json. Adding weather cog to blacklist...")
+            blacklisted_cogs.append('weather')
+    spotify_client_id = details_data.get('spotify_client_id')
+    spotify_client_secret = details_data.get('spotify_client_secret')
+    if not (spotify_client_id or spotify_client_secret):
+        if "spotify" not in blacklisted_cogs:
+            print("No spotify credentials found in config.json. Adding spotify cog to blacklist...")
+            blacklisted_cogs.append('spotify')
+    topgg_token = details_data.get('topgg_token')
     if not topgg_token:
-        print("Top.gg token not found. Adding the topgg_commands cog to blacklist...")
-        blacklisted_cogs.append('topgg_commands')
-    if not reddit_username or not reddit_password or not reddit_client_id or not spotify_client_secret:
-        print("Reddit API keys not found. Adding the websurf cog to blacklist...")
-        blacklisted_cogs.append('websurf')
-
+        if "topgg" not in blacklisted_cogs:
+            blacklisted_cogs.append('topgg_commands')
+    reddit_username = details_data.get('reddit_username')
+    reddit_password = details_data.get('reddit_password')
+    reddit_client_id = details_data.get('reddit_client_id')
+    reddit_client_secret = details_data.get('reddit_client_secret')
+    if not (reddit_username or reddit_password or reddit_client_id or reddit_client_secret):
+        if "reddit" not in blacklisted_cogs:
+            print("No reddit credentials found in config.json. Adding websurf cog to blacklist...")
+            blacklisted_cogs.append('websurf')
+    currency_api_key = details_data.get('currency_api_key')
     if not currency_api_key:
-        print("CurrencyAPI key not found. Adding the currency cog to blacklist...")
-        blacklisted_cogs.append('currency')
-
+        if "currency" not in blacklisted_cogs:
+            blacklisted_cogs.append('currency_commands')
+    openrobot_api_key = details_data.get('openrobot_api_key')
     if not openrobot_api_key:
-        print("OpenRobot API key not found. Adding the openrobot cog to blacklist...")
-        blacklisted_cogs.append('openrobot')
+        if "openrobot" not in blacklisted_cogs:
+            blacklisted_cogs.append('openrobot_commands')
+    tesseract_custom_path = details_data.get('tesseract_custom_path')
+    tesseract_tessdata_path = details_data.get('tesseract_tessdata_path')
 
 intents = discord.Intents.all()
 if bot_stream:
