@@ -26,7 +26,7 @@ with open('config.json', 'r') as detailsFile:
     if not token:
         print("No bot token found in config.json. Please add a bot token.")
         exit()
-    owner_id = details_data.get('owner_id')
+    owner_id = details_data.get('bot_owner_id')
     bot_stream = details_data.get('bot_stream')
     stream_link = details_data.get('bot_stream_url')
     if bot_stream and not stream_link:
