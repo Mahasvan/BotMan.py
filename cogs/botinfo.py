@@ -1,6 +1,7 @@
 import os
 import platform
 import random
+import subprocess
 import time
 
 import discord
@@ -172,6 +173,21 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
                         inline=True)
         embed.add_field(name="RAM Usage", value=f"{mem_used_gb} GB of {mem_total_gb} GB ({memstats.percent}%)",
                         inline=True)
+        await ctx.send(embed=embed)
+
+    @commands.command(name="neofetch")
+    async def neofetch(self, ctx):
+        """Runs neofetch on the host."""
+        await ctx.trigger_typing()
+        output = subprocess.run(["neofetch", "--stdout", "--color-blocks", "off"], shell=True,
+                                stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        if output.returncode != 0:
+            return await ctx.send("Neofetch is not installed in my host machine :(")
+        text_we_need = "\n".join(output.stdout.decode("utf-8").split("\n")[2:])
+        # split the output into lines and then remove the first two lines, which have the host's name and username
+
+        embed = discord.Embed(title="Neofetch", description=f"```\n{text_we_need[:1992]}\n```",
+                              color=get_color(ctx.author))
         await ctx.send(embed=embed)
 
 
