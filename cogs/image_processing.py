@@ -90,6 +90,7 @@ class ImageProcessing(commands.Cog):
         await image_assets.save_image(image_url, file_path)
         await ctx.trigger_typing()
 
+        # stolen from https://towardsdatascience.com/build-optical-character-recognition-ocr-in-python-28d1c7b77da3
         img_to_ocr = np.array(Image.open(file_path))
         norm_img = np.zeros((img_to_ocr.shape[0], img_to_ocr.shape[1]))
         img_to_ocr = cv2.normalize(img_to_ocr, norm_img, 0, 255, cv2.NORM_MINMAX)
