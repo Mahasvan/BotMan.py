@@ -179,7 +179,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
     async def neofetch(self, ctx):
         """Runs neofetch on the host."""
         await ctx.trigger_typing()
-        output = subprocess.run(["neofetch", "--stdout", "--color-blocks", "off"], shell=True,
+        output = subprocess.run("neofetch --stdout", shell=True,
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         if output.returncode != 0:
             return await ctx.send("Neofetch is not installed in my host machine :(")
