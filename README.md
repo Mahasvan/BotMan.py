@@ -9,6 +9,7 @@
 - [Dependencies](#dependencies)
 - [Misc Dependencies](#misc-dependencies)
 - [Dependencies Used By Each Cog](#dependencies-used-by-each-cog)
+- [Adding Cogs to Blacklist](#adding-cogs-to-blacklist)
 
 
 ### Config Structure
@@ -66,10 +67,21 @@ In case you are hosting the bot in an obscure environment, like a very old jailb
 not all dependencies can be installed on your machine.
 In that case, you can install the available dependencies manually, 
 then add the cogs which use the unavailable dependencies to the `blacklisted_cogs` array in the config.
-A list of all dependencies each Cog uses can be found [here](#dependencies-used-by-each-cog).
+A list of all dependencies each Cog uses can be found [here](#dependencies-used-by-each-cog).<br>
+You can install a dependency manually by running the following command:
+```shell
+# macOS
+python3 -m pip install <dependency>
+
+# Windows
+python -m pip install <dependency>
+
+# Linux (Works on my Ubuntu machine, I don't really know about other distros)
+python3 -m pip install <dependency>
+```
 
 ### Misc Dependencies
-Outside of the dependencies mentioned in the `requirements.txt` file, there are a few dependencies which need to be installed manually.
+Apart from the dependencies mentioned in the `requirements.txt` file, there are a few non-python dependencies which need to be installed manually.
 
 - `tesseract-ocr`
     - For Linux:
@@ -91,6 +103,10 @@ Outside of the dependencies mentioned in the `requirements.txt` file, there are 
   # There is no official installer, but this one works just fine
   Download from https://github.com/UB-Mannheim/tesseract/wiki
   ```
+
+- `neofetch` (not very important, but nice to have)
+  - [Installation Instructions](https://github.com/dylanaraps/neofetch/wiki/Installation)
+
 
 ### Dependencies Used by each Cog
 Common dependencies to every Cog:
@@ -124,6 +140,16 @@ Dependencies used by:
 | weather             | aiohttp                                            |
 | websurf             | aiohttp                                            |
 | wikipedia           | aiohttp                                            |
+
+### Adding Cogs to Blacklist
+If you want to add a cog to the blacklist, add it to the `blacklisted_cogs` array in the config.
+
+For example, if you don't want the `owner_only.py` to be loaded, add `owner_only` to the `blacklisted_cogs` array.
+A sample array would be something like
+```json
+{"owner_only", "spotify", "covid"}
+```
+
 
 
 # Work in Progress.
