@@ -63,7 +63,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         source = "__[Github](https://github.com/Code-Cecilia/BotMan.py)__"
         cecilia_link = f"__[Code Cecilia](https://github.com/Code-Cecilia/)__"
         now = time.monotonic()
-        uptime_seconds = int(now - self.startTime)
+        uptime_seconds = int(now - self.bot.start_time)
         m, s = divmod(uptime_seconds, 60)  # getting the uptime minutes, secs, hrs, days
         h, m = divmod(m, 60)
         d, h = divmod(h, 24)
@@ -101,7 +101,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
     async def get_uptime(self, ctx):
         """How long have I been awake?"""
         now = time.monotonic()
-        uptime_seconds = int(now - self.startTime)
+        uptime_seconds = int(now - self.bot.start_time)
         m, s = divmod(uptime_seconds, 60)
         h, m = divmod(m, 60)
         d, h = divmod(h, 24)

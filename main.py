@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from pathlib import Path
 
 import asyncpraw
@@ -121,6 +122,8 @@ bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
                               username=reddit_username,
                               password=reddit_password,
                               user_agent="pythonPraw")
+
+bot.start_time = time.monotonic()
 bot.weather_api_key = weather_api_key
 bot.currency_api_key = currency_api_key
 bot.openrobot_api_key = openrobot_api_key
