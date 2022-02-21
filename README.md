@@ -217,13 +217,13 @@ Same as `imgflip_username`.
 ![Dashboard](./readme_images/9_dashboard.png)
 ![Copy Client ID](./readme_images/10_copy_client_id_secret.png)
 
-#### Spotify_client_secret
+#### `Spotify_client_secret`
 
 Same as `spotify_client_id`, except you copy the Client Secret instead.
 
 #### `topgg_token`
 
-Only applicable if you have a bot on top.gg
+**Warning: Only applicable if you have a bot on top.gg which you are an owner of**
 
 - Click on `Edit` in the Creator Controls pane in your bot's page on top.gg
 - Go to the `Webhooks` tab
