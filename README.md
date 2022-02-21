@@ -213,9 +213,9 @@ Same as `imgflip_username`.
 - Log in to the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications) and create a new application.
 - Copy the Client ID
 
-[Create App](./readme_images/8_create_app.png)
-[Dashboard](./readme_images/9_dashboard.png)
-[Copy Client ID](./readme_images/10_copy_client_id_secret.png)
+![Create App](./readme_images/8_create_app.png)
+![Dashboard](./readme_images/9_dashboard.png)
+![Copy Client ID](./readme_images/10_copy_client_id_secret.png)
 
 #### Spotify_client_secret
 
@@ -229,14 +229,10 @@ Only applicable if you have a bot on top.gg
 - Go to the `Webhooks` tab
 - Reveal token, copy it
 
-[topgg creator controls](./readme_images/11_topgg_creator_controls.png)
-[topgg settings](./readme_images/12_topgg_settings.png)
-[topgg copy token](./readme_images/13_topgg_copy_token.png)
+![topgg creator controls](./readme_images/11_topgg_creator_controls.png)
+![topgg settings](./readme_images/12_topgg_settings.png)
+![topgg copy token](./readme_images/13_topgg_copy_token.png)
 
 **Warning**: The bot's server count on top.gg will be updated with the server count of your instance of this bot. 
-
-### Note
-You also need to enable all Privileged gateway intents in the `Bot` section of your application's page
-
 
 # Work in Progress.
