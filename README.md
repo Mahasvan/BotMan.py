@@ -10,7 +10,7 @@
 - [Misc Dependencies](#misc-dependencies)
 - [Dependencies Used By Each Cog](#dependencies-used-by-each-cog)
 - [Adding Cogs to Blacklist](#adding-cogs-to-blacklist)
-
+- [Where To Get Details for Config](#where-to-get-details-for-config)
 
 ### Config Structure
 ```json
@@ -150,6 +150,93 @@ A sample array would be something like
 ["owner_only", "spotify", "covid"]
 ```
 
+### Where To Get Details for Config
+
+#### `bot_token`
+
+- Get to the [Discord Developer Portal](https://discord.com/developers/applications) and make a new application.
+- Make the application a bot
+- Enable Privileged Intents
+- Copy Token
+
+![new application](./readme_images/1_new_application.png)
+![name the app](./readme_images/2_name_app.png)
+![add bot](./readme_images/3_add_bot.png)
+![copy token](./readme_images/4_copy_token.png)
+
+#### `bot_owner_id`
+
+- Go to the Discord app's settings
+- Click on the "Advanced" tab and enable Developer Mode
+- Right-click on your profile picture in any of your messages, click "Copy ID"
+
+![Discord app settings](./readme_images/5_discord_settings.png)
+![Enable developer mode](./readme_images/6_enable_developer_mode.png)
+![Copy ID](./readme_images/7_copy_id.png)
+
+#### `bot_prefix`
+
+Set this to whatever you want your bot's prefix to be. Something like `$` or `!`.
+
+#### `bot_description`
+
+Set this to whatever you want your bot's description to be. This will be shown in the help command.
+
+#### `bot_stream`
+
+If you want your bot to have a Streaming activity status, set this to `true`. Otherwise, set it to `false`.
+
+#### `bot_stream_url`
+
+Only applicable if you have `bot_stream` set to `true`. Set this to the URL of the stream.
+You can pass in a valid Twitch or Youtube URL. _(Perfect chance for a Rickroll)_
+
+#### `blacklisted_cogs`
+
+Refer [This section](#adding-cogs-to-blacklist).
+
+#### `imgflip_username`
+
+Sign up for an account at [Imgflip](https://imgflip.com/signup).
+
+#### `imgflip_password`
+
+Same as `imgflip_username`.
+
+#### `weather_api_key`
+
+- Get the free plan from [OpenWeatherMap](https://openweathermap.org/price).
+- After getting the key, you should find your API key [here](https://home.openweathermap.org/api_keys).
+
+#### `spotify_client_id`
+
+- Log in to the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications) and create a new application.
+- Copy the Client ID
+
+[Create App](./readme_images/8_create_app.png)
+[Dashboard](./readme_images/9_dashboard.png)
+[Copy Client ID](./readme_images/10_copy_client_id_secret.png)
+
+#### Spotify_client_secret
+
+Same as `spotify_client_id`, except you copy the Client Secret instead.
+
+#### `topgg_token`
+
+Only applicable if you have a bot on top.gg
+
+- Click on `Edit` in the Creator Controls pane in your bot's page on top.gg
+- Go to the `Webhooks` tab
+- Reveal token, copy it
+
+[topgg creator controls](./readme_images/11_topgg_creator_controls.png)
+[topgg settings](./readme_images/12_topgg_settings.png)
+[topgg copy token](./readme_images/13_topgg_copy_token.png)
+
+**Warning**: The bot's server count on top.gg will be updated with the server count of your instance of this bot. 
+
+### Note
+You also need to enable all Privileged gateway intents in the `Bot` section of your application's page
 
 
 # Work in Progress.
