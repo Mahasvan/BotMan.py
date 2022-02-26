@@ -1,7 +1,7 @@
 BotMan
 -----------
 
-### Rewrite of [BotMan.py](https://github.com/code-cecilia/botman.py) using py-cord instead of discord.py.
+### Rewrite of [BotMan.py (legacy)](https://github.com/code-cecilia/botman.py-legacy) using py-cord instead of discord.py.
 
 ## Sections
 - [Config Structure](#config-structure)
