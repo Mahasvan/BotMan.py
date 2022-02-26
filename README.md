@@ -50,7 +50,7 @@
 ```
 
 ### Dependencies
-This project uses a list of dependencies which can be found in the [requirements file](requirements.txt). 
+This project uses a list of dependencies which can be found in the [requirements file](requirements.txt).
 You can install them using the following command:
 ```shell
 # macOS
@@ -63,9 +63,9 @@ python -m pip install -r requirements.txt
 python3 -m pip install -r requirements.txt
 ```
 
-In case you are hosting the bot in an obscure environment, like a very old jailbroken iPad _(don't.)_, you might find that 
+In case you are hosting the bot in an obscure environment, like a very old jailbroken iPad _(don't.)_, you might find that
 not all dependencies can be installed on your machine.
-In that case, you can install the available dependencies manually, 
+In that case, you can install the available dependencies manually,
 then add the cogs which use the unavailable dependencies to the `blacklisted_cogs` array in the config.
 A list of all dependencies each Cog uses can be found [here](#dependencies-used-by-each-cog).<br>
 You can install a dependency manually by running the following command:
@@ -98,14 +98,14 @@ Apart from the dependencies mentioned in the `requirements.txt` file, there are 
   # Install all available languages
   brew install tesseract-lang
   ```    
-  - For Windows
+    - For Windows
   ```
   # There is no official installer, but this one works just fine
   Download from https://github.com/UB-Mannheim/tesseract/wiki
   ```
 
 - `neofetch` (not very important, but nice to have)
-  - [Installation Instructions](https://github.com/dylanaraps/neofetch/wiki/Installation)
+    - [Installation Instructions](https://github.com/dylanaraps/neofetch/wiki/Installation)
 
 
 ### Dependencies Used by each Cog
@@ -153,7 +153,6 @@ A sample array would be something like
 ### Where To Get Details for Config
 
 #### `bot_token`
-
 - Get to the [Discord Developer Portal](https://discord.com/developers/applications) and make a new application.
 - Make the application a bot
 - Enable Privileged Intents
@@ -165,7 +164,6 @@ A sample array would be something like
 ![copy token](./readme_images/4_copy_token.png)
 
 #### `bot_owner_id`
-
 - Go to the Discord app's settings
 - Click on the "Advanced" tab and enable Developer Mode
 - Right-click on your profile picture in any of your messages, click "Copy ID"
@@ -179,37 +177,29 @@ A sample array would be something like
 Set this to whatever you want your bot's prefix to be. Something like `$` or `!`.
 
 #### `bot_description`
-
 Set this to whatever you want your bot's description to be. This will be shown in the help command.
 
 #### `bot_stream`
-
 If you want your bot to have a Streaming activity status, set this to `true`. Otherwise, set it to `false`.
 
 #### `bot_stream_url`
-
 Only applicable if you have `bot_stream` set to `true`. Set this to the URL of the stream.
 You can pass in a valid Twitch or Youtube URL. _(Perfect chance for a Rickroll)_
 
 #### `blacklisted_cogs`
-
 Refer [This section](#adding-cogs-to-blacklist).
 
 #### `imgflip_username`
-
 Sign up for an account at [Imgflip](https://imgflip.com/signup).
 
 #### `imgflip_password`
-
-Same as `imgflip_username`.
+Same as [imgflip_username](#imgflip_username).
 
 #### `weather_api_key`
-
 - Get the free plan from [OpenWeatherMap](https://openweathermap.org/price).
 - After getting the key, you should find your API key [here](https://home.openweathermap.org/api_keys).
 
 #### `spotify_client_id`
-
 - Log in to the [Spotify Developer Portal](https://developer.spotify.com/dashboard/applications) and create a new application.
 - Copy the Client ID
 
@@ -218,11 +208,9 @@ Same as `imgflip_username`.
 ![Copy Client ID](./readme_images/10_copy_client_id_secret.png)
 
 #### `Spotify_client_secret`
-
-Same as `spotify_client_id`, except you copy the Client Secret instead.
+Same as [spotify_client_id](#spotify_client_id), except you copy the Client Secret instead.
 
 #### `topgg_token`
-
 **Warning: Only applicable if you have a bot on top.gg which you are an owner of**
 
 - Click on `Edit` in the Creator Controls pane in your bot's page on top.gg
@@ -233,6 +221,47 @@ Same as `spotify_client_id`, except you copy the Client Secret instead.
 ![topgg settings](./readme_images/12_topgg_settings.png)
 ![topgg copy token](./readme_images/13_topgg_copy_token.png)
 
-**Warning**: The bot's server count on top.gg will be updated with the server count of your instance of this bot. 
+**Warning**: The bot's server count on top.gg will be updated with the server count of your instance of this bot.
+
+#### `reddit_username`
+Go to [Reddit](https://www.reddit.com), and make a new account (You can use an existing account too)
+
+The first step you need to do is turn on dark mode, because that's what cool people do 😎
+
+Now go to the [Reddit Applications page](https://www.reddit.com/prefs/apps/), and create an application
+
+![reddit app page](./readme_images/14_reddit_create_app.png)
+
+What you need to do now, is to enter these details
+
+ - Name - A name for your application
+ - Check the `script` button
+ - set `about url` and `redirect url` as `https://localhost:8080` (It's what I do. If you know what you're doing, feel free to mess around.)
+ - Click on `Create app`
+
+![fill details](./readme_images/15_fill_reddit_details.png)
+
+Now, you'd see an entry for your application **above** the portion of the screen where you entered the details.
+
+You can get the Client ID and Client Secret from these entries.
+The username and password are the same as you used for your Reddit account.
+
+#### `reddit_password`
+Same as [reddit_username](#reddit_username)
+
+#### `reddit_client_id`
+Same as [reddit_username](#reddit_username)
+
+#### `reddit_client_secret`
+Same as [reddit_username](#reddit_username)
+
+#### `currency_api_key`
+Get the free API Key from [CurrencyConvertApi](https://free.currencyconverterapi.com/).
+
+#### `openrobot_api_key`
+Go to [OpenRobot's Documentation](https://api.openrobot.xyz/api/docs#section/Authentication) and follow the instructions.
+![openrobot token](./readme_images/16_openrobot_token.png)
+
+If you are not able to procure the API Key, you can add the `openrobot` cog to the `blacklisted_cogs` list.
 
 # Work in Progress.
