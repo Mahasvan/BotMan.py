@@ -11,6 +11,7 @@
 - [Dependencies Used By Each Cog](#dependencies-used-by-each-cog)
 - [Adding Cogs to Blacklist](#adding-cogs-to-blacklist)
 - [Where To Get Details for Config](#where-to-get-details-for-config)
+- [Credits](#credits)
 
 ### Config Structure
 ```json
@@ -263,5 +264,10 @@ Go to [OpenRobot's Documentation](https://api.openrobot.xyz/api/docs#section/Aut
 ![openrobot token](./readme_images/16_openrobot_token.png)
 
 If you are not able to procure the API Key, you can add the `openrobot` cog to the `blacklisted_cogs` list.
+
+# Credits
+- [Discord.py](https://github.com/Rapptz/discord.py) and [PyCord](https://github.com/Pycord-Development/pycord) for obvious reasons
+- A lot of friends who helped bring this project to where it is now.
+- Special mention to [CorpNewt](https://github.com/CorpNewt) for [CorpBot.py](https://github.com/corpnewt/CorpBot.py/) from where I got ideas for _quite a few_ commnds
 
 # Work in Progress.
