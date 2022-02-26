@@ -6,7 +6,6 @@ Pillow
 Jishaku
 speedtest-cli
 spotipy
-topggpy
 asyncpraw
 psutil
 pytesseract

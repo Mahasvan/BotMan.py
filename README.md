@@ -81,7 +81,20 @@ python3 -m pip install <dependency>
 ```
 
 ### Misc Dependencies
-Apart from the dependencies mentioned in the `requirements.txt` file, there are a few non-python dependencies which need to be installed manually.
+Apart from the dependencies mentioned in the `requirements.txt` file, there are a few dependencies which need to be installed manually.
+
+- `topggpy`
+If you are going to use the `topgg_commands` cog, you need to install the `topggpy` dependency.
+  ```shell
+  # macOS
+  python3 -m pip install topggpy
+
+  # Windows
+  python -m pip install topggpy
+  
+  # Linux (Works on my Ubuntu machine, I don't really know about other distros)
+  python3 -m pip install topggpy
+  ```
 
 - `tesseract-ocr`
     - For Linux:
@@ -135,7 +148,7 @@ Dependencies used by:
 | server_setup        | None                                               |
 | spotify             | aiohttp, spotipy                                   |
 | time_commands       | aiohttp                                            |
-| topgg_commands      | topggpy                                            |
+| topgg_commands      | topggpy (needs to be installed manually)           |
 | translate           | googletrans                                        |
 | weather             | aiohttp                                            |
 | websurf             | aiohttp                                            |
@@ -211,7 +224,9 @@ Same as [imgflip_username](#imgflip_username).
 Same as [spotify_client_id](#spotify_client_id), except you copy the Client Secret instead.
 
 #### `topgg_token`
-**Warning: Only applicable if you have a bot on top.gg which you are an owner of**
+**Warning: Only applicable if you have a bot on top.gg which you are an owner of.**
+
+**Note: You will need to have installed the `topggpy` package. Refer [this section](#misc-dependencies) for instructions.**
 
 - Click on `Edit` in the Creator Controls pane in your bot's page on top.gg
 - Go to the `Webhooks` tab
