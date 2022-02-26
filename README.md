@@ -1,8 +1,7 @@
-# BotMan.py Rewrite
-
+BotMan
 -----------
 
-## Work-in-progress rewrite of [BotMan.py](https://github.com/code-cecilia/botman.py) using py-cord instead of discord.py.
+### Rewrite of [BotMan.py](https://github.com/code-cecilia/botman.py) using py-cord instead of discord.py.
 
 ## Sections
 - [Config Structure](#config-structure)
@@ -269,5 +268,3 @@ If you are not able to procure the API Key, you can add the `openrobot` cog to t
 - [Discord.py](https://github.com/Rapptz/discord.py) and [PyCord](https://github.com/Pycord-Development/pycord) for obvious reasons
 - A lot of friends who helped bring this project to where it is now.
 - Special mention to [CorpNewt](https://github.com/CorpNewt) for [CorpBot.py](https://github.com/corpnewt/CorpBot.py/) from where I got ideas for _quite a few_ commnds
-
-# Work in Progress.
