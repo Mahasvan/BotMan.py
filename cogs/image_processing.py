@@ -64,6 +64,10 @@ class ImageProcessing(commands.Cog):
     async def ocr(self, ctx, language_code=None, image_url=None):
         """Recognizes text characters in an image.
         Use the `ocrlangs` command to see a list of language codes."""
+        if not language_code:
+            user_specified_language = False
+        else:
+            user_specified_language = True
 
         if language_code not in self.tesseract_languages and not (image_url or ctx.message.attachments):
             # User may specify an image url without specifying a language code.
@@ -103,7 +107,11 @@ class ImageProcessing(commands.Cog):
                                                               f"{text[:2000] if text else 'No text was recognized :('}"
                                                               f"```",
                               color=discord_funcs.get_color(ctx.author))
-        embed.set_footer(text=f"Language used: {language_code}")
+        if user_specified_language:
+            embed.set_footer(text=f"Language used: {language_code}")
+        else:
+            embed.set_footer(text=f"Language used: `{language_code}` | "
+                                  f"Use the `ocrlangs` command for a list of available scripts to use")
         await ctx.send(embed=embed)
         os.remove(file_path)
 
