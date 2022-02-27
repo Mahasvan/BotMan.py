@@ -133,6 +133,10 @@ bot.tesseract_tessdata_path = tesseract_tessdata_path
 if tesseract_tessdata_path:
     os.environ['TESSDATA_PREFIX'] = bot.tesseract_tessdata_path  # setting the environment variable for tesseract
 
+# clear out the old storage files left uncleaned by the bot
+for file in os.listdir("storage"):
+    os.remove(os.path.join("storage", file))
+
 
 @bot.event
 async def on_ready():
