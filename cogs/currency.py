@@ -1,5 +1,6 @@
 import difflib
 
+import aiohttp
 import discord
 from discord.ext import commands
 
@@ -15,10 +16,13 @@ class Currency(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        result = await internet_funcs.get_json(f"https://free.currconv.com/api/v7/currencies?apiKey={self.api_key}")
-        result = result["results"]
-        for curr_code, value in result.items():
-            self.currency_dict[curr_code] = value["currencyName"]
+        try:
+            result = await internet_funcs.get_json(f"https://free.currconv.com/api/v7/currencies?apiKey={self.api_key}")
+            result = result["results"]
+            for curr_code, value in result.items():
+                self.currency_dict[curr_code] = value["currencyName"]
+        except aiohttp.ContentTypeError:
+            self.currency_dict = {}
 
     @commands.command(name="currencies", aliases=["currencylist", "currlist", "currency"])
     async def currencies(self, ctx, search_term=None):

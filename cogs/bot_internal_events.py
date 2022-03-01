@@ -71,6 +71,8 @@ class Errors(commands.Cog):
             await ctx.send("Timed out. Please try again.")
         elif isinstance(error, aiohttp.InvalidURL):
             await ctx.send("The URL you provided is invalid! I was not able to fetch the data :(")
+        elif isinstance(error, aiohttp.ContentTypeError):
+            await ctx.send("The API I use is having problems. Please try again later.")
         else:
             self.bot.logger.log_error(error,
                                       f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
