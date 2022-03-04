@@ -137,7 +137,7 @@ if tesseract_tessdata_path:
 try:
     for file in os.listdir("storage"):
         os.remove(os.path.join("storage", file))
-except FileNotFoundError:
+except:
     pass
 
 
