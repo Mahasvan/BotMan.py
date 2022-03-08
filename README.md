@@ -1,8 +1,13 @@
 BotMan
 -----------
 
-### Rewrite of [BotMan.py (legacy)](https://github.com/code-cecilia/botman.py-legacy) using py-cord instead of discord.py.
+### Rewrite of [BotMan.py (legacy)](https://github.com/code-cecilia/botman.py-legacy) using py-cord, made with ❤️, and a bit of Python.
 
+## Top.gg Page
+
+![Discord Bots](https://top.gg/api/widget/845225811152732179.svg)
+
+[Link to page](https://top.gg/bot/845225811152732179)
 ## Sections
 - [Config Structure](#config-structure)
 - [Dependencies](#dependencies)
