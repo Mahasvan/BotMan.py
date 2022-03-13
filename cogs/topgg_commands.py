@@ -15,7 +15,7 @@ class TopGG(commands.Cog):
     async def update_bot_stats(self):
         try:
             await self.bot.topggpy.post_guild_count()
-            self.bot.logger.log_info("update_bot_stats", "Updated top.gg guild count")
+            self.bot.logger.log_info("Updated top.gg guild count", "update_bot_stats")
             return "Successfully updated top.gg stats!"
         except Exception as e:
             exception = e.__class__.__name__
@@ -35,7 +35,7 @@ class TopGG(commands.Cog):
             info = await self.bot.topggpy.get_bot_info(bot_id=bot_id)
         except Exception as e:
             if isinstance(e, topgg.errors.UnauthorizedDetected) or isinstance(e, topgg.errors.Unauthorized):
-                self.bot.logger.log_info("get_bot_topgg", "Unauthorized token, unloading cog...")
+                self.bot.logger.log_info("Unauthorized token, unloading cog...", "get_bot_topgg")
                 self.bot.unload_extension(__name__)  # unload cog is invalid token
             exception = e.__class__.__name__
             return await ctx.send(f"An exception occured : `{exception}`")
