@@ -59,7 +59,7 @@ class Info(commands.Cog,
         embed = discord.Embed(title=ctx.guild.name, description=f'Server ID: {ctx.guild.id}',
                               timestamp=ctx.message.created_at,
                               color=discord.Color.random())
-        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.add_field(name='Owner', value=ctx.guild.owner.mention, inline=True)
         embed.add_field(name='Members', value=ctx.guild.member_count, inline=True)
         embed.add_field(name='Roles', value=str(len(ctx.guild.roles) - 1), inline=True)
@@ -77,9 +77,9 @@ class Info(commands.Cog,
         embed.add_field(name='Boosts', value=ctx.guild.premium_subscription_count)
         embed.add_field(name='Emojis', value=str(len(ctx.guild.emojis)), inline=True)
         embed.add_field(name='Bots', value=str(bots_count))
-        if not str(ctx.guild.banner_url) == "":
+        if ctx.guild.banner:
             embed.add_field(name="Banner", value="Banner below!", inline=False)
-            embed.set_image(url=ctx.guild.banner_url)
+            embed.set_image(url=ctx.guild.banner.url)
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=get_avatar_url(ctx.author))
         await ctx.send(embed=embed)
 
