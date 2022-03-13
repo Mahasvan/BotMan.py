@@ -26,6 +26,7 @@ BotMan
   "bot_description": "The coolest Python bot on the planet!",
   "bot_stream": true,
   "bot_stream_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+  "bot_log_channel": 123456789,
 
   "blacklisted_cogs": ["cog1", "cog2"],
 
@@ -202,7 +203,11 @@ If you want your bot to have a Streaming activity status, set this to `true`. Ot
 
 #### `bot_stream_url`
 Only applicable if you have `bot_stream` set to `true`. Set this to the URL of the stream.
-You can pass in a valid Twitch or Youtube URL. _(Perfect chance for a Rickroll)_
+You can pass in a valid Twitch or YouTube URL. _(Perfect chance for a Rickroll)_
+
+#### `bot_log_channel`
+Set this to the ID of the channel you want your bot to log to.
+Follow same instructions `bot_owner_id`, but right-click on a channel instead, to get the ID.
 
 #### `blacklisted_cogs`
 Refer [This section](#adding-cogs-to-blacklist).

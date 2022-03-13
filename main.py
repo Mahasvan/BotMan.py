@@ -37,6 +37,9 @@ with open('config.json', 'r') as detailsFile:
     if not bot_description:
         print("No bot description found in config.json. Falling back to default...")
         bot_description = "The coolest Python bot ever 😎"
+    bot_log_channel = details_data.get('bot_log_channel')
+    if not bot_log_channel:
+        print("Bot Log channel not found. Will only log to file.")
     blacklisted_cogs = details_data.get('blacklisted_cogs')
     imgflip_username = details_data.get('imgflip_username')
     imgflip_password = details_data.get('imgflip_password')
@@ -78,7 +81,6 @@ with open('config.json', 'r') as detailsFile:
     tesseract_custom_path = details_data.get('tesseract_custom_path')
     tesseract_tessdata_path = details_data.get('tesseract_tessdata_path')
 
-intents = discord.Intents.all()
 if bot_stream:
     activity = discord.Streaming(name=f'{prefix}help', url=stream_link)
 else:
@@ -95,7 +97,7 @@ def get_prefix(bot, message):
 cwd = Path(__file__).parents[0]
 cwd = str(cwd)
 bot = commands.Bot(command_prefix=get_prefix,
-                   intents=intents,
+                   intents=discord.Intents.all(),
                    help_command=None,
                    activity=activity,
                    description=bot_description,
@@ -114,7 +116,6 @@ bot.help_command = help_command.MyHelp(command_attrs=help_attributes)
 bot.cwd = cwd
 bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
 bot.default_prefix = prefix
-bot.logger = logger.Logger("botman.log")
 bot.spotify = spotify_search.Spotify(spotify_client_id, spotify_client_secret)
 bot.topgg_token = topgg_token
 bot.reddit = asyncpraw.Reddit(client_id=reddit_client_id,
@@ -143,6 +144,12 @@ except:
 
 @bot.event
 async def on_ready():
+    if bot_log_channel:
+        bot.log_channel = bot.get_channel(bot_log_channel)
+    else:
+        bot.log_channel = None
+    bot.logger = logger.Logger(bot, "botman.log")
+
     bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", "Main")
     print(bot.user, "is online!")
     print(f"{len(bot.guilds)} Servers, {len(bot.users)} Users recorded")
@@ -172,6 +179,7 @@ async def on_ready():
 
         # delete reboot.txt
         os.remove("reboot.txt")
+
     print(shell_assets.colour_pink("===================="))
 
 
