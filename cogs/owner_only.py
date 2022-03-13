@@ -143,15 +143,22 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
 
     @commands.command(name="sendlog", aliases=["sendlogs", "logs"])
     @commands.is_owner()
-    async def send_log(self, ctx, messages: int = None):
+    async def send_log(self, ctx, messages=None, log_type=None):
         """Fetches most recent logs from logfile. Limit is 25"""
+        if str(messages).isalpha():
+            log_type = messages  # may specify log type without number of messages
+            messages = None
+
         if messages is None or messages == 0:
             messages = 5
         if messages > 25:
             messages = 25
+        if log_type is None:
+            log_type = "all"
 
-        logs = self.bot.logger.retrieve_log_json(messages)
-        embed = discord.Embed(title=f"Logs: last {len(logs)} {'messages' if len(logs) !=1 else 'message'}",
+        logs = self.bot.logger.retrieve_log_json(messages, log_type=log_type)
+        embed = discord.Embed(title=f"Logs: last {len(logs)} {'messages' if len(logs) != 1 else 'message'} "
+                                    f"{'with type - ' + log_type if log_type != 'all' else ''}",
                               color=get_color(ctx.author))
         if not logs:
             embed.add_field(name="Logs", value="No logs found!")
