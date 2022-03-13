@@ -228,7 +228,10 @@ class Info(commands.Cog,
     async def emoji_info(self, ctx, *, emoji: discord.Emoji):
         """Returns information about a custom emoji.
         This command can only be used for emojis in the current server."""
-        emoji = await ctx.guild.fetch_emoji(int(emoji.id))
+        try:
+            emoji = await ctx.guild.fetch_emoji(int(emoji.id))
+        except discord.NotFound:
+            return await ctx.send(f"Emoji not found!")
         if emoji is None:
             return await ctx.send("I couldn't find information on that emoji!")
         creation_date, creation_time = time_assets.parse_utc(str(emoji.created_at))
