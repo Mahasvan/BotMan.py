@@ -1,5 +1,4 @@
-readme
-    - config structure
-    - procedure to get entries for config
-
-reduce size of point image
+- set a channel for bot error and info messages in config, implement it accordingly
+    - use on_dbl_vote event in topggpy
+- reduce size of point image
+- make handler for emojis
