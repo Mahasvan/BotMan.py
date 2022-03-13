@@ -5,8 +5,8 @@ import aiohttp
 import discord.errors
 import requests
 from discord.ext import commands
-
-reactions_random = ['👋', '♥', '⚡']
+from assets import emojis
+reactions_random = [emojis.wave, emojis.heart, emojis.lightning]
 
 
 class Errors(commands.Cog):
