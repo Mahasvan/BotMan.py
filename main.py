@@ -38,8 +38,6 @@ with open('config.json', 'r') as detailsFile:
         print("No bot description found in config.json. Falling back to default...")
         bot_description = "The coolest Python bot ever 😎"
     bot_log_channel = details_data.get('bot_log_channel')
-    if not bot_log_channel:
-        print("Bot Log channel not found. Will only log to file.")
     blacklisted_cogs = details_data.get('blacklisted_cogs')
     imgflip_username = details_data.get('imgflip_username')
     imgflip_password = details_data.get('imgflip_password')
@@ -149,6 +147,9 @@ async def on_ready():
     else:
         bot.log_channel = None
     bot.logger = logger.Logger(bot, "botman.log")
+    if not bot.log_channel:
+        print("No log channel found. Logging to channel disabled.")
+        bot.logger.log_info("Log channel not found. Logging to channel disabled.", "main")
 
     bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", "Main")
     print(bot.user, "is online!")
