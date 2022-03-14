@@ -26,6 +26,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         """Clears the screen"""
         os.system('cls' if os.name == 'nt' else 'clear')
         await ctx.message.add_reaction('\u2705')
+        self.bot.logger.log_info("Cleared the screen", "cls")
 
     @commands.command(name='shutdown')
     @commands.is_owner()
@@ -38,6 +39,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             await ctx.author.send(f"Shutting down instance with IP Address {ip_address}...")
         await ctx.send('Shutting down...')
         await ctx.invoke(self.cls)
+        self.bot.logger.log_info("Shutting down...", "shutdown")
         await self.bot.close()
         await ctx.send("I couldn't shut down!")
 
@@ -50,6 +52,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             with open("./reboot.txt", "w") as rebootFile:
                 rebootFile.write(str(ctx.message.channel.id))
         await ctx.invoke(self.cls)  # clear the screen before rebooting
+        self.bot.logger.log_info("Rebooting...", "reboot")
         os.execv(sys.executable, ['python'] + sys.argv)
         await self.bot.close()
 
@@ -68,6 +71,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
                 self.bot.reload_extension(f"cogs.{cog}")
             except Exception as e:
                 failed_to_reload[cog] = e
+        self.bot.logger.log_info(f"Reloaded {len(cogs)} Cogs - {len(failed_to_reload)} failed", "reload")
         if failed_to_reload:
             to_send = f"Failed to reload:\n```\n"
             for cog, error in failed_to_reload.items():
@@ -88,9 +92,11 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
                 self.bot.load_extension(f"cogs.{cog}")
                 embed.add_field(
                     name=f"Loaded: `{cog}.py`", value='\uFEFF', inline=False)
+                self.bot.logger.log_info(f"Loaded Cog - {cog}", "load_cog")
             except Exception as e:
                 embed.add_field(
                     name=f"Failed to load: `{cog}.py`", value=str(e), inline=False)
+                self.bot.logger.log_error(f"Failed to load Cog - {cog}", "load_cog")
             await ctx.send(embed=embed)
 
     @commands.command(name='unload')
@@ -105,9 +111,11 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
                 self.bot.unload_extension(f"cogs.{cog}")
                 embed.add_field(
                     name=f"Unloaded: `{cog}.py`", value='\uFEFF', inline=False)
+                self.bot.logger.log_info(f"Unloaded Cog - {cog}", "unload_cog")
             except Exception as e:
                 embed.add_field(
                     name=f"Failed to unload: `{cog}.py`", value=str(e), inline=False)
+                self.bot.logger.log_error(f"Failed to unload Cog - {cog}", "unload_cog")
             await ctx.send(embed=embed)
 
     @commands.command(name="update")
@@ -120,6 +128,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             with open("./storage/update.txt", "r") as output:
                 file = discord.File(output)
         await ctx.send(content="Done! Output in text file", file=file)
+        self.bot.logger.log_info("Updated the bot!", "update")
         await asyncio.sleep(1)
         try:
             os.remove("./storage/update.txt")
@@ -188,6 +197,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         async with ctx.typing():
             try:
                 self.bot.load_extension("jishaku")
+                self.bot.logger.log_info("Loaded Jishaku", "loadjsk")
             except commands.ExtensionAlreadyLoaded:
                 pass
         await ctx.send("Loaded JSK!")
@@ -199,6 +209,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         async with ctx.typing():
             try:
                 self.bot.unload_extension("jishaku")
+                self.bot.logger.log_info("Unloaded Jishaku", "unloadjsk")
             except commands.ExtensionNotLoaded:
                 pass
         await ctx.send("Unloaded JSK!")
@@ -209,6 +220,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         my_ip_address = (await internet_funcs.get_json("https://api.ipify.org?format=json"))["ip"]
         try:
             await ctx.author.send(f"My IP address is: {my_ip_address}")
+            self.bot.logger.log_info(f"Sent IP address to {ctx.author} (ID: {ctx.author.id})", "myip")
         except discord.Forbidden:
             await ctx.send("Please enable DMs, as I cannot reveal my IP address in this channel.")
 
