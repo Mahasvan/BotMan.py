@@ -177,12 +177,14 @@ class ImageProcessing(commands.Cog):
         You can also pass in a desired width of the returned ASCII, which accepts values upto `500`."""
         if not any([image_url, ctx.message.attachments]):
             return await ctx.send("Please provide an image for me to ASCII-fy.")
+        if not image_url:
+            image_url = ctx.message.attachments[0].url
 
         if not desired_width:
             desired_width = 100
         if desired_width > 500:
-            await ctx.send("Width is too large. Falling back to `100`...")
-            desired_width = 100
+            await ctx.send("Width is too large. Falling back to 500 characters...")
+            desired_width = 500
 
         otp = otp_assets.generate_otp(5)
         await ctx.trigger_typing()
