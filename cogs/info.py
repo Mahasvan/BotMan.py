@@ -31,6 +31,8 @@ class Info(commands.Cog,
             user = await self.bot.fetch_user(user.id)
         else:
             user = ctx.guild.get_member(user.id)
+        if not user:
+            return await ctx.send("Could not fetch avatar for this user!")
         embed = discord.Embed(
             title=f'Avatar of {user.display_name}', colour=discord_funcs.get_color(user))
         try:
