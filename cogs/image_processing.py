@@ -171,6 +171,40 @@ class ImageProcessing(commands.Cog):
         except FileNotFoundError:
             pass
 
+    @commands.command(name="ascii", aliases=["asciify"])
+    async def asciify(self, ctx, image_url=None, desired_width: int=None):
+        """ASCII-fy an image! Attach an image or pass in an image URL.
+        You can also pass in a desired width of the returned ASCII, which accepts values upto `500`."""
+        if not any([image_url, ctx.message.attachments]):
+            return await ctx.send("Please provide an image for me to ASCII-fy.")
+
+        if not desired_width:
+            desired_width = 100
+        if desired_width > 500:
+            await ctx.send("Width is too large. Falling back to `100`...")
+            desired_width = 100
+
+        otp = otp_assets.generate_otp(5)
+        await ctx.trigger_typing()
+
+        # Save the image
+        file_path = await image_assets.save_image(image_url, f"storage/asciify{otp}.png")
+        # Open image
+        image = Image.open(file_path)
+        desired_height = int(image.size[1] * desired_width / image.size[0])
+        # resize image
+        image_assets.resize_image(file_path, (desired_width, desired_height))
+        # convert to ascii
+        ascii_file_path = image_assets.asciify_image(file_path, final_path=f"storage/asciify{otp}.txt")
+        print(ascii_file_path)
+        file = discord.File(ascii_file_path, filename=f"asciify{otp}.txt")
+        await ctx.send(file=file)
+        try:
+            os.remove(file_path)
+            os.remove(ascii_file_path)
+        except:
+            pass
+
 
 def setup(bot):
     bot.add_cog(ImageProcessing(bot))
