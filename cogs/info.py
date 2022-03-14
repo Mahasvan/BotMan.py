@@ -61,7 +61,7 @@ class Info(commands.Cog,
         embed = discord.Embed(title=ctx.guild.name, description=f'Server ID: {ctx.guild.id}',
                               timestamp=ctx.message.created_at,
                               color=discord.Color.random())
-        embed.set_thumbnail(url=ctx.guild.icon_url)
+        embed.set_thumbnail(url=ctx.guild.icon.url)
         embed.add_field(name='Owner', value=ctx.guild.owner.mention, inline=True)
         embed.add_field(name='Members', value=ctx.guild.member_count, inline=True)
         embed.add_field(name='Roles', value=str(len(ctx.guild.roles) - 1), inline=True)
@@ -79,9 +79,9 @@ class Info(commands.Cog,
         embed.add_field(name='Boosts', value=ctx.guild.premium_subscription_count)
         embed.add_field(name='Emojis', value=str(len(ctx.guild.emojis)), inline=True)
         embed.add_field(name='Bots', value=str(bots_count))
-        if not str(ctx.guild.banner_url) == "":
+        if ctx.guild.banner:
             embed.add_field(name="Banner", value="Banner below!", inline=False)
-            embed.set_image(url=ctx.guild.banner_url)
+            embed.set_image(url=ctx.guild.banner.url)
         embed.set_footer(text=f'Requested by {ctx.author.name}', icon_url=get_avatar_url(ctx.author))
         await ctx.send(embed=embed)
 
@@ -230,7 +230,10 @@ class Info(commands.Cog,
     async def emoji_info(self, ctx, *, emoji: discord.Emoji):
         """Returns information about a custom emoji.
         This command can only be used for emojis in the current server."""
-        emoji = await ctx.guild.fetch_emoji(int(emoji.id))
+        try:
+            emoji = await ctx.guild.fetch_emoji(int(emoji.id))
+        except discord.NotFound:
+            return await ctx.send(f"Emoji not found!")
         if emoji is None:
             return await ctx.send("I couldn't find information on that emoji!")
         creation_date, creation_time = time_assets.parse_utc(str(emoji.created_at))

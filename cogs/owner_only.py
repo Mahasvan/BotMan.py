@@ -135,6 +135,7 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
             return
         try:
             self.bot.logger.clear_logfile()
+            self.bot.logger.clear_logfile_json()
         except Exception as e:
             self.bot.logger.log_error(e, "clearlog")
             return await ctx.send("Error: `{}`".format(e if len(str(e)) < 1000 else e[:1000]))
@@ -142,24 +143,43 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
 
     @commands.command(name="sendlog", aliases=["sendlogs", "logs"])
     @commands.is_owner()
-    async def send_log(self, ctx, messages: int = None):
-        """Fetches recent logs from logfile"""
+    async def send_log(self, ctx, messages=None, log_type=None):
+        """Fetches most recent logs from logfile. Limit is 25"""
+        if str(messages).isalpha():
+            log_type = messages  # may specify log type without number of messages
+            messages = None
+
         if messages is None or messages == 0:
             messages = 5
         if messages > 25:
             messages = 25
+        if log_type is None:
+            log_type = "all"
 
-        logs = self.bot.logger.retrieve_log(messages)
-        embed = discord.Embed(title=f"Logs: last {len(logs)} messages", color=get_color(ctx.author))
+        logs = self.bot.logger.retrieve_log_json(messages, log_type=log_type)
+        embed = discord.Embed(title=f"Logs: last {len(logs)} {'messages' if len(logs) != 1 else 'message'} "
+                                    f"{'with type - ' + log_type if log_type != 'all' else ''}",
+                              color=get_color(ctx.author))
         if not logs:
             embed.add_field(name="Logs", value="No logs found!")
-        if len(logs) > 25:
-            logs = logs[:25]
         for log in logs:
-            timestamp = log.split(" | ")[0]
-            log_message = " | ".join(log.split(" | ")[1:])
-            embed.add_field(name=timestamp, value=log_message, inline=False)
+            embed.add_field(name=f"{log['type']} | {log['timestamp']}",
+                            value=f"{log['file_or_command']} - {log['message']}", inline=False)
         await ctx.send(embed=embed)
+
+    @commands.command(name="togglelog", aliases=["logtoggle"])
+    async def toggle_log(self, ctx):
+        """Toggles logging to channel on and off"""
+        if self.bot.logger.log_to_channel:
+            message = await ctx.send("Logging to channel is currently: **On**.")
+            self.bot.logger.log_to_channel = False
+            await message.edit(content="Logging to channel has been turned **Off** successfully.")
+            self.bot.logger.log_info("Logging to channel has been turned off.", "togglelog")
+        else:
+            message = await ctx.send("Logging to channel is currently: **Off**.")
+            self.bot.logger.log_to_channel = True
+            await message.edit(content="Logging to channel has been turned **On** successfully.")
+            self.bot.logger.log_info("Logging to channel has been turned on.", "togglelog")
 
     @commands.command(name="loadjsk")
     @commands.is_owner()

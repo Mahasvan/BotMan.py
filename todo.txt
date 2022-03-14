@@ -1,5 +1,3 @@
-readme
-    - config structure
-    - procedure to get entries for config
-
-reduce size of point image
+- use on_dbl_vote event in topggpy
+- reduce size of point image
+- make handler for emojis
