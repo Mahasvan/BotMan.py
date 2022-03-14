@@ -196,7 +196,6 @@ class ImageProcessing(commands.Cog):
         image_assets.resize_image(file_path, (desired_width, desired_height))
         # convert to ascii
         ascii_file_path = image_assets.asciify_image(file_path, final_path=f"storage/asciify{otp}.txt")
-        print(ascii_file_path)
         file = discord.File(ascii_file_path, filename=f"asciify{otp}.txt")
         await ctx.send(file=file)
         try:
