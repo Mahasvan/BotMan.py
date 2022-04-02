@@ -155,8 +155,10 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
     async def send_log(self, ctx, messages=None, log_type=None):
         """Fetches most recent logs from logfile. Limit is 25"""
         if str(messages).isalpha():
-            log_type = messages  # may specify log type without number of messages
+            log_type = str(messages).lower()  # may specify log type without number of messages
             messages = None
+        elif log_type:
+            log_type = log_type.lower()  # convert to lowercase
 
         if messages is None or messages == 0:
             messages = 5
@@ -167,13 +169,19 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
 
         logs = self.bot.logger.retrieve_log_json(messages, log_type=log_type)
         embed = discord.Embed(title=f"Logs: last {len(logs)} {'messages' if len(logs) != 1 else 'message'} "
-                                    f"{'with type - ' + log_type if log_type != 'all' else ''}",
+                                    f"{'with type - ' + log_type.upper() if log_type != 'all' else ''}",
                               color=get_color(ctx.author))
         if not logs:
             embed.add_field(name="Logs", value="No logs found!")
         for log in logs:
-            embed.add_field(name=f"{log['type']} | {log['timestamp']}",
-                            value=f"{log['file_or_command']} - {log['message']}", inline=False)
+            if log["type"] == "error":
+                embed.add_field(name=f"{log['type'].upper()} | {log['timestamp']}",
+                                value=f"{log['file_or_command']} - {log['error_type']}: {log['message']}",
+                                inline=False)
+            else:
+                embed.add_field(name=f"{log['type'].upper()} | {log['timestamp']}",
+                                value=f"{log['file_or_command']} - {log['message']}",
+                                inline=False)
         await ctx.send(embed=embed)
 
     @commands.command(name="togglelog", aliases=["logtoggle"])
