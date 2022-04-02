@@ -69,6 +69,7 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
                 user_input = await self.bot.wait_for("message", timeout=self.timeout,
                                                      check=lambda message: message.author == ctx.author)
             except asyncio.exceptions.TimeoutError:
+                self.playing.remove(ctx.author.id)
                 return await ctx.send(f"_{ctx.author.display_name}_, I'm done waiting. We'll play again later.")
             if user_input.content not in number_list:
                 await ctx.send(f"_{ctx.author.display_name}_, Not a valid guess! "
@@ -211,15 +212,6 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
         embed.set_footer(text=f"Good job, {ctx.author.display_name}!", icon_url=get_avatar_url(ctx.author))
         self.playing.remove(ctx.author.id)
         await ctx.send(embed=embed)
-
-    @play_madlibs.error
-    async def madlibs_error(self, ctx, error):
-        if isinstance(error, commands.CommandInvokeError):
-            error = error.original
-        if isinstance(error, asyncio.TimeoutError):
-            return await ctx.send("I'm done waiting. We'll play again later.")
-        if isinstance(error, asyncio.CancelledError):
-            pass
 
 
 def setup(bot):
