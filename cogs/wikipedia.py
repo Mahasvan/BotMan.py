@@ -42,8 +42,10 @@ class Wikipedia(commands.Cog, description="WIP Wikipedia Cog"):
             response = await wiki_result(query)
             embed = discord.Embed(title=response.get("title"), url=response.get("url"),
                                   color=discord_funcs.get_color(ctx.author))
-            embed.set_thumbnail(url=response.get("thumbnail"))
-            embed.set_image(url=response.get("image"))
+            if response.get("thumbnail"):
+                embed.set_thumbnail(url=response.get("thumbnail"))
+            if response.get("image"):
+                embed.set_image(url=response.get("image"))
             embed.description = response.get("extract")[:2000] + ("..." if len(response.get("extract")) > 2000 else "")
             embed.set_footer(text=f"Page ID: {response.get('id')}")
             await ctx.send(embed=embed)
