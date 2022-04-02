@@ -2,15 +2,15 @@ import random
 
 
 class TicTacToe:
-    def __init__(self, board_size=3, player_char="x", mode="hard"):
+    def __init__(self, board_size=3, player1_char="x", mode="hard"):
         self.board = []
         self.board_size = board_size
-        if player_char.lower() == "x":
-            self.player_turn = "ｘ"
-            self.bot_turn = "ｏ"
+        if player1_char.lower() == "x":
+            self.player1_turn = "ｘ"
+            self.player2_turn = "ｏ"
         else:
-            self.player_turn = "ｏ"
-            self.bot_turn = "ｘ"
+            self.player1_turn = "ｏ"
+            self.player2_turn = "ｘ"
         self.generate_board(board_size)
         if mode.lower() not in ["hard", "easy"]:
             mode = "hard"
@@ -28,10 +28,12 @@ class TicTacToe:
     def print_board(self):
         hrs_to_print = self.board_size - 1
         hr_size = len(self.board) * 2 - 1
+        board = ""
         for i in range(hrs_to_print):
-            print("｜".join([x if x else "　" for x in self.board[i]]))
-            print("ー" * hr_size)
-        print("｜".join([self.board[-1][i] if self.board[-1][i] else "　" for i in range(self.board_size)]))
+            board += ("｜".join([x if x else "　" for x in self.board[i]])) + "\n"
+            board += ("ー" * hr_size) + "\n"
+        board += "｜".join([self.board[-1][i] if self.board[-1][i] else "　" for i in range(self.board_size)])
+        return board
 
     def unoccupied_places(self):
         unoccupied = []
@@ -125,7 +127,7 @@ class TicTacToe:
         else:
             # calculate the best move for each row
             for row in range(len(self.board)):
-                if self.check_row_occurrences(row, self.player_turn) == self.board_size - 1:
+                if self.check_row_occurrences(row, self.player1_turn) == self.board_size - 1:
                     try:
                         plausible_moves.append((row, self.board[row].index(None)))
                     except ValueError:
@@ -134,7 +136,7 @@ class TicTacToe:
             # calculate the best move for each column
             column_moves = []
             for column in range(self.board_size):
-                if self.check_column_occurrences(column, self.player_turn) == self.board_size - 1:
+                if self.check_column_occurrences(column, self.player1_turn) == self.board_size - 1:
                     try:
                         column_moves.append((self.find_row_of(column, None), column))
                     except ValueError:
@@ -142,10 +144,10 @@ class TicTacToe:
             plausible_moves.extend([(x, y) for x, y in column_moves if x is not None])
 
             # calculate the best move for each diagonal
-            if len(self.check_diag1_occurrences(self.player_turn)) == self.board_size - 1:
+            if len(self.check_diag1_occurrences(self.player1_turn)) == self.board_size - 1:
                 plausible_moves.extend(self.check_diag1_occurrences(None))
 
-            if len(self.check_diag2_occurrences(self.player_turn)) == self.board_size - 1:
+            if len(self.check_diag2_occurrences(self.player1_turn)) == self.board_size - 1:
                 plausible_moves.extend(self.check_diag2_occurrences(occurrence=None))
 
         if auto_place:
@@ -155,7 +157,7 @@ class TicTacToe:
             else:
                 move = random.choice(plausible_moves)
 
-            self.place_piece(self.bot_turn, move[0], move[1])
+            self.place_piece(self.player2_turn, move[0], move[1])
         return plausible_moves  # we dont return unique values (ie. return a set) because if an entry is listed twice,
         # we want to give more priority to that element in the random choice
 
@@ -185,12 +187,22 @@ class TicTacToe:
                     return False
         return True
 
-    def check_game_over(self):
-        if self.check_win(self.player_turn):
+    def check_game_over_single(self):
+        if self.check_win(self.player1_turn):
             return "You win!"
-        elif self.check_win(self.bot_turn):
+        elif self.check_win(self.player2_turn):
             return "You lose!"
         elif self.check_draw():
             return "Draw!"
         else:
             return False
+
+    def check_game_over_multi(self):
+        if self.check_win(self.player1_turn):
+            return "You win!", 1
+        elif self.check_win(self.player2_turn):
+            return "You win!", 2
+        elif self.check_draw():
+            return "Draw!", 0
+        else:
+            return False, False
