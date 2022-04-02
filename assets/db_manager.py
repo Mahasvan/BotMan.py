@@ -25,7 +25,7 @@ class DbManager:
         try:
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS prefixes 
             (id INTEGER PRIMARY KEY, prefix VARCHAR(10))""")
-            self.cursor.execute("""CREATE TABLE IF NOT EXISTS madlibs_channels 
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS games_channels 
             (guild_id INTEGER PRIMARY KEY, channel_id INTEGER NOT NULL)""")
             self.cursor.execute("""CREATE TABLE IF NOT EXISTS cookies 
             
@@ -76,21 +76,21 @@ class DbManager:
 
     """MadLibs functions"""
 
-    def set_madlib_channel(self, guild_id: int, channel_id: int):
+    def set_games_channel(self, guild_id: int, channel_id: int):
         try:
-            self.remove_madlib_channel(guild_id)
-            self.cursor.execute(f"""INSERT INTO madlibs_channels VALUES((?), (?))""", (guild_id, channel_id))
+            self.remove_games_channel(guild_id)
+            self.cursor.execute(f"""INSERT INTO games_channels VALUES((?), (?))""", (guild_id, channel_id))
         except Exception as e:
             self.bot.logger.log_error(e, "add_madlib_channel")
 
-    def remove_madlib_channel(self, guild_id: int):
+    def remove_games_channel(self, guild_id: int):
         try:
-            self.cursor.execute(f"""DELETE FROM madlibs_channels WHERE guild_id = (?)""", (guild_id,))
+            self.cursor.execute(f"""DELETE FROM games_channels WHERE guild_id = (?)""", (guild_id,))
         except Exception as e:
             self.bot.logger.log_error(e, "remove_madlib_channel")
 
-    def get_madlib_channel(self, guild_id: int):
-        self.cursor.execute(f"""SELECT channel_id FROM madlibs_channels WHERE guild_id = (?)""", (guild_id,))
+    def get_games_channel(self, guild_id: int):
+        self.cursor.execute(f"""SELECT channel_id FROM games_channels WHERE guild_id = (?)""", (guild_id,))
         try:
             result = self.cursor.fetchone()[0]
             return result if result else None
