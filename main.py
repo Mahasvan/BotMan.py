@@ -55,6 +55,8 @@ with open('config.json', 'r') as detailsFile:
     blacklisted_cogs = details_data.get('blacklisted_cogs')
     if not blacklisted_cogs:
         blacklisted_cogs = os.environ.get("blacklisted_cogs")
+    if not blacklisted_cogs:
+        blacklisted_cogs = []
     imgflip_username = details_data.get('imgflip_username')
     if not imgflip_username:
         imgflip_username = os.environ.get("imgflip_username")
@@ -62,14 +64,14 @@ with open('config.json', 'r') as detailsFile:
     if not imgflip_password:
         imgflip_password = os.environ.get("imgflip_password")
     if not imgflip_username or not imgflip_password:
-        if "memes" not in blacklisted_cogs:
+        if blacklisted_cogs and "memes" not in blacklisted_cogs:
             print("No imgflip credentials found in config.json. Adding memes cog to blacklist...")
             blacklisted_cogs.append('memes')
     weather_api_key = details_data.get('weather_api_key')
     if not weather_api_key:
         weather_api_key = os.environ.get("weather_api_key")
     if not weather_api_key:
-        if "weather" not in blacklisted_cogs:
+        if blacklisted_cogs and "weather" not in blacklisted_cogs:
             print("No weather API key found in config.json. Adding weather cog to blacklist...")
             blacklisted_cogs.append('weather')
     spotify_client_id = details_data.get('spotify_client_id')
@@ -79,7 +81,7 @@ with open('config.json', 'r') as detailsFile:
     if not spotify_client_secret:
         spotify_client_secret = os.environ.get("spotify_client_secret")
     if not (spotify_client_id or spotify_client_secret):
-        if "spotify" not in blacklisted_cogs:
+        if blacklisted_cogs and "spotify" not in blacklisted_cogs:
             print("No spotify credentials found in config.json. Adding spotify cog to blacklist...")
             blacklisted_cogs.append('spotify')
     topgg_token = details_data.get('topgg_token')
