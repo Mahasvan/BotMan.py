@@ -190,15 +190,6 @@ except:
 
 @bot.event
 async def on_ready():
-    if bot_log_channel:
-        bot.log_channel = bot.get_channel(int(bot_log_channel))
-    else:
-        bot.log_channel = None
-    bot.logger = logger.Logger(bot, "botman.log")
-    if not bot.log_channel:
-        print("No log channel found. Logging to channel disabled.")
-        bot.logger.log_info("Log channel not found. Logging to channel disabled.", "main")
-
     bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", "Main")
     print(bot.user, "is online!")
     print(f"{len(bot.guilds)} Servers, {len(bot.users)} Users recorded")
@@ -233,6 +224,15 @@ async def on_ready():
 
 
 if __name__ == '__main__':
+    if bot_log_channel:
+        bot.log_channel = bot.get_channel(int(bot_log_channel))
+    else:
+        bot.log_channel = None
+    bot.logger = logger.Logger(bot, "botman.log")
+    if not bot.log_channel:
+        print("No log channel found. Logging to channel disabled.")
+        bot.logger.log_info("Log channel not found. Logging to channel disabled.", "main")
+
     bot.failed_cogs = []
     cogs_to_load = [file[:-3] for file in os.listdir(os.path.join(cwd, "cogs"))
                     if file.endswith(".py") and not file.startswith("_")]
