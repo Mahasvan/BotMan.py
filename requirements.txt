@@ -4,7 +4,6 @@ requests
 googletrans~=3.1.0a0
 Pillow
 Jishaku
-speedtest-cli
 spotipy
 asyncpraw
 psutil
