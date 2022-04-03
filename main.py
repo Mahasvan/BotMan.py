@@ -53,7 +53,7 @@ with open('config.json', 'r') as detailsFile:
         bot_description = "The coolest Python bot ever 😎"
     bot_log_channel = details_data.get('bot_log_channel')
     if not bot_log_channel:
-        bot_log_channel = os.environ.get("bot_log_channel")
+        bot_log_channel = int(os.environ.get("bot_log_channel"))
     blacklisted_cogs = details_data.get('blacklisted_cogs')
     if not blacklisted_cogs:
         blacklisted_cogs = os.environ.get("blacklisted_cogs")
@@ -190,6 +190,16 @@ except:
 
 @bot.event
 async def on_ready():
+
+    if bot_log_channel:
+        bot.log_channel = bot.get_channel(int(bot_log_channel))
+    else:
+        bot.log_channel = None
+    bot.logger = logger.Logger(bot, "botman.log")
+    if not bot.log_channel:
+        print("No log channel found. Logging to channel disabled.")
+        bot.logger.log_info("Log channel not found. Logging to channel disabled.", "main")
+
     bot.logger.log_info(f"Logged in as {bot.user.name} - ID {bot.user.id}", "Main")
     print(bot.user, "is online!")
     print(f"{len(bot.guilds)} Servers, {len(bot.users)} Users recorded")
@@ -224,15 +234,6 @@ async def on_ready():
 
 
 if __name__ == '__main__':
-    if bot_log_channel:
-        bot.log_channel = bot.get_channel(int(bot_log_channel))
-    else:
-        bot.log_channel = None
-    bot.logger = logger.Logger(bot, "botman.log")
-    if not bot.log_channel:
-        print("No log channel found. Logging to channel disabled.")
-        bot.logger.log_info("Log channel not found. Logging to channel disabled.", "main")
-
     bot.failed_cogs = []
     cogs_to_load = [file[:-3] for file in os.listdir(os.path.join(cwd, "cogs"))
                     if file.endswith(".py") and not file.startswith("_")]
@@ -259,5 +260,4 @@ if __name__ == '__main__':
         bot.run(token)  # actually running the bot
     except Exception as e:
         print(type(e).__name__, "-", e)
-        bot.logger.log_error(e, "Main")
-        exit()
+        sys.exit()
