@@ -133,32 +133,32 @@ Common dependencies to every Cog:
 
 Dependencies used by:
 
-| Cog                 | Dependencies                                       |
-|---------------------|----------------------------------------------------|
-| bot_internal_events | aiohttp, requests                                  |
-| botinfo             | aiohttp, speedtest-cli                             |
-| covid               | aiohttp                                            |
-| currency            | aiohttp                                            |
-| funzies             | aiohttp                                            |
-| gaems               | aiohttp                                            |
+| Cog                 | Dependencies                                     |
+|---------------------|--------------------------------------------------|
+| bot_internal_events | aiohttp, requests                                |
+| botinfo             | aiohttp                                          |
+| covid               | aiohttp                                          |
+| currency            | aiohttp                                          |
+| funzies             | aiohttp                                          |
+| gaems               | aiohttp                                          |
 | image_processing    | aiohttp, pillow, pytesseract, numpy, opencv-python |
-| info                | None                                               |
-| links               | None                                               |
-| logging             | None                                               |
-| madlibs             | aiohttp                                            |
-| memes               | aiohttp                                            |
-| misc                | aiohttp                                            |
-| openrobot           | aiohttp                                            |
-| owner_only          | aiohttp, jishaku                                   |
-| roleplay            | aiohttp                                            |
-| server_setup        | None                                               |
-| spotify             | aiohttp, spotipy                                   |
-| time_commands       | aiohttp                                            |
-| topgg_commands      | topggpy (needs to be installed manually)           |
-| translate           | googletrans                                        |
-| weather             | aiohttp                                            |
-| websurf             | aiohttp                                            |
-| wikipedia           | aiohttp                                            |
+| info                | None                                             |
+| links               | None                                             |
+| logging             | None                                             |
+| madlibs             | aiohttp                                          |
+| memes               | aiohttp                                          |
+| misc                | aiohttp                                          |
+| openrobot           | aiohttp                                          |
+| owner_only          | aiohttp, jishaku                                 |
+| roleplay            | aiohttp                                          |
+| server_setup        | None                                             |
+| spotify             | aiohttp, spotipy                                 |
+| time_commands       | aiohttp                                          |
+| topgg_commands      | topggpy (needs to be installed manually)         |
+| translate           | googletrans                                      |
+| weather             | aiohttp                                          |
+| websurf             | aiohttp                                          |
+| wikipedia           | aiohttp                                          |
 
 ### Adding Cogs to Blacklist
 If you want to add a cog to the blacklist, add it to the `blacklisted_cogs` array in the config.
