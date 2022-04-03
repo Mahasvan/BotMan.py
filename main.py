@@ -1,5 +1,7 @@
 import json
 import os
+import subprocess
+import sys
 import time
 from pathlib import Path
 
@@ -184,6 +186,14 @@ try:
         os.remove(os.path.join("storage", file))
 except:
     pass
+
+try:
+    import topgg
+except ImportError:
+    print("Top.gg not installed. Installing now...")
+    subprocess.run([sys.executable, "-m", "pip", "install", "topggpy", "--no-deps"])
+    os.execv(sys.argv[0], sys.argv)  # restart the bot
+    sys.exit()
 
 
 @bot.event
