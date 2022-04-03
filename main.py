@@ -187,19 +187,11 @@ try:
 except:
     pass
 
-try:
-    import topgg
-except ImportError:
-    print("Top.gg not installed. Installing now...")
-    subprocess.run([sys.executable, "-m", "pip", "install", "topggpy", "--no-deps"])
-    os.execv(sys.argv[0], sys.argv)  # restart the bot
-    sys.exit()
-
 
 @bot.event
 async def on_ready():
     if bot_log_channel:
-        bot.log_channel = bot.get_channel(bot_log_channel)
+        bot.log_channel = bot.get_channel(int(bot_log_channel))
     else:
         bot.log_channel = None
     bot.logger = logger.Logger(bot, "botman.log")
