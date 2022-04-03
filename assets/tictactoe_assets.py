@@ -1,8 +1,23 @@
 import random
+import asyncio
+
+import discord
+
+
+def is_author_check(ctx):
+    return lambda message: message.channel == ctx.message.channel and message.author == ctx.author
+
+
+def not_author_check(ctx):
+    return lambda message: message.channel == ctx.message.channel and message.author != ctx.author
+
+
+def is_member_check(ctx, member):
+    return lambda message: message.channel == ctx.message.channel and message.author == member
 
 
 class TicTacToe:
-    def __init__(self, board_size=3, player1_char="x", mode="hard"):
+    def __init__(self, board_size=3, player1_char="x", mode=2):
         self.board = []
         self.board_size = board_size
         if player1_char.lower() == "x":
@@ -12,9 +27,9 @@ class TicTacToe:
             self.player1_turn = "ｏ"
             self.player2_turn = "ｘ"
         self.generate_board(board_size)
-        if mode.lower() not in ["hard", "easy"]:
-            mode = "hard"
-        self.mode = mode
+        if mode not in [1, 2]:
+            mode = 2
+        self.mode = "easy" if mode == 1 else "hard" if mode == 2 else 2
 
     def generate_board(self, board_size):
         """
@@ -206,3 +221,58 @@ class TicTacToe:
             return "Draw!", 0
         else:
             return False, False
+
+
+async def send_embeds(ctx, state, board, player=None):
+    embed = discord.Embed(title=f"{player.display_name}, {state}" if player else state,
+                          description=f"```\n{board}\n```",
+                          color=player.color if player else discord.Color.blurple())
+    await ctx.send(embed=embed)
+
+
+async def ask_for_difficulty(ctx, player):
+    embed = discord.Embed(title=f"Choose a difficulty, {player.display_name}", description="Type `1` for Easy mode\n"
+                                                                                           "Type `2` for Hard mode",
+                          color=player.color)
+    await ctx.send(embed=embed)
+    try:
+        msg = await ctx.bot.wait_for('message', check=is_member_check(ctx, player), timeout=60)
+    except asyncio.TimeoutError:
+        await ctx.send("You took too long to respond, defaulting to Hard mode...")
+        return 2
+    else:
+        if msg.content == "1":
+            return 1
+        elif msg.content == "2":
+            return 2
+        else:
+            await ctx.send("Invalid input, defaulting to Hard mode...")
+            return 2
+
+
+async def ask_for_input_coords(ctx, player, ttt):
+    await ctx.send(f"_{player.display_name}_, choose a position for your move.")
+    try:
+        msg = await ctx.bot.wait_for('message', check=is_member_check(ctx, player), timeout=20)
+    except asyncio.TimeoutError:
+        return False
+    else:
+        if msg.content.lower() == "quit":
+            return False
+        else:
+            try:
+                x, y = [int(x) for x in msg.content.split(",")]
+                if x < 1 or y < 1:
+                    await ctx.send("Invalid input, try again.")
+                    return False
+                if x > 3 or y > 3:
+                    await ctx.send("Invalid input, try again.")
+                    return False
+            except ValueError:
+                await ctx.send("Invalid input, try again.")
+                return False
+            if not ttt.check_placement(x-1, y-1):
+                await ctx.send("Invalid input, try again.")
+                return False
+            else:
+                return x - 1, y - 1

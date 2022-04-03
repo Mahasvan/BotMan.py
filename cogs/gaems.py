@@ -7,7 +7,8 @@ from discord.ext import commands
 
 from assets import internet_funcs, discord_funcs
 from assets.discord_funcs import get_avatar_url
-from assets.tictactoe_algo import TicTacToe
+from assets.tictactoe_assets import TicTacToe
+from assets import tictactoe_assets
 
 number_list = string.digits
 
@@ -83,7 +84,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
                 user_input = await self.bot.wait_for("message", timeout=self.timeout,
                                                      check=lambda message: message.author == ctx.author)
             except asyncio.exceptions.TimeoutError:
-                self.playing.remove(ctx.author.id)
+                if ctx.author.id in self.playing:
+                    self.playing.remove(ctx.author.id)
                 return await ctx.send(f"_{ctx.author.display_name}_, I'm done waiting. We'll play again later.")
             if user_input.content not in number_list:
                 await ctx.send(f"_{ctx.author.display_name}_, Not a valid guess! "
@@ -99,7 +101,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
 
         if not win:
             await ctx.reply(f"The correct answer is {number}.")
-        self.playing.remove(ctx.author.id)
+        if ctx.author.id in self.playing:
+            self.playing.remove(ctx.author.id)
         await ctx.send(f"Thanks for playing **Guess The Number**!")
 
     @commands.command(name="trivia", aliases=["quiz"], description="The bot asks a question, you answer. Simple.")
@@ -169,7 +172,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
         try:
             content = int(message_from_user.content)
         except ValueError:
-            self.playing.remove(ctx.author.id)
+            if ctx.author.id in self.playing:
+                self.playing.remove(ctx.author.id)
             return await ctx.send(f"_{ctx.author.display_name}_ , wrong format!\n"
                                   "You can only answer with the Index of the option you think is correct.\n"
                                   "We'll play later.")
@@ -180,7 +184,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
             await message_from_user.add_reaction("❌")
             await message_from_user.reply(f"_{ctx.author.display_name}_. that was not the correct answer.\n"
                                           f"The correct answer was **{correctans}**.")
-        self.playing.remove(ctx.author.id)
+        if ctx.author.id in self.playing:
+            self.playing.remove(ctx.author.id)
         await ctx.send(f"Thanks for playing **Trivia**, _{ctx.author.display_name}_!")
 
     @commands.command(name="madlibs", aliases=["ml"], description="Let's play MadLibs!")
@@ -190,7 +195,6 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
         if channel_id:
             channel = self.bot.get_channel(int(channel_id))
             if not channel == ctx.message.channel:
-                self.playing.remove(ctx.author.id)
                 return await ctx.send(f"You can only play MadLibs in {channel.mention}.")
         if ctx.author.id in self.playing:
             return await ctx.send("You already have a game in progress!")
@@ -213,7 +217,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
                 user_input_message = await self.bot.wait_for(
                     "message", check=is_author_check(ctx), timeout=20)
             except asyncio.TimeoutError:
-                self.playing.remove(ctx.author.id)
+                if ctx.author.id in self.playing:
+                    self.playing.remove(ctx.author.id)
                 return await ctx.send("I'm done waiting. We'll play again later.")
             user_results.append(f"**{user_input_message.content}**")  # append results to another dict
         string = ""
@@ -224,7 +229,8 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
 
         embed = discord.Embed(title=title, description=string, colour=discord_funcs.get_color(ctx.author))
         embed.set_footer(text=f"Good job, {ctx.author.display_name}!", icon_url=get_avatar_url(ctx.author))
-        self.playing.remove(ctx.author.id)
+        if ctx.author.id in self.playing:
+            self.playing.remove(ctx.author.id)
         await ctx.send(embed=embed)
 
     @commands.command(name="tictactoe", aliases=["ttt"])
@@ -237,7 +243,6 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
         if channel_id:
             channel = self.bot.get_channel(int(channel_id))
             if not channel == ctx.message.channel:
-                self.playing.remove(ctx.author.id)
                 return await ctx.send(f"You can only play TicTacToe in {channel.mention}.")
         if ctx.author.id in self.playing:
             return await ctx.send("You already have a game in progress!")
@@ -278,21 +283,11 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
 
         if single_player:
             # We ask the player for difficulty settings, only if its singleplayer
-            await ctx.send(f"_{ctx.author.display_name}_, choose your level. (`easy`/`hard`)")
-            try:
-                level_choice = await self.bot.wait_for(
-                    "message", check=is_author_check(ctx), timeout=20)
-            except asyncio.TimeoutError:
-                self.playing.remove(ctx.author.id)
-                return await ctx.send("I'm done waiting. We'll play again later.")
-            if level_choice.content.lower() == "easy":
-                tictactoe = TicTacToe(board_size=3, mode="easy")
-            elif level_choice.content.lower() == "hard":
-                tictactoe = TicTacToe(board_size=3, mode="hard")
-            else:
-                await ctx.send("Invalid input. Defaulting to `hard` mode...")
-                tictactoe = TicTacToe(board_size=3, mode="hard")
+            difficulty = await tictactoe_assets.ask_for_difficulty(ctx, ctx.author)
+            tictactoe = TicTacToe(board_size=3, mode=difficulty)
+
         else:
+            # its multiplayer, so we get the second player
             await ctx.send(f"Player 2, please type `Me` in this channel to play with _{ctx.author.display_name}_.")
             for i in range(5):  # read 5 messages
                 try:
@@ -308,117 +303,96 @@ class Gaems(commands.Cog, description="A collection of gaems. Play gaem, life go
                                               f"Please try again later. Exiting...")
                     break
             else:
+                await ctx.send("I didn't get a valid response from you. Defaulting to SinglePlayer...")
                 single_player = True
 
             # multiplayer, so we don't care what the difficulty is - because the algo isn't used
             tictactoe = TicTacToe(board_size=3)
 
         # game loop
-        while not tictactoe.check_game_over_single():
-            board_embed = await ttt_send_embed(ctx, title=f"Your turn, {ctx.author}", board=tictactoe.print_board(),
-                                               color=discord_funcs.get_color(ctx.author))
-            try:
-                choose_message = await ctx.send(f"_{ctx.author.display_name}_, choose a position to place your mark.")
-                user_move = await self.bot.wait_for(
-                    "message", check=is_author_check(ctx), timeout=20)
-            except asyncio.TimeoutError:
-                self.playing.remove(ctx.author.id)
-                return await ctx.send("I'm done waiting. We'll play again later.")
-            try:
-                user_move = [int(x) for x in user_move.content.split(",")]
-                if any([len(user_move) != 2, [int(x) for x in user_move] != list(user_move)]):
-                    await ctx.send("Invalid input format. Please try again.")
-                    continue
-            except ValueError:
-                await ctx.send("Invalid input format. Please try again.")
-                continue
+        while True:
+            game_state = tictactoe.check_game_over_multi()
+            board = tictactoe.print_board()
 
-            # convert it to a format the algo can process easier
-            user_move = [user_move[x] - 1 for x in range(len(user_move))]
-            if tictactoe.check_placement(user_move[0], user_move[1]):
-                tictactoe.place_piece(tictactoe.player1_turn, user_move[0], user_move[1])
-            else:
-                await ctx.send("Invalid move! Try again.")
-                continue
-
-            if tictactoe.check_game_over_single():
-                if single_player:
-                    await ttt_send_embed(ctx,
-                                         title=tictactoe.check_game_over_single(),
-                                         board=tictactoe.print_board(),
-                                         color=discord_funcs.get_color(ctx.author))
+            if not single_player:
+                # if player 1 won
+                if game_state[1] == 1:
+                    await tictactoe_assets.send_embeds(ctx, state=game_state[0], player=ctx.author, board=board)
                     break
-                else:
-                    # player 1 won
-                    if tictactoe.check_game_over_multi()[1] == 1:
-                        title = f"{tictactoe.check_game_over_multi()[0]}, _{ctx.author.display_name}_!"
-                    # player 2 won
-                    elif tictactoe.check_game_over_multi()[1] == 2:
-                        title = f"{tictactoe.check_game_over_multi()[0]}, _{player_2.display_name}_!"
-                    # tie
-                    else:
-                        title = "It's a tie!"
-                    await ttt_send_embed(ctx,
-                                         title=title,
-                                         board=tictactoe.print_board(),
-                                         color=discord_funcs.get_color(ctx.author))
+                # if player 2 won
+                elif game_state[1] == 2:
+                    await tictactoe_assets.send_embeds(ctx, state=game_state[0], player=player_2, board=board)
+                    break
+                elif type(game_state[1]) == int and game_state[1] == 0:
+                    # if it's a draw
+                    await tictactoe_assets.send_embeds(ctx, state=game_state[0], board=board)
                     break
             else:
-                await board_embed.delete()
-                await choose_message.delete()
-                if single_player:
-                    tictactoe.calculate_bot_move(auto_place=True)
-                else:
-                    await ttt_send_embed(ctx, title=f"Your turn, {player_2.display_name}",
-                                         board=tictactoe.print_board(),
-                                         color=discord_funcs.get_color(player_2))
+                # if user won
+                if game_state[1] == 1:
+                    await tictactoe_assets.send_embeds(ctx, state="You win!", board=board)
+                    break
+                # if the bot won
+                elif game_state[1] == 2:
+                    await tictactoe_assets.send_embeds(ctx, state="You lose :(", board=board)
+                    break
+                elif type(game_state[1]) == int and game_state[1] == 0:
+                    # if it's a draw
+                    await tictactoe_assets.send_embeds(ctx, state="It's a draw!", board=board)
+                    break
 
-                    await ctx.send(f"_{player_2.display_name}_, choose a position to place your mark.")
-                    try:
-                        bot_move = await self.bot.wait_for(
-                            "message", check=is_member_check(ctx, player_2), timeout=20)
-                    except asyncio.TimeoutError:
-                        self.playing.remove(ctx.author.id)
-                        self.playing.remove(player_2.id)
-                        return await ctx.send("I'm done waiting. We'll play again later.")
-                    try:
-                        bot_move = [int(x) for x in bot_move.content.split(",")]
-                        if any([len(bot_move) != 2, [int(x) for x in bot_move] != list(bot_move)]):
-                            await ctx.send("Invalid input format. Please try again.")
-                            continue
-                    except ValueError:
-                        await ctx.send("Invalid input format. Please try again.")
-                        continue
+            # if it's not a draw, and the game is not over, we ask for the next move
 
-                    # convert it to a format the algo can process easier
-                    bot_move = [bot_move[x] - 1 for x in range(len(bot_move))]
-                    if tictactoe.check_placement(bot_move[0], bot_move[1]):
-                        tictactoe.place_piece(tictactoe.player2_turn, bot_move[0], bot_move[1])
-
-                    else:
-                        await ctx.send("Invalid move! Try again.")
-                        continue
-
-                    if tictactoe.check_game_over_multi()[0]:
-                        # player 1 won
-                        if tictactoe.check_game_over_multi()[1] == 1:
-                            title = f"{tictactoe.check_game_over_multi()[0]}, _{ctx.author.display_name}_!"
-                        # player 2 won
-                        elif tictactoe.check_game_over_multi()[1] == 2:
-                            title = f"{tictactoe.check_game_over_multi()[0]}, _{player_2.display_name}_!"
-                        # tie
-                        else:
-                            title = "It's a tie!"
-                        await ttt_send_embed(ctx,
-                                             title=title,
-                                             board=tictactoe.print_board(),
-                                             color=discord_funcs.get_color(ctx.author))
+            if single_player:
+                # we ask player for their move
+                await tictactoe_assets.send_embeds(ctx, state="Your turn!", player=ctx.author, board=board)
+                for i in range(5):  # read 5 messages
+                    coords = await tictactoe_assets.ask_for_input_coords(ctx, ctx.author, tictactoe)
+                    if coords:
                         break
+                else:
+                    return await ctx.send(f"I didn't get a valid response from you. "
+                                          f"Therefore, you lose :(")
+                tictactoe.place_piece(tictactoe.player1_turn, coords[0], coords[1])
+                if tictactoe.check_game_over_single():
+                    continue  # if the game is over, we don't ask for the next move
+                tictactoe.calculate_bot_move(auto_place=True)
+            else:
+                # we ask player 1 for their move
+                await tictactoe_assets.send_embeds(ctx, state="Your turn!", player=ctx.author, board=board)
+                for i in range(5):  # read 5 messages
+                    coords = await tictactoe_assets.ask_for_input_coords(ctx, ctx.author, tictactoe)
+                    if coords:
+                        break
+                else:
+                    return await ctx.send(f"I didn't get a valid response from you. "
+                                          f"Therefore, {player_2.display_name} wins!")
+                tictactoe.place_piece(tictactoe.player1_turn, coords[0], coords[1])
+                if tictactoe.check_game_over_single():
+                    continue  # if the game is over, we don't ask for the next move
 
-        self.playing.remove(ctx.author.id)
+                # we ask player 2 for their move
+                await tictactoe_assets.send_embeds(ctx, state="Your turn!", player=player_2, board=board)
+                for i in range(5):  # read 5 messages
+                    coords = await tictactoe_assets.ask_for_input_coords(ctx, player_2, tictactoe)
+                    if coords:
+                        break
+                else:
+                    return await ctx.send(f"I didn't get a valid response from you. "
+                                          f"Therefore, {ctx.author.display_name} wins!")
+                tictactoe.place_piece(user=tictactoe.player2_turn, row=coords[0], column=coords[1])
+                if tictactoe.check_game_over_single():
+                    continue  # if the game is over, we don't ask for the next move
+
         if single_player:
+            if ctx.author.id in self.playing:
+                self.playing.remove(ctx.author.id)
             await ctx.send(f"Thanks for playing TicTacToe, _{ctx.author.display_name}_!")
         else:
+            if ctx.author.id in self.playing:
+                self.playing.remove(ctx.author.id)
+            if player_2.id in self.playing:
+                self.playing.remove(player_2.id)
             await ctx.send(f"Thanks for playing TicTacToe, _{ctx.author.display_name}_ and _{player_2.display_name}_!")
 
 
