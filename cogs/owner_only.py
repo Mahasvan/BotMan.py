@@ -234,36 +234,6 @@ class OwnerOnly(commands.Cog, description='A bunch of owner-only commands.\n'
         except discord.Forbidden:
             await ctx.send("Please enable DMs, as I cannot reveal my IP address in this channel.")
 
-    @commands.command(name="backup", aliases=["backupdb"])
-    async def backup_db(self, ctx):
-        try:
-            os.mkdir("backups")
-        except FileExistsError:
-            pass
-
-        # Generate the file path for the backup
-        file_path = os.path.join("backups", f"database {datetime.datetime.utcnow()}.db")
-        message = await ctx.send(f"Backing up `{self.bot.dbmanager.db_file}` to `{file_path}`...")
-        try:
-            # copy the database
-            shutil.copy(self.bot.dbmanager.db_file, file_path)
-        except Exception as e:
-            return await message.edit(f"Failed due to {type(e).__name__}: ```\n{str(e)[:500]}```")
-
-        await message.edit(f"Backed up to `{file_path}` successfully! Send file here? (y/n)")
-        try:
-            consent = await self.bot.wait_for("message", check=lambda x: x.author == ctx.author, timeout=60)
-        except asyncio.TimeoutError:
-            return await ctx.send("Timed out. Aborting...")
-        if not consent.content.lower() == "y":
-            return
-
-        file = discord.File(file_path)
-        try:
-            await ctx.send(file=file)
-        except Exception as e:
-            await ctx.send(f"Could not send file due to {type(e).__name__}: ```\n{str(e)[:500]}\n```")
-
 
 def setup(bot):
     bot.add_cog(OwnerOnly(bot))
