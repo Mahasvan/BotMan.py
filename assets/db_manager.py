@@ -6,6 +6,9 @@ class DbManager:
 
     def __init__(self, bot, db_file=None):
         self.bot = bot
+        self.db_file = db_file
+        if not self.db_file:
+            self.db_file = "assets/storage.db"
         if db_file:
             self.db = sqlite3.connect(db_file, isolation_level=None)
             self.cursor = self.db.cursor()
@@ -16,8 +19,8 @@ class DbManager:
     """Basic setup of the database"""
 
     def first_setup(self):
-        open("assets/storage.db", "w").close()
-        self.db = sqlite3.connect("assets/storage.db")
+        open(self.db_file, "w").close()
+        self.db = sqlite3.connect(self.db_file)
         self.cursor = self.db.cursor()
         self.setup_table()
 
