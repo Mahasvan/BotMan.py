@@ -86,13 +86,20 @@ def get_pretty_time_remaining_from_unix(unix_time, now_time=None):
     if not now_time:
         now_time = time.time()
     time_remaining = int(float(unix_time) - float(now_time))
+    return get_pretty_time_remaining_from_unix(time_remaining)
+
+
+def pretty_time_from_seconds(time_remaining: int):
     if time_remaining < 0:
         return "0 seconds"
     minutes, seconds = divmod(time_remaining, 60)
     hours, minutes = divmod(minutes, 60)
     days, hours = divmod(hours, 24)
+    weeks, days = divmod(days, 7)
 
     final_string_to_join = []
+    if weeks > 0:
+        final_string_to_join.append(f"{weeks} {'weeks' if weeks !=1 else 'week'}")
     if days > 0:
         final_string_to_join.append(f"{days} {'days' if days != 1 else 'day'}")
     if hours > 0:
@@ -102,7 +109,10 @@ def get_pretty_time_remaining_from_unix(unix_time, now_time=None):
     if seconds > 0:
         final_string_to_join.append(f"{seconds} {'seconds' if seconds != 1 else 'second'}")
 
-    final_string = ", ".join(final_string_to_join)
+    if len(final_string_to_join) > 1:
+        final_string = ", ".join(final_string_to_join[:-1]) + f", and {final_string_to_join[-1]}"
+    else:
+        final_string = ", ".join(final_string_to_join)
     return final_string
 
 

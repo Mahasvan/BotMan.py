@@ -9,7 +9,7 @@ import speedtest
 from discord.ext import commands
 import psutil
 
-from assets import random_assets
+from assets import random_assets, time_assets
 from assets.discord_funcs import get_color, get_avatar_url
 from assets.file_handling import count_lines
 
@@ -103,11 +103,8 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         """How long have I been awake?"""
         now = time.monotonic()
         uptime_seconds = int(now - self.bot.start_time)
-        m, s = divmod(uptime_seconds, 60)
-        h, m = divmod(m, 60)
-        d, h = divmod(h, 24)
-        embed = discord.Embed(title="Uptime", description=f"I have been awake for **{d}** days, **{h}** hours, "
-                                                          f"**{m}** minutes and **{s}** seconds.",
+        time_string = time_assets.pretty_time_from_seconds(uptime_seconds)
+        embed = discord.Embed(title="I have been awake for:", description=time_string,
                               color=get_color(self.bot.user))
         embed.set_footer(text=random.choice(random_assets.uptime_footers))
         await ctx.send(embed=embed)
