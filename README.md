@@ -136,7 +136,7 @@ Dependencies used by:
 | Cog                 | Dependencies                                       |
 |---------------------|----------------------------------------------------|
 | bot_internal_events | aiohttp, requests                                  |
-| botinfo             | aiohttp, speedtest-cli                             |
+| botinfo             | aiohttp                                            |
 | covid               | aiohttp                                            |
 | currency            | aiohttp                                            |
 | funzies             | aiohttp                                            |
