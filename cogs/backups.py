@@ -32,8 +32,9 @@ class Backup(commands.Cog):
             os.remove(os.path.join("backups", manual_backups.pop()))
             removed_manual += 1
 
-        self.bot.logger.log_info(f"Pruned backups: {removed_manual} manual, {removed_auto} auto",
-                                 file_or_command="prune_backups")
+        if removed_auto or removed_manual:
+            self.bot.logger.log_info(f"Pruned backups: {removed_manual} manual, {removed_auto} auto",
+                                     file_or_command="prune_backups")
 
     def backup_database(self, auto=False):
         if auto:
