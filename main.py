@@ -54,6 +54,12 @@ with open('config.json', 'r') as detailsFile:
     bot_log_channel = details_data.get('bot_log_channel')
     if not bot_log_channel:
         bot_log_channel = int(os.environ.get("bot_log_channel"))
+    auto_backup = details_data.get('auto_backup')
+    if not auto_backup:
+        auto_backup = os.environ.get("auto_backup", False)
+    max_backups = details_data.get('max_backups')
+    if not max_backups:
+        max_backups = os.environ.get("max_backups", 10)
     blacklisted_cogs = details_data.get('blacklisted_cogs')
     if not blacklisted_cogs:
         blacklisted_cogs = os.environ.get("blacklisted_cogs")
@@ -160,7 +166,7 @@ bot.help_command = help_command.MyHelp(command_attrs=help_attributes)
 
 """defining all bot variables"""
 bot.cwd = cwd
-bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db")
+bot.dbmanager = db_manager.DbManager(bot, "assets/storage.db", auto_backup=auto_backup, max_backups=max_backups)
 bot.default_prefix = prefix
 bot.spotify = spotify_search.Spotify(spotify_client_id, spotify_client_secret)
 bot.topgg_token = topgg_token
@@ -190,7 +196,6 @@ except:
 
 @bot.event
 async def on_ready():
-
     if bot_log_channel:
         bot.log_channel = bot.get_channel(int(bot_log_channel))
     else:

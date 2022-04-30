@@ -1,20 +1,24 @@
+import os
 import sqlite3
 import time
 
 
 class DbManager:
 
-    def __init__(self, bot, db_file=None):
+    def __init__(self, bot, db_file=None, auto_backup=True, max_backups=10):
         self.bot = bot
         self.db_file = db_file
         if not self.db_file:
-            self.db_file = "assets/storage.db"
+            self.db_file = os.path.join("assets", "storage.db")
         if db_file:
             self.db = sqlite3.connect(db_file, isolation_level=None)
             self.cursor = self.db.cursor()
             self.setup_table()
         else:
             self.first_setup()
+
+        self.auto_backup = auto_backup
+        self.max_backups = max_backups
 
     """Basic setup of the database"""
 

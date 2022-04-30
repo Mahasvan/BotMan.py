@@ -27,6 +27,8 @@ BotMan
   "bot_stream": true,
   "bot_stream_url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
   "bot_log_channel": 123456789,
+  "auto_backup": true,
+  "max_backups": 10,
 
   "blacklisted_cogs": ["cog1", "cog2"],
 
