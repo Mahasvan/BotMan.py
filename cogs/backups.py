@@ -130,13 +130,8 @@ class Backup(commands.Cog):
         elif file is None:
             # We list out the backups and let the user pick one
             backup_files = os.listdir("backups")
-            backup_files.sort(reverse=True)
-            if not backup_files:
-                return await ctx.send("No backups found.")
-            embed = discord.Embed(title=f"{len(backup_files)} Backups in storage. Please select one to restore.",
-                                  description="\n".join(f"{i + 1}. {f}" for i, f in enumerate(backup_files))[:6000],
-                                  color=discord_funcs.get_color(ctx.author))
-            await ctx.send(embed=embed)
+            await ctx.invoke(self.list_backups)
+            await ctx.send(f"Please select a backup to restore (1-{len(backup_files)}):")
             try:
                 selection = await self.bot.wait_for("message", check=lambda x: x.author == ctx.author, timeout=60)
             except asyncio.TimeoutError:
