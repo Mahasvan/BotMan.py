@@ -58,8 +58,8 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         member_count = len(set(self.bot.get_all_members()))  # returns a list, so we're getting the length of that list
         latency = float(self.bot.latency) * 1000
         latency = f"{int(latency)} ms"  # integer is good enough in this case
-        source = "__[Github](https://github.com/Code-Cecilia/BotMan.py)__"
-        cecilia_link = f"__[Code Cecilia](https://github.com/Code-Cecilia/)__"
+        source = "__[Github](https://github.com/Mahas1/BotMan.py)__"
+        cecilia_link = f"__[Code Cecilia](https://github.com/Mahas1/)__"
         now = time.monotonic()
         uptime_seconds = int(now - self.bot.start_time)
         m, s = divmod(uptime_seconds, 60)  # getting the uptime minutes, secs, hrs, days
@@ -84,7 +84,7 @@ class BotInfo(commands.Cog, description="Information on various aspects of the b
         embed.add_field(name="Source Code", value=source, inline=True)
         embed.add_field(name="Parent Organization", value=cecilia_link, inline=True)
         embed.add_field(name="Found an issue?",
-                        value="__[Report Here!](https://github.com/Code-Cecilia/BotMan.py/issues)__", inline=True)
+                        value="__[Report Here!](https://github.com/Mahas1/BotMan.py/issues)__", inline=True)
         embed.add_field(name='Invite Me!',
                         value=f"__[Link To Invite](https://discord.com/api/oauth2/authorize?client_id"
                               f"=848529420716867625&permissions=261993005047&scope=applications.commands%20bot)__",
