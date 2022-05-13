@@ -24,6 +24,6 @@ jobs:
       - name: Run pylint
         run: | 
         git clone https://github.com/Mahas1/BotMan.py
-        cd ${{ github.repository }}
+        cd BotMan.py
         pylint main.py
         shell: bash
