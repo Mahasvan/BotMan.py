@@ -1,12 +1,12 @@
 name: PyLint
-on: [push]
+on: [ workflow_dispatch ]
 
 defaults:
-    run:
-      shell: bash
+  run:
+    shell: bash
 
 jobs:
-  install-deps:
+  pylint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -23,11 +23,3 @@ jobs:
       - name: Run pylint
         run: python3 -m pylint main.py
         shell: bash
-#
-#  pylint:
-#    needs: install-deps
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Run pylint
-#        run:  python3 -m pylint main.py
-#        shell: bash
