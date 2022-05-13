@@ -24,7 +24,7 @@ jobs:
       - name: Download repo
         run: git clone ${{ github.server_url }}/${{ github.repository }}
       - name: Change directory to repo
-        run: cd ${{ github.repository }}
+        run: cd ${{ github.event.repository.name }}
       - name: Run pylint
         run:  pylint main.py
         shell: bash
