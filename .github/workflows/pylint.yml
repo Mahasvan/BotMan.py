@@ -26,5 +26,5 @@ jobs:
     needs: install-deps
     steps:
       - name: Run pylint
-        run:  pylint main.py
+        run:  python3 -m pylint main.py
         shell: bash
