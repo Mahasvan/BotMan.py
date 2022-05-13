@@ -1,0 +1,26 @@
+name: PyLint
+on: [push]
+
+defaults:
+    run:
+      shell: bash
+
+jobs:
+  install-deps:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install pylint
+        shell: bash
+        run: |
+          apt-get update
+          apt-get install python3
+          apt-get install -y python3-pip
+          pip3 install pylint
+
+  pylint:
+    runs-on: ubuntu-latest
+    needs: install-deps
+    steps:
+      - name: Run pylint
+        run: pylint main.py
+        shell: bash
