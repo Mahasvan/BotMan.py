@@ -9,22 +9,22 @@ jobs:
   install-deps:
     runs-on: ubuntu-latest
     steps:
-      - name: Install pylint
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install python3
-          sudo apt-get install -y python3-pip
-          pip3 install pylint
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+
+    - name: Install pylint
+      shell: bash
+      run: |
+        sudo apt-get update
+        sudo apt-get install python3
+        sudo apt-get install -y python3-pip
+        pip3 install pylint
+        sudo apt-get install pylint3
 
   pylint:
     runs-on: ubuntu-latest
     needs: install-deps
     steps:
-      - name: Download repo
-        run: git clone ${{ github.server_url }}/${{ github.repository }}
-      - name: Change directory to repo
-        run: cd ${{ github.event.repository.name }}
       - name: Run pylint
         run:  pylint main.py
         shell: bash
