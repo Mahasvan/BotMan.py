@@ -3,11 +3,28 @@ BotMan
 
 ### Rewrite of [BotMan.py (legacy)](https://github.com/code-cecilia/botman.py-legacy) using py-cord, made with ❤️, and a bit of Python.
 
-## Top.gg Page
+<p align="center">
+  <img src="https://img.shields.io/github/commit-activity/m/Mahas1/BotMan.py?style=for-the-badge" alt="Commit activity" />
+  &nbsp
+  <img src="https://img.shields.io/github/languages/code-size/Mahas1/BotMan.py?style=for-the-badge" alt="Code Size">
+  &nbsp
+  <img src="https://img.shields.io/github/stars/Mahas1/BotMan.py?style=for-the-badge" alt="Stars">
+  &nbsp
+  <img src="https://img.shields.io/github/license/Mahas1/BotMan.py?style=for-the-badge" alt="License">
+  &nbsp
+  <img src="https://img.shields.io/github/checks-status/Mahas1/BotMan.py/main?style=for-the-badge" alt="Branch Checks">
 
-![Discord Bots](https://top.gg/api/widget/845225811152732179.svg)
+</p>
 
-[Link to page](https://top.gg/bot/845225811152732179)
+<p align="center">
+
+<a href="https://top.gg/bot/845225811152732179"> 
+  <img src="https://top.gg/api/widget/845225811152732179.svg" alt="Top.gg Page"> 
+</a>
+
+</p>
+
+
 
 ## Sections
 
@@ -20,6 +37,10 @@ BotMan
 - [Credits](#credits)
 
 ### Config Structure
+
+You will need to create a file in the project's root directory called `config.json` with the following structure:
+<details>
+<summary>Click to view</summary>
 
 ```json
 {
@@ -52,9 +73,11 @@ BotMan
   "tesseract_tessdata_path": ""
 }
 ```
+</details>
 
 ### Dependencies
-
+<details>
+<summary>Click to expand</summary>
 This project uses a list of dependencies which can be found in the [requirements file](requirements.txt).
 You can install them using the following command:
 
@@ -87,12 +110,15 @@ python -m pip install <dependency>
 # Linux (Works on my Ubuntu machine, I don't really know about other distros)
 python3 -m pip install <dependency>
 ```
+</details>
 
 ### Misc Dependencies
 
 Apart from the dependencies mentioned in the `requirements.txt` file, there are a few dependencies which need to be
 installed manually.
 
+<details>
+<summary>Click to expand</summary>
 - `topggpy`
   If you are going to use the `topgg_commands` cog, you need to install the `topggpy` dependency.
   ```shell
@@ -130,11 +156,16 @@ installed manually.
 - `neofetch` (not very important, but nice to have)
     - [Installation Instructions](https://github.com/dylanaraps/neofetch/wiki/Installation)
 
+</details>
+
 ### Dependencies Used by each Cog
 
 Common dependencies to every Cog:
 
 - `py-cord`
+
+<details>
+<summary>Click to view detailed list</summary>
 
 Dependencies used by:
 
@@ -165,6 +196,8 @@ Dependencies used by:
 | websurf             | aiohttp                                            |
 | wikipedia           | aiohttp                                            |
 
+</details>
+
 ### Adding Cogs to Blacklist
 
 If you want to add a cog to the blacklist, add it to the `blacklisted_cogs` array in the config.
@@ -177,6 +210,9 @@ A sample array would be something like
 ```
 
 ### Where To Get Details for Config
+
+<details>
+<summary>Click to expand</summary>
 
 #### `bot_token`
 
@@ -318,6 +354,8 @@ instructions.
 ![openrobot token](./readme_images/16_openrobot_token.png)
 
 If you are not able to procure the API Key, you can add the `openrobot` cog to the `blacklisted_cogs` list.
+
+</details>
 
 # Credits
 
