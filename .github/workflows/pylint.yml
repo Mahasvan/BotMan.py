@@ -19,7 +19,6 @@ jobs:
         sudo apt-get install python3
         sudo apt-get install -y python3-pip
         pip3 install pylint
-        sudo apt-get install pylint3
 
   pylint:
     runs-on: ubuntu-latest
