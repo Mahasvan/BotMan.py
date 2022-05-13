@@ -357,7 +357,7 @@ If you are not able to procure the API Key, you can add the `openrobot` cog to t
 
 </details>
 
-# Credits
+## Credits
 
 - [Discord.py](https://github.com/Rapptz/discord.py) and [PyCord](https://github.com/Pycord-Development/pycord) for
   obvious reasons
