@@ -9,16 +9,16 @@ jobs:
   install-deps:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v3
 
-    - name: Install pylint
-      shell: bash
-      run: pip3 install pylint
+      - name: Install pylint
+        shell: bash
+        run: pip3 install pylint
 
-    - name: verify pylint installation
-      shell: bash
-      run: python3 -m pip list | grep pylint
+      - name: verify pylint installation
+        shell: bash
+        run: python3 -m pip list | grep pylint
 
   pylint:
     needs: install-deps
