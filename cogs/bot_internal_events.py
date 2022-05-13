@@ -5,7 +5,9 @@ import aiohttp
 import discord.errors
 import requests
 from discord.ext import commands
+
 from assets import emojis
+
 reactions_random = [emojis.wave, emojis.heart, emojis.lightning]
 
 
@@ -47,7 +49,8 @@ class Errors(commands.Cog):
         if type(error) in [aiohttp.ServerDisconnectedError, aiohttp.ServerDisconnectedError,
                            aiohttp.ServerTimeoutError, aiohttp.ClientConnectionError,
                            requests.ReadTimeout, requests.ConnectionError]:
-            self.bot.logger.log_error(error, f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
+            self.bot.logger.log_error(error,
+                                      f"Command: {ctx.command.qualified_name}" if ctx.command else "error listener")
 
         if isinstance(error, discord.errors.Forbidden):
             await ctx.send("I do not have enough permissions to perform this action.")

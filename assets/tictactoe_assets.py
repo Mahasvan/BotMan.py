@@ -1,5 +1,5 @@
-import random
 import asyncio
+import random
 
 import discord
 
@@ -271,7 +271,7 @@ async def ask_for_input_coords(ctx, player, ttt):
             except ValueError:
                 await ctx.send("Invalid input, try again.")
                 return False
-            if not ttt.check_placement(x-1, y-1):
+            if not ttt.check_placement(x - 1, y - 1):
                 await ctx.send("Invalid input, try again.")
                 return False
             else:

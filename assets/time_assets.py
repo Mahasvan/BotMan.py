@@ -99,7 +99,7 @@ def pretty_time_from_seconds(time_remaining: int):
 
     final_string_to_join = []
     if weeks > 0:
-        final_string_to_join.append(f"{weeks} {'weeks' if weeks !=1 else 'week'}")
+        final_string_to_join.append(f"{weeks} {'weeks' if weeks != 1 else 'week'}")
     if days > 0:
         final_string_to_join.append(f"{days} {'days' if days != 1 else 'day'}")
     if hours > 0:

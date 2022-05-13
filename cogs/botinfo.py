@@ -5,8 +5,8 @@ import subprocess
 import time
 
 import discord
-from discord.ext import commands
 import psutil
+from discord.ext import commands
 
 from assets import random_assets, time_assets
 from assets.discord_funcs import get_color, get_avatar_url

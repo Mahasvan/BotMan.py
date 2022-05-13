@@ -1,12 +1,12 @@
+import asyncio
 import os
 import subprocess
-import asyncio
+
+import cv2
+import discord
+import numpy as np
 import pytesseract
 from PIL import Image
-import numpy as np
-import cv2
-
-import discord
 from discord.ext import commands
 
 from assets import list_funcs, otp_assets, image_assets, discord_funcs
@@ -134,7 +134,8 @@ class ImageProcessing(commands.Cog):
             embed.set_footer(text=f"{member.display_name} was deleted by {ctx.author.display_name} :(",
                              icon_url=get_avatar_url(ctx.author))
         else:
-            embed.set_footer(text=f"{ctx.author.display_name} deleted themselves :(", icon_url=get_avatar_url(ctx.author))
+            embed.set_footer(text=f"{ctx.author.display_name} deleted themselves :(",
+                             icon_url=get_avatar_url(ctx.author))
         await ctx.reply(file=file, embed=embed)
         os.remove(f"./storage/delete{random_number}.png")
         os.remove(f"./storage/pfp{member.id}.png")
@@ -172,7 +173,7 @@ class ImageProcessing(commands.Cog):
             pass
 
     @commands.command(name="ascii", aliases=["asciify"])
-    async def asciify(self, ctx, image_url=None, desired_width: int=None):
+    async def asciify(self, ctx, image_url=None, desired_width: int = None):
         """ASCII-fy an image! Attach an image or pass in an image URL.
         You can also pass in a desired width of the returned ASCII, which accepts values upto `500`."""
         if not any([image_url, ctx.message.attachments]):

@@ -6,9 +6,9 @@ import discord
 from discord.ext import commands
 
 from assets import internet_funcs, discord_funcs
+from assets import tictactoe_assets
 from assets.discord_funcs import get_avatar_url
 from assets.tictactoe_assets import TicTacToe
-from assets import tictactoe_assets
 
 number_list = string.digits
 

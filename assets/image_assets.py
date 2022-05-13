@@ -46,9 +46,11 @@ def asciify_image(file_path, final_path="storage/asciify.txt"):
     img = Image.open(file_path).convert("L")  # Open and convert to grayscale
     width, height = img.size  # Fetch image dimensions
     pixels = img.getdata()  # Fetch colour details of individual pixels
-    new_pixels = "".join([ascii_chars[x//brightness_steps] for x in pixels])  # Convert each pixel to ascii, based on brightness
+    new_pixels = "".join(
+        [ascii_chars[x // brightness_steps] for x in pixels])  # Convert each pixel to ascii, based on brightness
     # Sample output of `x` will be (128, 255, 128, 200), where 200 is the brightness level with a maximum of 255
-    final_string = "\n".join([new_pixels[i:i+width] for i in range(0, len(new_pixels), width)])  # split the pixels into rows
+    final_string = "\n".join(
+        [new_pixels[i:i + width] for i in range(0, len(new_pixels), width)])  # split the pixels into rows
 
     with open(final_path, "w") as f:
         f.write(final_string)  # Write the final string to the file
