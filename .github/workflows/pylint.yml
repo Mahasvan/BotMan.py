@@ -21,9 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     needs: install-deps
     steps:
+      - name: Download repo
+        run: git clone ${{ github.server_url }}/${{ github.repository }}
+      - name: Change directory to repo
+        run: cd ${{ github.repository }}
       - name: Run pylint
-        run: | 
-        git clone https://github.com/Mahas1/BotMan.py
-        cd BotMan.py
-        pylint main.py
+        run:  pylint main.py
         shell: bash
