@@ -22,5 +22,8 @@ jobs:
     needs: install-deps
     steps:
       - name: Run pylint
-        run: pylint main.py
+        run: | 
+        git clone ${{ github.server_url }}/${{ github.repository }}
+        cd ${{ github.repository }}
+        pylint main.py
         shell: bash
