@@ -6,13 +6,7 @@ BotMan
 <p align="center">
   <img src="https://img.shields.io/github/commit-activity/m/Mahas1/BotMan.py?style=for-the-badge" alt="Commit activity" />
   &nbsp
-  <img src="https://img.shields.io/github/languages/code-size/Mahas1/BotMan.py?style=for-the-badge" alt="Code Size">
-  &nbsp
-  <img src="https://img.shields.io/github/stars/Mahas1/BotMan.py?style=for-the-badge" alt="Stars">
-  &nbsp
   <img src="https://img.shields.io/github/license/Mahas1/BotMan.py?style=for-the-badge" alt="License">
-  &nbsp
-  <img src="https://img.shields.io/github/checks-status/Mahas1/BotMan.py/main?style=for-the-badge" alt="Branch Checks">
 
 </p>
 
