@@ -52,7 +52,9 @@ with open('config.json', 'r') as detailsFile:
         bot_description = "The coolest Python bot ever 😎"
     bot_log_channel = details_data.get('bot_log_channel')
     if not bot_log_channel:
-        bot_log_channel = int(os.environ.get("bot_log_channel"))
+        bot_log_channel = os.environ.get("bot_log_channel")
+        if bot_log_channel:
+            bot_log_channel = int(bot_log_channel)
     auto_backup = details_data.get('auto_backup')
     if not auto_backup:
         auto_backup = os.environ.get("auto_backup", False)

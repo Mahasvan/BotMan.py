@@ -65,7 +65,10 @@ class Backup(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-        self.backup_db_loop.start()
+        try:
+            self.backup_db_loop.start()
+        except RuntimeError:
+            pass
 
     @commands.command(name="backup", aliases=["backupdb"])
     @commands.is_owner()
