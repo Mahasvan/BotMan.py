@@ -140,3 +140,27 @@ def get_seconds_from_input(input_time_str: str):
     if last_number:  # Check if we have any left - and add it
         time_seconds += int(last_number)
     return time_seconds
+
+def format_date_yyyymmdd(date, sep="-"):
+    month_dict = {
+        1: "January",
+        2: "February",
+        3: "March",
+        4: "April",
+        5: "May",
+        6: "June",
+        7: "July",
+        8: "August",
+        9: "September",
+        10: "October",
+        11: "November",
+        12: "December"
+    }
+
+    items = date.split(sep)
+    if not len(items) == 3:
+        return date
+    year, month, date = items
+    month = month_dict.get(int(month), "Invalid")
+    date = int(date)
+    return f"{date} {month}, {year}"
