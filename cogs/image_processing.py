@@ -1,5 +1,6 @@
 import asyncio
 import os
+import re
 import subprocess
 
 import cv2
@@ -114,6 +115,41 @@ class ImageProcessing(commands.Cog):
                                   f"Use the `ocrlangs` command for a list of available scripts to use")
         await ctx.send(embed=embed)
         os.remove(file_path)
+
+    @commands.command(name="ocrdetect")
+    async def ocr_detect(self, ctx, image_url=None):
+        # todo: refine this command
+        """Detects the language of an image."""
+        if not image_url:
+            image_url = ctx.message.attachments[0].url
+
+        otp = otp_assets.generate_otp(5)
+        file_path = f"storage/ocr{otp}.png"
+        await image_assets.save_image(image_url, file_path)
+        await ctx.trigger_typing()
+
+        # stolen from https://towardsdatascience.com/build-optical-character-recognition-ocr-in-python-28d1c7b77da3
+        img_to_ocr = np.array(Image.open(file_path))
+        norm_img = np.zeros((img_to_ocr.shape[0], img_to_ocr.shape[1]))
+        img_to_ocr = cv2.normalize(img_to_ocr, norm_img, 0, 255, cv2.NORM_MINMAX)
+        img_to_ocr = cv2.threshold(img_to_ocr, 100, 255, cv2.THRESH_BINARY)[1]
+        img_to_ocr = cv2.GaussianBlur(img_to_ocr, (1, 1), 0)
+
+        lang = pytesseract.image_to_osd(img_to_ocr)
+        script_regex = r"(?<=Script:\s)(.*)(?=\n)"
+        script_confidence_regex = r"(?<=Script confidence:\s)(.*)(?=\n)?"
+        orientation_regex = r"(?<=Orientation in degrees:\s)(.*)(?=\n)?"
+        orientation_confidence_regex = r"(?<=Orientation confidence:\s)(.*)(?=\n)?"
+        script = re.search(script_regex, lang).group(0)
+        script_confidence = re.search(script_confidence_regex, lang).group(0)
+        orientation = re.search(orientation_regex, lang).group(0)
+        orientation_confidence = re.search(orientation_confidence_regex, lang).group(0)
+
+        embed = discord.Embed(title=f"Detected Script: {script}",
+                                color=discord_funcs.get_color(ctx.author))
+        embed.add_field(name=f"Orientation: {orientation}° (Confidence: {orientation_confidence}%)", value=f"\u200b")
+        embed.set_footer(text=f"Script Confidence: {script_confidence}%")
+        await ctx.reply(embed=embed)
 
     @commands.command(name="delete", aliases=["deleteuser"])
     async def delete_user(self, ctx, *, member: discord.Member = None):
